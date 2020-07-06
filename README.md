@@ -19,7 +19,7 @@ Below are the contents of the original readme, which I intend to modify by integ
 3. For PORT to Learning OBJECT... Add PID gains as a new attribute (and save for full simulation)
 4. For PORT to Learning OBJECT... Extract key values for reward calculations: states, reference/waypoint
 5. Adjust Waypoint generation to match learning trial timeframe (these should be hard-linked between the two objects)
-6. 
+
 
 ## Need Learning Class/Object 
 1. Define a learning trial as follows: set timeframe + step reference
