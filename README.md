@@ -1,4 +1,4 @@
-# Under development 
+# Apply RL to tune PID gains on Quadcopter (Under development) 
 
 This project will implement Reinforcement Learning to tune the 
 PID gains for bobzwik's Quadcopter_SimCon using the technique described here:
@@ -10,6 +10,13 @@ PID gains for bobzwik's Quadcopter_SimCon using the technique described here:
 Below is the contents of the original readme, which I intend to modify by integrating the theoretical and implementation details of this contribution. 
 
 ... stay "tuned" :)
+
+
+# Things to do:
+
+1. Get all the packages working related to the original project
+2. Find way to modify PID gains online (try just one first )
+
 
 
 # Quadcopter Simulation and Control (Quad_SimCon)

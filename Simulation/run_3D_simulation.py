@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-The purpose of this program is to implement Finite Action-set Learning 
-Automata to tune the PID controller gains of the Quadcopter developed by
-John Bass (details below) 
+The purpose of this prorject is to implement Finite Action-set Learning 
+Automata to tune the PID controller gains of the Quadcopter Sim developed in 
+the preceding fork.
 
 author: John Bass
 email: john.bobzwik@gmail.com
@@ -48,7 +48,7 @@ def main():
     Ti = 0
     Ts = 0.005
     Tf = 18
-    ifsave = 0
+    ifsave = 1
 
     # Choose trajectory settings
     # --------------------------- 
