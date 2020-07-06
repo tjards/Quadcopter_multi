@@ -11,14 +11,22 @@ Below are the contents of the original readme, which I intend to modify by integ
 ... stay "tuned" :)
 
 
-## Things to do:
+# Things to do:
 
+## Changes required of current quad Class/Object 
 1. ~~Get all the packages working related to the original project~~
 2. Access/modify PID gains online (try just one first)
-3. Add PID gains as a new attribute (and save for full simulation)
-4. Define a learning trial as follows: set timeframe + step reference
-5. Adjust Waypoint generation to match learning 
+3. For PORT to Learning OBJECT... Add PID gains as a new attribute (and save for full simulation)
+4. For PORT to Learning OBJECT... Extract key values for reward calculations: states, reference/waypoint
+5. Adjust Waypoint generation to match learning trial timeframe (these should be hard-linked between the two objects)
+6. 
 
+## Need Learning Class/Object 
+1. Define a learning trial as follows: set timeframe + step reference
+2. Define learning class so I can create a FALA Object
+3. FOR PORT to Quad OBJECT... Define finite set of candidate PID gains
+4. Implement FALA (will need PyCumSum)
+5. Store the Probabilities from learning process
 
 
 
