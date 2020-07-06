@@ -1,3 +1,15 @@
+# Under development 
+
+This project will implement Reinforcement Learning to tune the 
+PID gains for bobzwik's Quadcopter_SimCon using the technique described here:
+
+[Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726)
+
+
+
+Below is the contents of the original readme, which I intent to modify by integrating the theoretical and implementation details of this contribution
+
+
 # Quadcopter Simulation and Control (Quad_SimCon)
 
 [Quadcopter Exploration Project](https://github.com/bobzwik/Quad_Exploration)
