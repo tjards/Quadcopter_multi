@@ -7,7 +7,9 @@ PID gains for bobzwik's Quadcopter_SimCon using the technique described here:
 
 
 
-Below is the contents of the original readme, which I intent to modify by integrating the theoretical and implementation details of this contribution
+Below is the contents of the original readme, which I intend to modify by integrating the theoretical and implementation details of this contribution. 
+
+... stay "tuned" :)
 
 
 # Quadcopter Simulation and Control (Quad_SimCon)
