@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 """
+The purpose of this program is to implement Finite Action-set Learning 
+Automata to tune the PID controller gains of the Quadcopter developed by
+John Bass (details below) 
+
 author: John Bass
 email: john.bobzwik@gmail.com
 license: MIT
