@@ -10,6 +10,12 @@ license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
 
 
+Revisions of John Bass' original work made by: P. Travis Jardine
+email: travis.jardine@gmail.com 
+licence: derived from above
+
+
+
 #Development notes:
     
     01Oct2020(ptj) - Animation was all messed up on my computer. Note the 
@@ -51,6 +57,9 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj):
     t += Ts
 
     # Trajectory for Desired States 
+    # Travis' notes: sDes is a 19-element array describing the desired states
+    #   at this time step. I could bypass the whole Traj by inserting states
+    #   mannually right here.
     # ---------------------------
     sDes = traj.desiredState(t, Ts, quad)        
 
