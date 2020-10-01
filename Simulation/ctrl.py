@@ -108,53 +108,59 @@ class Control:
         self.pqr_sp    = np.zeros(3)
         self.yawFF     = np.zeros(3)
         
-        #Paramters to tune controller in real-time
+        #Parameters to tune controller in real-time (initial = 1)
+        #Note: these will multiply against the initial gain values
+        # leverage symmetry to reduce parameters for now,
+        # later, this symmetry can be leveraged to learn faster (shared 
+        # through experience)
         #-----------------------------------------
         
         # Position P gains
-        self.cTune_Py    = 1.0
-        self.cTune_Px    = Py
-        self.cTune_Pz    = 2.0
-
-        #pos_P_gain = np.array([Px, Py, Pz])
+        cTune_Py    = 1
+        cTune_Px    = cTune_Py # due to symetry 
+        cTune_Pz    = 1
+        #consolidate
+        self.cTune_pos_P_gain = np.array([cTune_Px, cTune_Py, cTune_Pz])
 
         # Velocity P-D gains
-        self.cTune_Pxdot = 5.0
-        self.cTune_Dxdot = 0.5
-        self.cTune_Ixdot = 5.0
-        
-        self.cTune_Pydot = Pxdot
-        self.cTune_Dydot = Dxdot
-        self.cTune_Iydot = Ixdot
-        
-        self.cTune_Pzdot = 6.0
-        self.cTune_Dzdot = 0.2
-        self.cTune_Izdot = 8.0
-        
-        #vel_P_gain = np.array([Pxdot, Pydot, Pzdot])
-        #vel_D_gain = np.array([Dxdot, Dydot, Dzdot])
-        #vel_I_gain = np.array([Ixdot, Iydot, Izdot])
+        # x-dir
+        cTune_Pxdot = 1
+        cTune_Dxdot = 1
+        cTune_Ixdot = 1
+        # y-dir
+        cTune_Pydot = cTune_Pxdot # due to symmetry 
+        cTune_Dydot = cTune_Dxdot # due to symmetry 
+        cTune_Iydot = cTune_Ixdot # due to symmetry 
+        # z-dir
+        cTune_Pzdot = 1
+        cTune_Dzdot = 1
+        cTune_Izdot = 1
+        # consolidate
+        self.cTune_vel_P_gain = np.array([cTune_Pxdot, cTune_Pydot, cTune_Pzdot])
+        self.cTune_vel_D_gain = np.array([cTune_Dxdot, cTune_Dydot, cTune_Dzdot])
+        self.cTune_vel_I_gain = np.array([cTune_Ixdot, cTune_Iydot, cTune_Izdot])
         
         # Attitude P gains
-        self.cTune_Pphi = 8.0
-        self.cTune_Ptheta = Pphi
-        self.cTune_Ppsi = 1.5
-        self.cTune_PpsiStrong = 8
-        
-        #att_P_gain = np.array([Pphi, Ptheta, Ppsi])
+        cTune_Pphi = 1
+        cTune_Ptheta = cTune_Pphi #due to symmetry 
+        cTune_Ppsi = 1
+        cTune_PpsiStrong = 1
+        #consolidate
+        self.att_P_gain = np.array([cTune_Pphi, cTune_Ptheta, cTune_Ppsi])
         
         # Rate P-D gains
-        self.cTune_Pp = 1.5
-        self.cTune_Dp = 0.04
-        
-        self.cTune_Pq = Pp
-        self.cTune_Dq = Dp 
-        
-        self.cTune_Pr = 1.0
-        self.cTune_Dr = 0.1
-        
-        #rate_P_gain = np.array([Pp, Pq, Pr])
-        #rate_D_gain = np.array([Dp, Dq, Dr])
+        # p
+        cTune_Pp = 1
+        cTune_Dp = 1
+        # q
+        cTune_Pq = cTune_Pp #due to symmetry 
+        cTune_Dq = cTune_Dp #due to symmetry 
+        # r
+        cTune_Pr = 1
+        cTune_Dr = 1
+        #consolidate
+        self.rate_P_gain = np.array([cTune_Pp, cTune_Pq, cTune_Pr])
+        self.rate_D_gain = np.array([cTune_Dp, cTune_Dq, cTune_Dr])
 
         
 
