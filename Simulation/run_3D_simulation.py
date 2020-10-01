@@ -77,7 +77,7 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005
-    Tf = 15
+    Tf = 2
     ifsave = 0
 
     # Choose trajectory settings

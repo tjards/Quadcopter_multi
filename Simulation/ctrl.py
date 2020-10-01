@@ -108,11 +108,12 @@ class Control:
         self.pqr_sp    = np.zeros(3)
         self.yawFF     = np.zeros(3)
         
-        #Parameters to tune controller in real-time (initial = 1)
-        #Note: these will multiply against the initial gain values
+        # Parameters to tune controller in real-time 
+        # Note: these will multiply against the initial gain values
         # leverage symmetry to reduce parameters for now,
         # later, this symmetry can be leveraged to learn faster (shared 
         # through experience)
+        # initialize @ 1 (i.e. no relies on originally selected gains)
         #-----------------------------------------
         
         # Position P gains
@@ -144,7 +145,7 @@ class Control:
         cTune_Pphi = 1
         cTune_Ptheta = cTune_Pphi #due to symmetry 
         cTune_Ppsi = 1
-        cTune_PpsiStrong = 1
+        #cTune_PpsiStrong = 1
         #consolidate
         self.att_P_gain = np.array([cTune_Pphi, cTune_Ptheta, cTune_Ppsi])
         
@@ -219,10 +220,11 @@ class Control:
 
     def z_pos_control(self, quad, Ts):
        
-        # Z Position Control
+        # Z Position Control (tuning added)
         # --------------------------- 
         pos_z_error = self.pos_sp[2] - quad.pos[2]
-        self.vel_sp[2] += pos_P_gain[2]*pos_z_error
+        #self.vel_sp[2] += pos_P_gain[2]*pos_z_error
+        self.vel_sp[2] += self.cTune_pos_P_gain[2]*pos_P_gain[2]*pos_z_error
         
     
     def xy_pos_control(self, quad, Ts):
