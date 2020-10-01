@@ -110,11 +110,52 @@ class Control:
         
         #Paramters to tune controller in real-time
         #-----------------------------------------
+        
+        # Position P gains
+        self.cTune_Py    = 1.0
+        self.cTune_Px    = Py
+        self.cTune_Pz    = 2.0
+
+        #pos_P_gain = np.array([Px, Py, Pz])
+
+        # Velocity P-D gains
+        self.cTune_Pxdot = 5.0
+        self.cTune_Dxdot = 0.5
+        self.cTune_Ixdot = 5.0
+        
+        self.cTune_Pydot = Pxdot
+        self.cTune_Dydot = Dxdot
+        self.cTune_Iydot = Ixdot
+        
+        self.cTune_Pzdot = 6.0
+        self.cTune_Dzdot = 0.2
+        self.cTune_Izdot = 8.0
+        
+        #vel_P_gain = np.array([Pxdot, Pydot, Pzdot])
+        #vel_D_gain = np.array([Dxdot, Dydot, Dzdot])
+        #vel_I_gain = np.array([Ixdot, Iydot, Izdot])
+        
         # Attitude P gains
-        self.tune_Pphi = 1
-        self.tune_Ptheta = 1
-        self.Ppsi = 1
-        self.PpsiStrong = 1
+        self.cTune_Pphi = 8.0
+        self.cTune_Ptheta = Pphi
+        self.cTune_Ppsi = 1.5
+        self.cTune_PpsiStrong = 8
+        
+        #att_P_gain = np.array([Pphi, Ptheta, Ppsi])
+        
+        # Rate P-D gains
+        self.cTune_Pp = 1.5
+        self.cTune_Dp = 0.04
+        
+        self.cTune_Pq = Pp
+        self.cTune_Dq = Dp 
+        
+        self.cTune_Pr = 1.0
+        self.cTune_Dr = 0.1
+        
+        #rate_P_gain = np.array([Pp, Pq, Pr])
+        #rate_D_gain = np.array([Dp, Dq, Dr])
+
         
 
     
