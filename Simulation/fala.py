@@ -7,6 +7,12 @@ This program implements finite action-set learning automata
 Created on Mon Jul  6 20:54:06 2020
 
 @author: tjards
+
+
+Start by generating random tuning parameters, feeding them into controller
+
+
+
 """
 
 import numpy as np

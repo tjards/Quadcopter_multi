@@ -107,6 +107,15 @@ class Control:
         self.eul_sp    = np.zeros(3)
         self.pqr_sp    = np.zeros(3)
         self.yawFF     = np.zeros(3)
+        
+        #Paramters to tune controller in real-time
+        #-----------------------------------------
+        # Attitude P gains
+        self.tune_Pphi = 1
+        self.tune_Ptheta = 1
+        self.Ppsi = 1
+        self.PpsiStrong = 1
+        
 
     
     def controller(self, traj, quad, sDes, Ts):
