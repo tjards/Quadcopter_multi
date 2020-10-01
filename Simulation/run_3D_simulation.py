@@ -8,6 +8,23 @@ author: John Bass
 email: john.bobzwik@gmail.com
 license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
+
+
+#Development notes:
+    
+    01Oct2020(ptj) - Animation was all messed up on my computer. Note the 
+        changed annotated as "my adds" in utils/animation.py that were
+        required. Namely, Anaconda's path from ffmpeg needed to be defined:
+        plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg'.
+    01Oct2020(ptj) - Just familiarizing with the Trajectory generation. Note,
+        The yaw "following" is a bit dirty in how it deals with flipping
+        Pi signs. Consider keeping at "zero" to avoid erroneous performance
+        Next steps: figure out how to access controller gains directly in 
+        real-time. If these are not attributes of the class, then this will 
+        probably be the best option.
+
+
+
 """
 
 import numpy as np
@@ -23,6 +40,7 @@ import utils
 import config
 
 import fala 
+
 
 
 def quad_sim(t, Ts, quad, ctrl, wind, traj):
@@ -50,8 +68,8 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005
-    Tf = 4
-    ifsave = 0
+    Tf = 18
+    ifsave = 1
 
     # Choose trajectory settings
     # --------------------------- 
@@ -65,7 +83,7 @@ def main():
     #                                  7: minimum accel_stop        8: minimum jerk_stop        9: minimum snap_stop
     #                                 10: minimum jerk_full_stop   11: minimum snap_full_stop
     #                                 12: pos_waypoint_arrived
-    trajSelect[0] = 6         
+    trajSelect[0] = 1         
     # Select Yaw Trajectory Type      (0: none                      1: yaw_waypoint_timed,      2: yaw_waypoint_interp     3: follow          4: zero)
     trajSelect[1] = 4           
     # Select if waypoint time is used, or if average speed is used to calculate waypoint time   (0: waypoint time,   1: average speed)
@@ -128,7 +146,7 @@ def main():
     nOptions=10
     optionsInterval=[0,5]
     
-    myFala = fala.falaObj(nParams,nOptions,optionsInterval)
+    #myFala = fala.falaObj(nParams,nOptions,optionsInterval)
     
     
     
@@ -164,12 +182,12 @@ def main():
     # View Results
     # ---------------------------
 
-    # utils.fullprint(sDes_traj_all[:,3:6])
+    #utils.fullprint(sDes_traj_all[:,3:6])
     
     #TEMPORARILY remove plots 
-    #utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
-    #ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
-    #plt.show()
+    utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
+    ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
+    plt.show()
 
 if __name__ == "__main__":
     if (config.orient == "NED" or config.orient == "ENU"):

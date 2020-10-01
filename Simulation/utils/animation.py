@@ -9,11 +9,18 @@ Please feel free to use and modify this, but keep the above information. Thanks!
 import numpy as np
 from numpy import pi
 import matplotlib.pyplot as plt
+plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg' #my add - this path needs to be added
+
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
-
 import utils
 import config
+
+
+# my add - Set up formatting for the movie files
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+
 
 numFrames = 8
 
@@ -161,12 +168,19 @@ def sameAxisAnimation(t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, para
 
         return line1, line2, line3
 
-        
+    
+    #my add (init_func messes up, made a new one here)
+    line_ani = animation.FuncAnimation(fig, updateLines, blit=False, frames=len(t_all[0:-2:numFrames]), interval=(Ts*1000*numFrames))
+ 
     # Creating the Animation object
-    line_ani = animation.FuncAnimation(fig, updateLines, init_func=ini_plot, frames=len(t_all[0:-2:numFrames]), interval=(Ts*1000*numFrames), blit=False)
+    # ORIGINAL line_ani = animation.FuncAnimation(fig, updateLines, init_func=ini_plot, frames=len(t_all[0:-2:numFrames]), interval=(Ts*1000*numFrames), blit=False)
+    
     
     if (ifsave):
-        line_ani.save('Gifs/Raw/animation_{0:.0f}_{1:.0f}.gif'.format(xyzType,yawType), dpi=80, writer='imagemagick', fps=25)
+        # ORIGINAL line_ani.save('Gifs/Raw/animation_{0:.0f}_{1:.0f}.gif'.format(xyzType,yawType), dpi=80, writer='imagemagick', fps=25)
+        line_ani.save('Gifs/Raw/animation_{0:.0f}_{1:.0f}.mp4'.format(xyzType,yawType), writer=writer) #my add
+ 
+  
         
     plt.show()
     return line_ani
