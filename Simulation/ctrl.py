@@ -223,7 +223,7 @@ class Control:
         # Z Position Control (tuning added)
         # --------------------------- 
         pos_z_error = self.pos_sp[2] - quad.pos[2]
-        #self.vel_sp[2] += pos_P_gain[2]*pos_z_error
+        #@ self.vel_sp[2] += pos_P_gain[2]*pos_z_error
         self.vel_sp[2] += self.cTune_pos_P_gain[2]*pos_P_gain[2]*pos_z_error
         
     
@@ -232,7 +232,7 @@ class Control:
         # XY Position Control (tuning added)
         # --------------------------- 
         pos_xy_error = (self.pos_sp[0:2] - quad.pos[0:2])
-        #self.vel_sp[0:2] += pos_P_gain[0:2]*pos_xy_error
+        #@ self.vel_sp[0:2] += pos_P_gain[0:2]*pos_xy_error
         self.vel_sp[0:2] += self.cTune_pos_P_gain[0:2]*pos_P_gain[0:2]*pos_xy_error
         
         
@@ -249,7 +249,7 @@ class Control:
                 self.vel_sp = self.vel_sp/totalVel_sp*velMaxAll
 
 
-    def z_vel_control(self, quad, Ts):
+    def z_vel_control(self, quad, Ts): 
         
         # Z Velocity Control (Thrust in D-direction) (tuning added)
         # ---------------------------
@@ -257,10 +257,10 @@ class Control:
         # allow hover when the position and velocity error are nul
         vel_z_error = self.vel_sp[2] - quad.vel[2]
         if (config.orient == "NED"):
-            #thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] - quad.params["g"]) + self.thr_int[2]
+            #@ thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] - quad.params["g"]) + self.thr_int[2]
             thrust_z_sp = self.cTune_vel_P_gain[2]*vel_P_gain[2]*vel_z_error - self.cTune_vel_D_gain[2]*vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] - quad.params["g"]) + self.thr_int[2]
         elif (config.orient == "ENU"):
-            #thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] + quad.params["g"]) + self.thr_int[2]
+            #@ thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] + quad.params["g"]) + self.thr_int[2]
             thrust_z_sp = self.cTune_vel_P_gain[2]*vel_P_gain[2]*vel_z_error - self.cTune_vel_D_gain[2]*vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] + quad.params["g"]) + self.thr_int[2]
         # Get thrust limits
         if (config.orient == "NED"):
@@ -274,9 +274,10 @@ class Control:
         # Apply Anti-Windup in D-direction
         stop_int_D = (thrust_z_sp >= uMax and vel_z_error >= 0.0) or (thrust_z_sp <= uMin and vel_z_error <= 0.0)
 
-        # Calculate integral part
+        # Calculate integral part (tuning added)
         if not (stop_int_D):
-            self.thr_int[2] += vel_I_gain[2]*vel_z_error*Ts * quad.params["useIntergral"]
+            #@ self.thr_int[2] += vel_I_gain[2]*vel_z_error*Ts * quad.params["useIntergral"]
+            self.thr_int[2] += self.cTune_vel_I_gain[2]*vel_I_gain[2]*vel_z_error*Ts * quad.params["useIntergral"]
             # Limit thrust integral
             self.thr_int[2] = min(abs(self.thr_int[2]), quad.params["maxThr"])*np.sign(self.thr_int[2])
 
@@ -289,7 +290,8 @@ class Control:
         # XY Velocity Control (Thrust in NE-direction)
         # ---------------------------
         vel_xy_error = self.vel_sp[0:2] - quad.vel[0:2]
-        thrust_xy_sp = vel_P_gain[0:2]*vel_xy_error - vel_D_gain[0:2]*quad.vel_dot[0:2] + quad.params["mB"]*(self.acc_sp[0:2]) + self.thr_int[0:2]
+        #@ thrust_xy_sp = vel_P_gain[0:2]*vel_xy_error - vel_D_gain[0:2]*quad.vel_dot[0:2] + quad.params["mB"]*(self.acc_sp[0:2]) + self.thr_int[0:2]
+        thrust_xy_sp = self.cTune_vel_P_gain[0:2]*vel_P_gain[0:2]*vel_xy_error - self.cTune_vel_D_gain[0:2]*vel_D_gain[0:2]*quad.vel_dot[0:2] + quad.params["mB"]*(self.acc_sp[0:2]) + self.thr_int[0:2]
 
         # Max allowed thrust in NE based on tilt and excess thrust
         thrust_max_xy_tilt = abs(self.thrust_sp[2])*np.tan(tiltMax)
@@ -301,6 +303,9 @@ class Control:
         if (np.dot(self.thrust_sp[0:2].T, self.thrust_sp[0:2]) > thrust_max_xy**2):
             mag = norm(self.thrust_sp[0:2])
             self.thrust_sp[0:2] = thrust_xy_sp/mag*thrust_max_xy
+        
+        #TRAVIS - start here
+        
         
         # Use tracking Anti-Windup for NE-direction: during saturation, the integrator is used to unsaturate the output
         # see Anti-Reset Windup for PID controllers, L.Rundqwist, 1990
