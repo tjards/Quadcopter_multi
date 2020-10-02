@@ -49,13 +49,6 @@ import config
 
 from fala import falaObj 
 
-#DEV
-# hl, = plt.plot([], [])
-
-# def update_line(hl, new_data):
-#     hl.set_xdata(np.append(hl.get_xdata(), new_data))
-#     hl.set_ydata(np.append(hl.get_ydata(), new_data))
-#     plt.draw()
 
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     
@@ -81,9 +74,6 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     # ---------------------------
     ctrl.controller(traj, quad, sDes, Ts)
     
-    
-    
-
     return t
     
 
@@ -130,7 +120,6 @@ def main():
     optionsInterval=[0,5]
     fala = falaObj(nParams,nOptions,optionsInterval)
     
-
     # Trajectory for First Desired States
     # ---------------------------
     sDes = traj.desiredState(0, Ts, quad)        
@@ -207,10 +196,32 @@ def main():
     # ---------------------------
 
     #utils.fullprint(sDes_traj_all[:,3:6])
+        
+    # save data
+    # the states and desireds don't line up. fix later. 
+    data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all))
+    data_all_labels='t_all,\
+                     pos_all_x, pos_all_y,pos_all_z,\
+                         vel_all_x,vel_all_y,vel_all_z, \
+                             quat_all,quat_all,quat_all,quat_all,\
+                                 omega_all_p,omega_all_q,omega_all_r,\
+                                     euler_all_phi,euler_all_theta,euler_all_psi,\
+                                         w_cmd_all,w_cmd_all,w_cmd_all,w_cmd_all,\
+                                             wMotor_all,wMotor_all,wMotor_all,wMotor_all,\
+                                                 thr_all,thr_all,thr_all,thr_all,\
+                                                     tor_all,tor_all,tor_all,tor_all,\
+                                                         sDes_traj_all_x,sDes_traj_all_y,sDes_traj_all_z,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,\
+                                                             sDes_calc_all_x,sDes_calc_all_y,sDes_calc_all_z,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all'
+    
+    
+    
+    np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
     
     utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
     ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
     plt.show()
+    
+    
 
 if __name__ == "__main__":
     if (config.orient == "NED" or config.orient == "ENU"):
@@ -218,3 +229,13 @@ if __name__ == "__main__":
         # cProfile.run('main()')
     else:
         raise Exception("{} is not a valid orientation. Verify config.py file.".format(config.orient))
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
