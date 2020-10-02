@@ -69,9 +69,7 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     fala.getParams(t)
     
     # send tuning parameters to controller 
-    ctrl.tune(fala)
-
-
+    ctrl.tune(fala.selPars)
 
     # Generate Commands (for next iteration)
     # ---------------------------

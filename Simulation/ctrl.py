@@ -403,10 +403,13 @@ class Control:
         att_P_gain[2] = roll_pitch_gain
         
         
-    #my new method for tuning 
-    def tune(self,fala):
+    # Tuner
+    # This adjusts the tuning gains based on parameters received in the 
+    # form of "selPars"
+    # ------------------------
+    def tune(self,selPars):
                        
-            selPars=fala.selPars
+            #selPars=fala.selPars
         
             # Position P gains
             cTune_Py    = selPars[0]
