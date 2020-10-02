@@ -28,6 +28,8 @@ licence: derived from above
         Next steps: figure out how to access controller gains directly in 
         real-time. If these are not attributes of the class, then this will 
         probably be the best option. Adding tuners to controller.
+    02Oct2020(ptj) - FALA object and Controller now talking, controll
+        responds to tuning parameters 
 
 
 

@@ -17,18 +17,19 @@ Below are the contents of the original readme, which I intend to modify by integ
 1. ~~Get all the packages working related to the original project~~
 2. ~~Access/modify PID gains online works~~ 
 3. ~~Create new "tuning" attributes to modify gains in real-time~~
-4. Generate a random tuning signal inside FALA, test to see if this can modify in real time
-5. For PORT to Learning OBJECT... Add PID gains as a new attribute (and save for full simulation)
+4. ~~Generate a random tuning signal inside FALA, test to see if this can modify in real time~~
+5. ~~For PORT to Learning OBJECT... Add PID gains as a new attribute (and save for full simulation)~~
 6. For PORT to Learning OBJECT... Extract key values for reward calculations: states, reference/waypoint
 7. Adjust Waypoint generation to match learning trial timeframe (these should be hard-linked between the two objects)
 
 
 ## Need Learning Class/Object 
-1. Define a learning trial as follows: set timeframe + step reference
-2. Define learning class so I can create a FALA Object
-3. FOR PORT to Quad OBJECT... Define finite set of candidate PID gains
-4. Implement FALA (will need PyCumSum)
-5. Store the Probabilities from learning process
+1. Intake values for reward calculation (errors... etc)
+2. Define a learning trial as follows: set timeframe + step reference
+3. Define learning class so I can create a FALA Object
+4. FOR PORT to Quad OBJECT... Define finite set of candidate PID gains
+5. Implement FALA (will need PyCumSum)
+6. Store the Probabilities from learning process
 
 
 # BREAK BREAK
