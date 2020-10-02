@@ -229,10 +229,11 @@ class Control:
     
     def xy_pos_control(self, quad, Ts):
 
-        # XY Position Control
+        # XY Position Control (tuning added)
         # --------------------------- 
         pos_xy_error = (self.pos_sp[0:2] - quad.pos[0:2])
-        self.vel_sp[0:2] += pos_P_gain[0:2]*pos_xy_error
+        #self.vel_sp[0:2] += pos_P_gain[0:2]*pos_xy_error
+        self.vel_sp[0:2] += self.cTune_pos_P_gain[0:2]*pos_P_gain[0:2]*pos_xy_error
         
         
     def saturateVel(self):
@@ -250,16 +251,17 @@ class Control:
 
     def z_vel_control(self, quad, Ts):
         
-        # Z Velocity Control (Thrust in D-direction)
+        # Z Velocity Control (Thrust in D-direction) (tuning added)
         # ---------------------------
         # Hover thrust (m*g) is sent as a Feed-Forward term, in order to 
         # allow hover when the position and velocity error are nul
         vel_z_error = self.vel_sp[2] - quad.vel[2]
         if (config.orient == "NED"):
-            thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] - quad.params["g"]) + self.thr_int[2]
+            #thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] - quad.params["g"]) + self.thr_int[2]
+            thrust_z_sp = self.cTune_vel_P_gain[2]*vel_P_gain[2]*vel_z_error - self.cTune_vel_D_gain[2]*vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] - quad.params["g"]) + self.thr_int[2]
         elif (config.orient == "ENU"):
-            thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] + quad.params["g"]) + self.thr_int[2]
-        
+            #thrust_z_sp = vel_P_gain[2]*vel_z_error - vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] + quad.params["g"]) + self.thr_int[2]
+            thrust_z_sp = self.cTune_vel_P_gain[2]*vel_P_gain[2]*vel_z_error - self.cTune_vel_D_gain[2]*vel_D_gain[2]*quad.vel_dot[2] + quad.params["mB"]*(self.acc_sp[2] + quad.params["g"]) + self.thr_int[2]
         # Get thrust limits
         if (config.orient == "NED"):
             # The Thrust limits are negated and swapped due to NED-frame
