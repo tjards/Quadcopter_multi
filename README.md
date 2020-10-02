@@ -16,7 +16,7 @@ Below are the contents of the original readme, which I intend to modify by integ
 ## Changes required of current quad Class/Object 
 1. ~~Get all the packages working related to the original project~~
 2. ~~Access/modify PID gains online works~~ 
-3. Create new "tuning" attributes to modify gains in real-time
+3. ~~Create new "tuning" attributes to modify gains in real-time~~
 4. Generate a random tuning signal inside FALA, test to see if this can modify in real time
 5. For PORT to Learning OBJECT... Add PID gains as a new attribute (and save for full simulation)
 6. For PORT to Learning OBJECT... Extract key values for reward calculations: states, reference/waypoint
