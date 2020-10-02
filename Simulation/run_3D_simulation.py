@@ -27,7 +27,7 @@ licence: derived from above
         Pi signs. Consider keeping at "zero" to avoid erroneous performance
         Next steps: figure out how to access controller gains directly in 
         real-time. If these are not attributes of the class, then this will 
-        probably be the best option.
+        probably be the best option. Adding tuners to controller.
 
 
 
