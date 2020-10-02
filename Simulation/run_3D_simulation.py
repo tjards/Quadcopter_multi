@@ -49,7 +49,13 @@ import config
 
 from fala import falaObj 
 
+#DEV
+# hl, = plt.plot([], [])
 
+# def update_line(hl, new_data):
+#     hl.set_xdata(np.append(hl.get_xdata(), new_data))
+#     hl.set_ydata(np.append(hl.get_ydata(), new_data))
+#     plt.draw()
 
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     
@@ -58,22 +64,25 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     quad.update(t, Ts, ctrl.w_cmd, wind)
     t += Ts
 
-    # Trajectory for Desired States 
-    # Travis' notes: sDes is a 19-element array describing the desired states
-    #   at this time step. I could bypass the whole Traj by inserting states
-    #   mannually right here.
+    # Computer error for learning (using last timestep's params)
+    fala.computeError(quad,traj)
+
+    # Trajectory for Desired States (for next iteration)
     # ---------------------------
     sDes = traj.desiredState(t, Ts, quad)        
 
-    # update tuning parameters from fala
-    fala.getParams(t)
+    # update tuning parameters from fala (for next iteration)
+    selPars = fala.getParams(t)
     
-    # send tuning parameters to controller 
-    ctrl.tune(fala.selPars)
+    # send tuning parameters to controller (for next iteration)
+    ctrl.tune(selPars)
 
     # Generate Commands (for next iteration)
     # ---------------------------
     ctrl.controller(traj, quad, sDes, Ts)
+    
+    
+    
 
     return t
     
@@ -85,8 +94,8 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005
-    Tf = 20
-    ifsave = 1
+    Tf = 4
+    ifsave = 0
 
     # Choose trajectory settings
     # --------------------------- 
@@ -147,6 +156,7 @@ def main():
     wMotor_all     = np.zeros([numTimeStep, len(quad.wMotor)])
     thr_all        = np.zeros([numTimeStep, len(quad.thr)])
     tor_all        = np.zeros([numTimeStep, len(quad.tor)])
+    # this is where I would initize new stuff to plot
 
     t_all[0]            = Ti
     s_all[0,:]          = quad.state
@@ -186,6 +196,7 @@ def main():
         wMotor_all[i,:]      = quad.wMotor
         thr_all[i,:]         = quad.thr
         tor_all[i,:]         = quad.tor
+        # this is where I would add stuff to plot later
         
         i += 1
     
@@ -197,7 +208,6 @@ def main():
 
     #utils.fullprint(sDes_traj_all[:,3:6])
     
-    #TEMPORARILY remove plots 
     utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
     ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
     plt.show()

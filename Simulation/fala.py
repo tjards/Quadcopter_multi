@@ -26,10 +26,9 @@ class falaObj:
         self.nParams = nParams
         self.nOptions = nOptions
         self.OptionsTable = np.zeros((nParams,nOptions))
-        
-        #methods
-        
-        
+        self.error_pos    = np.zeros(3)
+        self.error_vel   = np.zeros(3)
+    
         #generate table of options (states, actions)
         self.OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
         
@@ -40,16 +39,24 @@ class falaObj:
         self.selPars=1*np.ones((14,),dtype=int) #default to one
         
         
+    # Produce a new set of parameters (should be drawn from the distribution)
+    # --------------------------------
     def getParams(self,t):
     
         #dev - manually force tuner values
-        if 10>t>5: #shut all off for 5 seconds
-            self.selPars=0.01*np.ones((14,),dtype=int) 
-        if t>10: # turn thenm back on after 10
-            self.selPars=1*np.ones((14,),dtype=int)
+        self.selPars=1*np.ones((14,),dtype=int)
         
+        return self.selPars
+    
+    # Compute the error signal
+    # ------------------------
+    def computeError(self,quad,traj):
         
+        self.error_pos[0:3] = traj.sDes[0:3]-quad.pos[0:3]
+        self.error_vel[0:3] = traj.sDes[3:6]-quad.vel[0:3]
         
+    
+    
        
         
         
