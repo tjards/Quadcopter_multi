@@ -45,11 +45,11 @@ from utils.windModel import Wind
 import utils
 import config
 
-import fala 
+from fala import falaObj 
 
 
 
-def quad_sim(t, Ts, quad, ctrl, wind, traj):
+def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     
     # Dynamics (using last timestep's commands)
     # ---------------------------
@@ -62,6 +62,14 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj):
     #   mannually right here.
     # ---------------------------
     sDes = traj.desiredState(t, Ts, quad)        
+
+    # update tuning parameters from fala
+    fala.getParams(t)
+    
+    # send tuning parameters to controller 
+    ctrl.tune(fala)
+
+
 
     # Generate Commands (for next iteration)
     # ---------------------------
@@ -77,8 +85,8 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005
-    Tf = 2
-    ifsave = 0
+    Tf = 20
+    ifsave = 1
 
     # Choose trajectory settings
     # --------------------------- 
@@ -105,6 +113,14 @@ def main():
     traj = Trajectory(quad, ctrlType, trajSelect)
     ctrl = Control(quad, traj.yawType)
     wind = Wind('None', 2.0, 90, -15)
+    
+    # Create fala object
+    # ---------------------------
+    nParams=14
+    nOptions=10
+    optionsInterval=[0,5]
+    fala = falaObj(nParams,nOptions,optionsInterval)
+    
 
     # Trajectory for First Desired States
     # ---------------------------
@@ -146,19 +162,7 @@ def main():
     thr_all[0,:]        = quad.thr
     tor_all[0,:]        = quad.tor
 
-    
-    
-    # Creating fala object
-    # ---------------------------
-    
-    nParams=5
-    nOptions=10
-    optionsInterval=[0,5]
-    
-    #myFala = fala.falaObj(nParams,nOptions,optionsInterval)
-    
-    
-    
+        
     
     # Run Simulation
     # ---------------------------
@@ -166,7 +170,7 @@ def main():
     i = 1
     while round(t,3) < Tf:
         
-        t = quad_sim(t, Ts, quad, ctrl, wind, traj)
+        t = quad_sim(t, Ts, quad, ctrl, wind, traj, fala)
         
         # print("{:.3f}".format(t))
         t_all[i]             = t

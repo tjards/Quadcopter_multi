@@ -99,7 +99,7 @@ class Control:
         self.thr_int = np.zeros(3)
         if (yawType == 0):
             att_P_gain[2] = 0
-        self.setYawWeight()
+        #@ self.setYawWeight() #do this later (travis mod)
         self.pos_sp    = np.zeros(3)
         self.vel_sp    = np.zeros(3)
         self.acc_sp    = np.zeros(3)
@@ -147,7 +147,7 @@ class Control:
         cTune_Ppsi = 1
         #cTune_PpsiStrong = 1
         #consolidate
-        self.att_P_gain = np.array([cTune_Pphi, cTune_Ptheta, cTune_Ppsi])
+        self.cTune_att_P_gain = np.array([cTune_Pphi, cTune_Ptheta, cTune_Ppsi])
         
         # Rate P-D gains
         # p
@@ -160,10 +160,11 @@ class Control:
         cTune_Pr = 1
         cTune_Dr = 1
         #consolidate
-        self.rate_P_gain = np.array([cTune_Pp, cTune_Pq, cTune_Pr])
-        self.rate_D_gain = np.array([cTune_Dp, cTune_Dq, cTune_Dr])
+        self.cTune_rate_P_gain = np.array([cTune_Pp, cTune_Pq, cTune_Pr])
+        self.cTune_rate_D_gain = np.array([cTune_Dp, cTune_Dq, cTune_Dr])
 
-        
+        #I had to move this later, as it relies on Tuning gains (travis mod)
+        self.setYawWeight()
 
     
     def controller(self, traj, quad, sDes, Ts):
@@ -304,14 +305,14 @@ class Control:
             mag = norm(self.thrust_sp[0:2])
             self.thrust_sp[0:2] = thrust_xy_sp/mag*thrust_max_xy
         
-        #TRAVIS - start here
-        
         
         # Use tracking Anti-Windup for NE-direction: during saturation, the integrator is used to unsaturate the output
-        # see Anti-Reset Windup for PID controllers, L.Rundqwist, 1990
-        arw_gain = 2.0/vel_P_gain[0:2]
+        # see Anti-Reset Windup for PID controllers, L.Rundqwist, 1990 (tuning added)
+        #@ arw_gain = 2.0/vel_P_gain[0:2]
+        arw_gain = 2.0/self.cTune_vel_P_gain[0:2]*vel_P_gain[0:2]
         vel_err_lim = vel_xy_error - (thrust_xy_sp - self.thrust_sp[0:2])*arw_gain
-        self.thr_int[0:2] += vel_I_gain[0:2]*vel_err_lim*Ts * quad.params["useIntergral"]
+        #@ self.thr_int[0:2] += vel_I_gain[0:2]*vel_err_lim*Ts * quad.params["useIntergral"]
+        self.thr_int[0:2] += self.cTune_vel_I_gain[0:2]*vel_I_gain[0:2]*vel_err_lim*Ts * quad.params["useIntergral"]
     
     def thrustToAttitude(self, quad, Ts):
         
@@ -369,7 +370,8 @@ class Control:
         self.qe = utils.quatMultiply(utils.inverse(quad.quat), self.qd)
 
         # Create rate setpoint from quaternion error
-        self.rate_sp = (2.0*np.sign(self.qe[0])*self.qe[1:4])*att_P_gain
+        #@ self.rate_sp = (2.0*np.sign(self.qe[0])*self.qe[1:4])*att_P_gain
+        self.rate_sp = (2.0*np.sign(self.qe[0])*self.qe[1:4])*self.cTune_att_P_gain*att_P_gain
         
         # Limit yawFF
         self.yawFF = np.clip(self.yawFF, -rateMax[2], rateMax[2])
@@ -386,15 +388,71 @@ class Control:
         # Rate Control
         # ---------------------------
         rate_error = self.rate_sp - quad.omega
-        self.rateCtrl = rate_P_gain*rate_error - rate_D_gain*quad.omega_dot     # Be sure it is right sign for the D part
-        
+        #@ self.rateCtrl = rate_P_gain*rate_error - rate_D_gain*quad.omega_dot     # Be sure it is right sign for the D part
+        self.rateCtrl = self.cTune_rate_P_gain*rate_P_gain*rate_error - self.cTune_rate_D_gain*rate_D_gain*quad.omega_dot     # Be sure it is right sign for the D part
 
     def setYawWeight(self):
         
         # Calculate weight of the Yaw control gain
-        roll_pitch_gain = 0.5*(att_P_gain[0] + att_P_gain[1])
-        self.yaw_w = np.clip(att_P_gain[2]/roll_pitch_gain, 0.0, 1.0)
+        #@ roll_pitch_gain = 0.5*(att_P_gain[0] + att_P_gain[1])
+        roll_pitch_gain = 0.5*(self.cTune_att_P_gain[0]*att_P_gain[0] + self.cTune_att_P_gain[1]*att_P_gain[1])
+        #@self.yaw_w = np.clip(att_P_gain[2]/roll_pitch_gain, 0.0, 1.0)
+        self.yaw_w = np.clip(self.cTune_att_P_gain[2]*att_P_gain[2]/roll_pitch_gain, 0.0, 1.0)
+
 
         att_P_gain[2] = roll_pitch_gain
+        
+        
+    #my new method for tuning 
+    def tune(self,fala):
+                       
+            selPars=fala.selPars
+        
+            # Position P gains
+            cTune_Py    = selPars[0]
+            cTune_Px    = cTune_Py # due to symetry 
+            cTune_Pz    = selPars[1]
+            #consolidate
+            self.cTune_pos_P_gain = np.array([cTune_Px, cTune_Py, cTune_Pz])
+    
+            # Velocity P-D gains
+            # x-dir
+            cTune_Pxdot = selPars[2]
+            cTune_Dxdot = selPars[3]
+            cTune_Ixdot = selPars[4]
+            # y-dir
+            cTune_Pydot = cTune_Pxdot # due to symmetry 
+            cTune_Dydot = cTune_Dxdot # due to symmetry 
+            cTune_Iydot = cTune_Ixdot # due to symmetry 
+            # z-dir
+            cTune_Pzdot = selPars[5]
+            cTune_Dzdot = selPars[6]
+            cTune_Izdot = selPars[7]
+            # consolidate
+            self.cTune_vel_P_gain = np.array([cTune_Pxdot, cTune_Pydot, cTune_Pzdot])
+            self.cTune_vel_D_gain = np.array([cTune_Dxdot, cTune_Dydot, cTune_Dzdot])
+            self.cTune_vel_I_gain = np.array([cTune_Ixdot, cTune_Iydot, cTune_Izdot])
+            
+            # Attitude P gains
+            cTune_Pphi = selPars[8]
+            cTune_Ptheta = cTune_Pphi #due to symmetry 
+            cTune_Ppsi = selPars[9]
+            #cTune_PpsiStrong = 1
+            #consolidate
+            self.cTune_att_P_gain = np.array([cTune_Pphi, cTune_Ptheta, cTune_Ppsi])
+            
+            # Rate P-D gains
+            # p
+            cTune_Pp = selPars[10]
+            cTune_Dp = selPars[11]
+            # q
+            cTune_Pq = cTune_Pp #due to symmetry 
+            cTune_Dq = cTune_Dp #due to symmetry 
+            # r
+            cTune_Pr = selPars[12]
+            cTune_Dr = selPars[13]
+            #consolidate
+            self.cTune_rate_P_gain = np.array([cTune_Pp, cTune_Pq, cTune_Pr])
+            self.cTune_rate_D_gain = np.array([cTune_Dp, cTune_Dq, cTune_Dr])
 
     

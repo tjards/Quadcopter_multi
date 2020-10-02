@@ -34,5 +34,22 @@ class falaObj:
         self.OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
         
         print('FALA Object created')
-        print('Options Table:',self.OptionsTable)
+        print('FALA Object has ',nParams, ' parameters, each with ',nOptions,' options')
+        #print('Options Table:',self.OptionsTable)
+        
+        self.selPars=1*np.ones((14,),dtype=int) #default to one
+        
+        
+    def getParams(self,t):
+    
+        #dev - manually force tuner values
+        if 10>t>5: #shut all off for 5 seconds
+            self.selPars=0.01*np.ones((14,),dtype=int) 
+        if t>10: # turn thenm back on after 10
+            self.selPars=1*np.ones((14,),dtype=int)
+        
+        
+        
+       
+        
         
