@@ -118,6 +118,8 @@ Qtable=np.zeros((nOptions,nParams))
 Qtable[:,:]=np.divide(1,nOptions)*np.ones((nOptions,nParams)) #set all values to have the same confidence (could use heuristics)
 pVector=np.zeros((1,nParams))
 pVector[0,:]=Qtable[0,:]        # initialize pVector using first row of Q table
+optionsIndex=np.zeros((1,nParams),dtype=int) 
+selectedVals=OptionsTable[0,:]
 
 #other initialization parameters (where to go?)
 
@@ -125,10 +127,25 @@ pVector[0,:]=Qtable[0,:]        # initialize pVector using first row of Q table
 #%% update probability distribution
 
 #initialize
-learnRate=0.1
+learnRate = 0.1
+probLimit = 1       # maximum probabillity (default 1, related to exploit vs explore)
+a = 1               # weight of positive reinforcement (default one)
+b = 0               # weight of negative reinforcement (default zero)
 
-#update
-pVector=pVector+learnRate*reward*pVector
+#dev: test
+optionsIndex=np.array([0,1,2,3,4,5,6,7,7,7,7,7,9,8],ndmin=2)
+reward=0.6
+
+#update the distributions
+#pVector=pVector+learnRate*reward*pVector
+pVector=pVector+a*learnRate*reward*pVector+b*learnRate*(1-reward)*pVector
+
+for i in range(0,nParams):
+    Qtable[optionsIndex[0,i],i]=np.minimum(pVector[0,i],probLimit)
+    
+#normalize
+for i in range(0,nParams):
+    Qtable[:,i]=Qtable[:,i]/np.sum(Qtable[:,i])
  
        
         
