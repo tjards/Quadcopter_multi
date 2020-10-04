@@ -57,23 +57,36 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     quad.update(t, Ts, ctrl.w_cmd, wind)
     t += Ts
 
-    # Computer error for learning (using last timestep's params)
-    fala.computeError(quad,traj)
-
     # Trajectory for Desired States (for next iteration)
     # ---------------------------
     sDes = traj.desiredState(t, Ts, quad)        
 
-    # update tuning parameters from fala (for next iteration)
-    selPars = fala.getParams(t)
-    
-    # send tuning parameters to controller (for next iteration)
-    ctrl.tune(selPars)
-
     # Generate Commands (for next iteration)
     # ---------------------------
     ctrl.controller(traj, quad, sDes, Ts)
+
+    # Learn from the trial
+    # --------------------------
     
+    # Compute error for learning (using last timestep's params)
+    fala.computeError(quad,traj)
+        
+    fala.trialCounter += Ts
+    if fala.trialCounter > fala.trialLen: #if the trial is over
+        # compute the reward signal
+        fala.computeReward(fala.error_accumulated)
+        # update the probabilities
+        fala.updateProbs()
+        # update tuning parameters from fala (for next iteration)
+        selPars = fala.getParams()
+        # send tuning parameters to controller (for next iteration)
+        ctrl.tune(selPars)
+        # reset counter
+        fala.trialCounter = 0
+        # reset accumulated error
+        fala.error_accumulated = 0
+
+
     return t
     
 
@@ -84,7 +97,7 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005
-    Tf = 4
+    Tf = 20
     ifsave = 0
 
     # Choose trajectory settings
@@ -117,8 +130,10 @@ def main():
     # ---------------------------
     nParams=14
     nOptions=10
-    optionsInterval=[0,5]
-    fala = falaObj(nParams,nOptions,optionsInterval)
+    optionsInterval=[0.9,1.1]
+    learnRate=0.1
+    trialLen=2
+    fala = falaObj(nParams,nOptions,optionsInterval,learnRate,trialLen)
     
     # Trajectory for First Desired States
     # ---------------------------
@@ -191,6 +206,7 @@ def main():
     
     end_time = time.time()
     print("Simulated {:.2f}s in {:.6f}s.".format(t, end_time - start_time))
+    print(fala.Qtable)
 
     # View Results
     # ---------------------------
@@ -198,8 +214,6 @@ def main():
     #utils.fullprint(sDes_traj_all[:,3:6])
         
     # save data
-    
-    
     if ifsave:
         data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all))
         data_all_labels='t_all,\

@@ -9,16 +9,13 @@ Created on Mon Jul  6 20:54:06 2020
 @author: tjards
 
 
-
-
-
 """
 
 import numpy as np
 
 class falaObj:
     
-    def __init__(self,nParams,nOptions,optionsInterval):
+    def __init__(self,nParams,nOptions,optionsInterval,learnRate,trialLen):
         
         # dev note: right now optionsInterval only accepts one interval [a,b]
         #   later, this should be expanded to pass different intervals 
@@ -27,48 +24,60 @@ class falaObj:
         #attributes
         self.nParams = nParams                              # how many parameters are being tuned
         self.nOptions = nOptions                            # how many options for each parameter
-        OptionsTable = np.zeros((nParams,nOptions))         # tables of possible values (will transpose after fill)
-        OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0) # generate options
-        self.OptionsTable=OptionsTable.transpose()          # because i like options (rows) x parameters (cols)
-        self.QTable = np.zeros((nOptions,nParams))          # this stores the probabilities (note orientation of matrix)
+        optionsTable = np.zeros((self.nParams,self.nOptions))         # tables of possible values (will transpose after fill)
+        optionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=self.nOptions,axis=0) # generate options
+        self.optionsTable=optionsTable.transpose()          # because i like options (rows) x parameters (cols)
+        self.Qtable = np.zeros((self.nOptions,self.nParams))          # this stores the probabilities (note orientation of matrix)
+        self.Qtable[:,:]=np.divide(1,self.nOptions)*np.ones((self.nOptions,self.nParams)) #set all values to have the same confidence (could use heuristics)
         self.error_pos    = np.zeros(3)
         self.error_vel   = np.zeros(3)
+        self.trialLen = trialLen
+        self.trialCounter = 0 
+        self.error_accumulated = 0
         
-        #attributes used to compute reward
+        # initialize attributes used to compute reward
         self.costMin = 1000000     # the minimum observed cost thus far (persistent valriable, start high)
         self.costAvg = 0           # the average observed cosr thus far (persistent valriable)
-        self.costIn = 0.3          # this cost will be passed in at the end of each trial 
+        self.costIn = 0          # this cost will be passed in at the end of each trial 
         self.countSample = 0       # need to keep track of samples to compute average
         #self.reward_temp = 0       # for interim calculation
         self.reward_b = 1          # modulation for reward signal (optional, default 1)
         self.reward = 0            # this is the reward signal 
         self.eps = 0.00000001      # small value to avoid dividing by zero
+        
+        #initialize attributes used to update the Qtable
+        self.learnRate = learnRate
+        self.probLimit = 1       # maximum probabillity (default 1, related to exploit vs explore)
+        self.a = 1               # weight of positive reinforcement (default one)
+        self.b = 0               # weight of negative reinforcement (default zero)
+        self.pVector=np.zeros((1,self.nParams))
+        self.pVector[0,:]=self.Qtable[0,:]        # initialize pVector using first row of Q table
+        self.selectedIndex=np.zeros((1,self.nParams),dtype=int) 
+        self.selectedVals=np.zeros((1,self.nParams))
+        self.selectedVals[0,:]=self.optionsTable[0,:]
+        
     
         print('FALA Object created')
         print('FALA Object has ',nParams, ' parameters, each with ',nOptions,' options')
         #print('Options Table:',self.OptionsTable)
         
-        self.selPars=1*np.ones((14,),dtype=int) #default to one
         
+        #self.selPars=1*np.ones((14,),dtype=int) #default to one #LEGACY notation
         
-    # Produce a new set of parameters (should be drawn from the distribution)
-    # --------------------------------
-    def getParams(self,t):
-    
-        #dev - manually force tuner values
-        self.selPars=1*np.ones((14,),dtype=int)
-        
-        return self.selPars
     
     # Compute the error signal (this will need to accumulate and then reset after trial)
     # ------------------------
     def computeError(self,quad,traj):
         
-        self.error_pos[0:3] = traj.sDes[0:3]-quad.pos[0:3]
-        self.error_vel[0:3] = traj.sDes[3:6]-quad.vel[0:3]
+        self.error_pos[0:3] = np.sqrt(np.square(traj.sDes[0:3]-quad.pos[0:3]))
+        self.error_vel[0:3] = np.sqrt(np.square(traj.sDes[3:6]-quad.vel[0:3]))
+        
+        # this is an unsophisticated error calc (fix later)
+        self.error=np.sum(self.error_pos)
+        self.error_accumulated += self.error #this resets after trials
         
 
-    # Compute reward signal computation method  (after total trials accumulateded @ 0.005)
+    # Compute reward signal (after total trials accumulateded @ 0.005, remember to reset whatever trial clock)
     # --------------------
     def computeReward(self,costIn):
     
@@ -85,8 +94,51 @@ class falaObj:
             self.reward=reward_temp*self.reward_b
         else:
             self.reward=0
+                    
+    # Update probability distribution
+    # -------------------------------
+    def updateProbs(self):
+    
+        #update the distributions
+        #pVector=pVector+learnRate*reward*pVector
+        self.pVector=self.pVector+self.a*self.learnRate*self.reward*self.pVector+self.b*self.learnRate*(1-self.reward)*self.pVector
+        
+        for i in range(0,self.nParams):
+            self.Qtable[self.selectedIndex[0,i],i]=np.minimum(self.pVector[0,i],self.probLimit)
             
+        #normalize
+        for i in range(0,self.nParams):
+            self.Qtable[:,i]=self.Qtable[:,i]/np.sum(self.Qtable[:,i])
+            
+    # Randomly select an option 
+    # --------------------------       
+    def getParams(self):
+    
+        for i in range(0,self.nParams):
+            # randomly select an option according to the current distribution in the Q table
+            self.selectedIndex[0,i] = (np.cumsum(self.Qtable[:,i]) >= np.random.random()).argmax()
+            # selected value cooresponding to that index
+            self.selectedVals[0,i] = self.optionsTable[self.selectedIndex[0,i],0]
+            # build a new vector composed of the corresponding probabilities 
+            self.pVector[0,i]=self.Qtable[self.selectedIndex[0,i],0]
+            #Return the parameters
+        
+        return self.selectedVals.transpose().ravel()
 
+
+
+
+#%% ROUGH WORK            
+
+# #initialize
+# learnRate = 0.1
+# probLimit = 1       # maximum probabillity (default 1, related to exploit vs explore)
+# a = 1               # weight of positive reinforcement (default one)
+# b = 0               # weight of negative reinforcement (default zero)
+
+# #dev: test
+# #selectedIndex=np.array([0,1,2,3,4,5,6,7,7,7,7,7,9,8],ndmin=2)
+# #reward=0.6
 
 #%% develop the learn method down here, add to class later
 
@@ -94,48 +146,48 @@ class falaObj:
 
 #items of the class above that will be used (be cautious of the correct timestep!)
 
-nParams=14
-nOptions=10
-optionsInterval=[0,5]
-optionsTable = np.zeros((1,nOptions))       #assume all same (the 1 would need to change to nParams for variable options)
-optionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
-optionsTable=optionsTable.transpose()
-Qtable=np.zeros((nOptions,nParams)) 
+# nParams=14
+# nOptions=10
+# optionsInterval=[0,5]
+# optionsTable = np.zeros((1,nOptions))       #assume all same (the 1 would need to change to nParams for variable options)
+# optionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
+# optionsTable=optionsTable.transpose()
+# Qtable=np.zeros((nOptions,nParams)) 
 
 #new items to add to the class
 
-Qtable[:,:]=np.divide(1,nOptions)*np.ones((nOptions,nParams)) #set all values to have the same confidence (could use heuristics)
-pVector=np.zeros((1,nParams))
-pVector[0,:]=Qtable[0,:]        # initialize pVector using first row of Q table
-selectedIndex=np.zeros((1,nParams),dtype=int) 
-selectedVals=np.zeros((1,nParams))
-selectedVals[0,:]=optionsTable[0,:]
+#Qtable[:,:]=np.divide(1,nOptions)*np.ones((nOptions,nParams)) #set all values to have the same confidence (could use heuristics)
+# pVector=np.zeros((1,nParams))
+# pVector[0,:]=Qtable[0,:]        # initialize pVector using first row of Q table
+# selectedIndex=np.zeros((1,nParams),dtype=int) 
+# selectedVals=np.zeros((1,nParams))
+# selectedVals[0,:]=optionsTable[0,:]
 
 #other initialization parameters (where to go?)
 
 
 #%% update probability distribution
 
-#initialize
-learnRate = 0.1
-probLimit = 1       # maximum probabillity (default 1, related to exploit vs explore)
-a = 1               # weight of positive reinforcement (default one)
-b = 0               # weight of negative reinforcement (default zero)
+# #initialize
+# learnRate = 0.1
+# probLimit = 1       # maximum probabillity (default 1, related to exploit vs explore)
+# a = 1               # weight of positive reinforcement (default one)
+# b = 0               # weight of negative reinforcement (default zero)
 
-#dev: test
-selectedIndex=np.array([0,1,2,3,4,5,6,7,7,7,7,7,9,8],ndmin=2)
-reward=0.6
+# #dev: test
+# selectedIndex=np.array([0,1,2,3,4,5,6,7,7,7,7,7,9,8],ndmin=2)
+# reward=0.6
 
-#update the distributions
-#pVector=pVector+learnRate*reward*pVector
-pVector=pVector+a*learnRate*reward*pVector+b*learnRate*(1-reward)*pVector
+# #update the distributions
+# #pVector=pVector+learnRate*reward*pVector
+# pVector=pVector+a*learnRate*reward*pVector+b*learnRate*(1-reward)*pVector
 
-for i in range(0,nParams):
-    Qtable[selectedIndex[0,i],i]=np.minimum(pVector[0,i],probLimit)
+# for i in range(0,nParams):
+#     Qtable[selectedIndex[0,i],i]=np.minimum(pVector[0,i],probLimit)
     
-#normalize
-for i in range(0,nParams):
-    Qtable[:,i]=Qtable[:,i]/np.sum(Qtable[:,i])
+# #normalize
+# for i in range(0,nParams):
+#     Qtable[:,i]=Qtable[:,i]/np.sum(Qtable[:,i])
  
 #%% randomly select new automata
 
@@ -147,14 +199,14 @@ for i in range(0,nParams):
 #probsC=np.zeros((nOptions,1))
 
 
-for i in range(0,nParams):
-    # randomly select an option according to the current distribution in the Q table
-    #probsC[:,0]=np.cumsum(Qtable[:,i])  #compute cumulative sum
-    selectedIndex[0,i] = (np.cumsum(Qtable[:,i]) >= np.random.random()).argmax()
-    # selected value cooresponding to that index
-    selectedVals[0,i] = optionsTable[selectedIndex[0,i],0]
-    # build a new vector composed of the corresponding probabilities 
-    pVector[0,i]=Qtable[selectedIndex[0,i],0]
+# for i in range(0,nParams):
+#     # randomly select an option according to the current distribution in the Q table
+#     #probsC[:,0]=np.cumsum(Qtable[:,i])  #compute cumulative sum
+#     selectedIndex[0,i] = (np.cumsum(Qtable[:,i]) >= np.random.random()).argmax()
+#     # selected value cooresponding to that index
+#     selectedVals[0,i] = optionsTable[selectedIndex[0,i],0]
+#     # build a new vector composed of the corresponding probabilities 
+#     pVector[0,i]=Qtable[selectedIndex[0,i],0]
 
 
        
