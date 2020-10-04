@@ -65,16 +65,20 @@ class falaObj:
 
 #itialize 
 
-costMin=1000000     # the minimum observed cost thus far (persistent valriable, start high)
-costAvg=0           # the average observed cosr thus far (persistent valriable)
-costIn=0.3          # this cost will be passed in at the end of each trial 
-countSample=0       # need to keep track of samples to compute average
+costMin = 1000000     # the minimum observed cost thus far (persistent valriable, start high)
+costAvg = 0           # the average observed cosr thus far (persistent valriable)
+costIn = 0.3          # this cost will be passed in at the end of each trial 
+countSample = 0       # need to keep track of samples to compute average
+reward = 0            # this is the reward signal 
+eps = 0.00000001      # small value to avoid dividing by zero
 
-
-#method
+# update stuff
 countSample += 1                                            # increment the sample
 costMin=np.minimum(costMin,costIn)                          # update the minimum cost
-costAvg=costAvg=np.divide((costIn-costAvg),countSample)
+costAvg=costAvg+np.divide((costIn-costAvg),np.maximum(countSample,eps))     # update the average
+
+# compute reward signal 
+reward = np.minimum(np.maximum(0,(costAvg-costIn)/(costAvg-costMin+eps)),1)
 
 
 
