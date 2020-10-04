@@ -9,7 +9,6 @@ Created on Mon Jul  6 20:54:06 2020
 @author: tjards
 
 
-Start by generating random tuning parameters, feeding them into controller
 
 
 
@@ -22,15 +21,21 @@ class falaObj:
     
     def __init__(self,nParams,nOptions,optionsInterval):
         
+        # dev note: right now optionsInterval only accepts one interval [a,b]
+        #   later, this should be expanded to pass different intervals 
+        #   for each parameter
+        
         #attributes
-        self.nParams = nParams
-        self.nOptions = nOptions
-        self.OptionsTable = np.zeros((nParams,nOptions))
+        self.nParams = nParams                              # how many parameters are being tuned
+        self.nOptions = nOptions                            # how many options for each parameter
+        OptionsTable = np.zeros((nParams,nOptions))         # tables of possible values (will transpose after fill)
+        OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0) # generate options
+        self.OptionsTable=OptionsTable.transpose()          # because i like options (rows) x parameters (cols)
+        self.QTable = np.zeros((nOptions,nParams))          # this stores the probabilities (note orientation of matrix)
         self.error_pos    = np.zeros(3)
         self.error_vel   = np.zeros(3)
     
-        #generate table of options (states, actions)
-        self.OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
+
         
         print('FALA Object created')
         print('FALA Object has ',nParams, ' parameters, each with ',nOptions,' options')
@@ -56,7 +61,26 @@ class falaObj:
         self.error_vel[0:3] = traj.sDes[3:6]-quad.vel[0:3]
         
     
-    
+#%% develop the learn method down here, add to class later
+
+#items of the class that will be used (be cautious of the correct timestep!)
+# (i.e. self.{below})
+
+nParams=14
+nOptions=10
+optionsInterval=[0,5]
+OptionsTable = np.zeros((nParams,nOptions))
+OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
+OptionsTable=OptionsTable.transpose()
+
+#other items that need to be passed into this new method
+   
+
+#other initialization parameters
+
+
+
+ 
        
         
         

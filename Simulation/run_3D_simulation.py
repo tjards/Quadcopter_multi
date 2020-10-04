@@ -198,24 +198,23 @@ def main():
     #utils.fullprint(sDes_traj_all[:,3:6])
         
     # save data
-    # the states and desireds don't line up. fix later. 
-    data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all))
-    data_all_labels='t_all,\
-                     pos_all_x, pos_all_y,pos_all_z,\
-                         vel_all_x,vel_all_y,vel_all_z, \
-                             quat_all,quat_all,quat_all,quat_all,\
-                                 omega_all_p,omega_all_q,omega_all_r,\
-                                     euler_all_phi,euler_all_theta,euler_all_psi,\
-                                         w_cmd_all,w_cmd_all,w_cmd_all,w_cmd_all,\
-                                             wMotor_all,wMotor_all,wMotor_all,wMotor_all,\
-                                                 thr_all,thr_all,thr_all,thr_all,\
-                                                     tor_all,tor_all,tor_all,tor_all,\
-                                                         sDes_traj_all_x,sDes_traj_all_y,sDes_traj_all_z,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,\
-                                                             sDes_calc_all_x,sDes_calc_all_y,sDes_calc_all_z,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all'
     
     
-    
-    np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
+    if ifsave:
+        data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all))
+        data_all_labels='t_all,\
+                         pos_all_x, pos_all_y,pos_all_z,\
+                             vel_all_x,vel_all_y,vel_all_z, \
+                                 quat_all,quat_all,quat_all,quat_all,\
+                                     omega_all_p,omega_all_q,omega_all_r,\
+                                         euler_all_phi,euler_all_theta,euler_all_psi,\
+                                             w_cmd_all,w_cmd_all,w_cmd_all,w_cmd_all,\
+                                                 wMotor_all,wMotor_all,wMotor_all,wMotor_all,\
+                                                     thr_all,thr_all,thr_all,thr_all,\
+                                                         tor_all,tor_all,tor_all,tor_all,\
+                                                             sDes_traj_all_x,sDes_traj_all_y,sDes_traj_all_z,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,\
+                                                                 sDes_calc_all_x,sDes_calc_all_y,sDes_calc_all_z,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all'
+        np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
     
     utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
     ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
