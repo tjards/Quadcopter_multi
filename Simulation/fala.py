@@ -159,11 +159,13 @@ for i in range(0,nParams):
 
 
 for i in range(0,nParams):
-    #randomly select an option according to the current distribution in the Q table
+    # randomly select an option according to the current distribution in the Q table
     #probsC[:,0]=np.cumsum(Qtable[:,i])  #compute cumulative sum
     selectedIndex[0,i] = (np.cumsum(Qtable[:,i]) >= np.random.random()).argmax()
     # selected value cooresponding to that index
     selectedVals[0,i] = optionsTable[selectedIndex[0,i],0]
+    # build a new vector composed of the corresponding probabilities 
+    pVector[0,i]=Qtable[selectedIndex[0,i],0]
 
 
        
