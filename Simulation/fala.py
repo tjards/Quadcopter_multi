@@ -72,8 +72,8 @@ countSample=0       # need to keep track of samples to compute average
 
 
 #method
-countSample += 1                    #increment the sample
-costMin=np.minimum(costMin,costIn)  #update the minimum cost
+countSample += 1                                            # increment the sample
+costMin=np.minimum(costMin,costIn)                          # update the minimum cost
 costAvg=costAvg=np.divide((costIn-costAvg),countSample)
 
 
