@@ -60,6 +60,12 @@ class falaObj:
         self.error_pos[0:3] = traj.sDes[0:3]-quad.pos[0:3]
         self.error_vel[0:3] = traj.sDes[3:6]-quad.vel[0:3]
         
+
+
+
+
+
+
     
 #%% develop the reward signal computation method here (after total trials accumulateded @ 0.005), run this
 
@@ -69,8 +75,12 @@ costMin = 1000000     # the minimum observed cost thus far (persistent valriable
 costAvg = 0           # the average observed cosr thus far (persistent valriable)
 costIn = 0.3          # this cost will be passed in at the end of each trial 
 countSample = 0       # need to keep track of samples to compute average
+reward_temp = 0       # for interim calculation
+reward_b = 1          # modulation for reward signal (optional, default 1)
 reward = 0            # this is the reward signal 
 eps = 0.00000001      # small value to avoid dividing by zero
+
+#def computeReward(costIn):
 
 # update stuff
 countSample += 1                                            # increment the sample
@@ -78,10 +88,15 @@ costMin=np.minimum(costMin,costIn)                          # update the minimum
 costAvg=costAvg+np.divide((costIn-costAvg),np.maximum(countSample,eps))     # update the average
 
 # compute reward signal 
-reward = np.minimum(np.maximum(0,(costAvg-costIn)/(costAvg-costMin+eps)),1)
-
-
-
+reward_temp = np.minimum(np.maximum(0,(costAvg-costIn)/(costAvg-costMin+eps)),1)
+if reward_temp == 1:
+    reward = reward_temp
+elif 1 > reward_temp > 0:
+    reward=reward_temp*reward_b
+else:
+    reward=0
+    
+#return reward
 
 
 #%% develop the learn method down here, add to class later
@@ -107,7 +122,13 @@ pVector[0,:]=Qtable[0,:]        # initialize pVector using first row of Q table
 #other initialization parameters (where to go?)
 
 
+#%% update probability distribution
 
+#initialize
+learnRate=0.1
+
+#update
+pVector=pVector+learnRate*reward*pVector
  
        
         
