@@ -108,9 +108,9 @@ else:
 nParams=14
 nOptions=10
 optionsInterval=[0,5]
-OptionsTable = np.zeros((nParams,nOptions))
-OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
-OptionsTable=OptionsTable.transpose()
+optionsTable = np.zeros((1,nOptions))       #assume all same (the 1 would need to change to nParams for variable options)
+optionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
+optionsTable=optionsTable.transpose()
 Qtable=np.zeros((nOptions,nParams)) 
 
 #new items to add to the class
@@ -118,8 +118,9 @@ Qtable=np.zeros((nOptions,nParams))
 Qtable[:,:]=np.divide(1,nOptions)*np.ones((nOptions,nParams)) #set all values to have the same confidence (could use heuristics)
 pVector=np.zeros((1,nParams))
 pVector[0,:]=Qtable[0,:]        # initialize pVector using first row of Q table
-optionsIndex=np.zeros((1,nParams),dtype=int) 
-selectedVals=OptionsTable[0,:]
+selectedIndex=np.zeros((1,nParams),dtype=int) 
+selectedVals=np.zeros((1,nParams))
+selectedVals[0,:]=optionsTable[0,:]
 
 #other initialization parameters (where to go?)
 
@@ -133,7 +134,7 @@ a = 1               # weight of positive reinforcement (default one)
 b = 0               # weight of negative reinforcement (default zero)
 
 #dev: test
-optionsIndex=np.array([0,1,2,3,4,5,6,7,7,7,7,7,9,8],ndmin=2)
+selectedIndex=np.array([0,1,2,3,4,5,6,7,7,7,7,7,9,8],ndmin=2)
 reward=0.6
 
 #update the distributions
@@ -141,12 +142,30 @@ reward=0.6
 pVector=pVector+a*learnRate*reward*pVector+b*learnRate*(1-reward)*pVector
 
 for i in range(0,nParams):
-    Qtable[optionsIndex[0,i],i]=np.minimum(pVector[0,i],probLimit)
+    Qtable[selectedIndex[0,i],i]=np.minimum(pVector[0,i],probLimit)
     
 #normalize
 for i in range(0,nParams):
     Qtable[:,i]=Qtable[:,i]/np.sum(Qtable[:,i])
  
+#%% randomly select new automata
+
+#reset inside here (after being used)
+#selectedIndex=np.zeros((1,nParams),dtype=int) 
+#selectedVals=OptionsTable[0,:]
+
+#new terms
+#probsC=np.zeros((nOptions,1))
+
+
+for i in range(0,nParams):
+    #randomly select an option according to the current distribution in the Q table
+    #probsC[:,0]=np.cumsum(Qtable[:,i])  #compute cumulative sum
+    selectedIndex[0,i] = (np.cumsum(Qtable[:,i]) >= np.random.random()).argmax()
+    # selected value cooresponding to that index
+    selectedVals[0,i] = optionsTable[selectedIndex[0,i],0]
+
+
        
         
         
