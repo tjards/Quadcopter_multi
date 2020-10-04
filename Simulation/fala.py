@@ -16,7 +16,6 @@ Created on Mon Jul  6 20:54:06 2020
 
 import numpy as np
 
-
 class falaObj:
     
     def __init__(self,nParams,nOptions,optionsInterval):
@@ -34,9 +33,17 @@ class falaObj:
         self.QTable = np.zeros((nOptions,nParams))          # this stores the probabilities (note orientation of matrix)
         self.error_pos    = np.zeros(3)
         self.error_vel   = np.zeros(3)
-    
-
         
+        #attributes used to compute reward
+        self.costMin = 1000000     # the minimum observed cost thus far (persistent valriable, start high)
+        self.costAvg = 0           # the average observed cosr thus far (persistent valriable)
+        self.costIn = 0.3          # this cost will be passed in at the end of each trial 
+        self.countSample = 0       # need to keep track of samples to compute average
+        #self.reward_temp = 0       # for interim calculation
+        self.reward_b = 1          # modulation for reward signal (optional, default 1)
+        self.reward = 0            # this is the reward signal 
+        self.eps = 0.00000001      # small value to avoid dividing by zero
+    
         print('FALA Object created')
         print('FALA Object has ',nParams, ' parameters, each with ',nOptions,' options')
         #print('Options Table:',self.OptionsTable)
@@ -61,42 +68,24 @@ class falaObj:
         self.error_vel[0:3] = traj.sDes[3:6]-quad.vel[0:3]
         
 
-
-
-
-
-
+    # Compute reward signal computation method  (after total trials accumulateded @ 0.005)
+    # --------------------
+    def computeReward(self,costIn):
     
-#%% develop the reward signal computation method here (after total trials accumulateded @ 0.005), run this
-
-#itialize 
-
-costMin = 1000000     # the minimum observed cost thus far (persistent valriable, start high)
-costAvg = 0           # the average observed cosr thus far (persistent valriable)
-costIn = 0.3          # this cost will be passed in at the end of each trial 
-countSample = 0       # need to keep track of samples to compute average
-reward_temp = 0       # for interim calculation
-reward_b = 1          # modulation for reward signal (optional, default 1)
-reward = 0            # this is the reward signal 
-eps = 0.00000001      # small value to avoid dividing by zero
-
-#def computeReward(costIn):
-
-# update stuff
-countSample += 1                                            # increment the sample
-costMin=np.minimum(costMin,costIn)                          # update the minimum cost
-costAvg=costAvg+np.divide((costIn-costAvg),np.maximum(countSample,eps))     # update the average
-
-# compute reward signal 
-reward_temp = np.minimum(np.maximum(0,(costAvg-costIn)/(costAvg-costMin+eps)),1)
-if reward_temp == 1:
-    reward = reward_temp
-elif 1 > reward_temp > 0:
-    reward=reward_temp*reward_b
-else:
-    reward=0
-    
-#return reward
+        # update stuff
+        self.countSample += 1                                                       # increment the sample
+        self.costMin=np.minimum(self.costMin,self.costIn)                           # update the minimum cost
+        self.costAvg=self.costAvg+np.divide((self.costIn-self.costAvg),np.maximum(self.countSample,self.eps))     # update the average
+        
+        # compute reward signal 
+        reward_temp = np.minimum(np.maximum(0,(self.costAvg-self.costIn)/(self.costAvg-self.costMin+self.eps)),1)
+        if reward_temp == 1:
+            self.reward = reward_temp
+        elif 1 > reward_temp > 0:
+            self.reward=reward_temp*self.reward_b
+        else:
+            self.reward=0
+            
 
 
 #%% develop the learn method down here, add to class later
