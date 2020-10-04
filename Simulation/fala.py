@@ -53,7 +53,7 @@ class falaObj:
         
         return self.selPars
     
-    # Compute the error signal
+    # Compute the error signal (this will need to accumulate and then reset after trial)
     # ------------------------
     def computeError(self,quad,traj):
         
@@ -61,10 +61,30 @@ class falaObj:
         self.error_vel[0:3] = traj.sDes[3:6]-quad.vel[0:3]
         
     
+#%% develop the reward signal computation method here (after total trials accumulateded @ 0.005), run this
+
+#itialize 
+
+costMin=1000000     # the minimum observed cost thus far (persistent valriable, start high)
+costAvg=0           # the average observed cosr thus far (persistent valriable)
+costIn=0.3          # this cost will be passed in at the end of each trial 
+countSample=0       # need to keep track of samples to compute average
+
+
+#method
+countSample += 1                    #increment the sample
+costMin=np.minimum(costMin,costIn)  #update the minimum cost
+costAvg=costAvg=np.divide((costIn-costAvg),countSample)
+
+
+
+
+
 #%% develop the learn method down here, add to class later
 
-#items of the class that will be used (be cautious of the correct timestep!)
-# (i.e. self.{below})
+#items that have to be passed in (Reward signal?)
+
+#items of the class above that will be used (be cautious of the correct timestep!)
 
 nParams=14
 nOptions=10
@@ -72,11 +92,15 @@ optionsInterval=[0,5]
 OptionsTable = np.zeros((nParams,nOptions))
 OptionsTable[:,:] = np.linspace(optionsInterval[0],optionsInterval[1],num=nOptions,axis=0)
 OptionsTable=OptionsTable.transpose()
+Qtable=np.zeros((nOptions,nParams)) 
 
-#other items that need to be passed into this new method
-   
+#new items to add to the class
 
-#other initialization parameters
+Qtable[:,:]=np.divide(1,nOptions)*np.ones((nOptions,nParams)) #set all values to have the same confidence (could use heuristics)
+pVector=np.zeros((1,nParams))
+pVector[0,:]=Qtable[0,:]        # initialize pVector using first row of Q table
+
+#other initialization parameters (where to go?)
 
 
 
