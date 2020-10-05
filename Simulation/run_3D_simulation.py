@@ -96,7 +96,7 @@ def main():
     # Simulation Setup
     # --------------------------- 
     Ti = 0
-    Ts = 0.005
+    Ts = 0.005 #default 0.005
     Tf = 1000
     ifsave = 0
 
@@ -129,9 +129,9 @@ def main():
     # Create fala object
     # ---------------------------
     nParams=14
-    nOptions=10
-    optionsInterval=[0.9,1.1]
-    learnRate=0.3
+    nOptions=5
+    optionsInterval=[0.5,1.5]
+    learnRate=0.2
     trialLen=2
     fala = falaObj(nParams,nOptions,optionsInterval,learnRate,trialLen)
     
@@ -207,6 +207,7 @@ def main():
     end_time = time.time()
     print("Simulated {:.2f}s in {:.6f}s.".format(t, end_time - start_time))
     print(fala.Qtable)
+    np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
 
     # View Results
     # ---------------------------
