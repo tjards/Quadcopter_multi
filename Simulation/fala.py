@@ -13,9 +13,20 @@ Created on Mon Jul  6 20:54:06 2020
 
 import numpy as np
 
+# Learning setup
+#---------------
+
+nParams=14
+nOptions=6
+optionsInterval=[0.1,2]
+learnRate=0.15
+trialLen=4
+
+
+
 class falaObj:
     
-    def __init__(self,nParams,nOptions,optionsInterval,learnRate,trialLen):
+    def __init__(self):
         
         # dev note: right now optionsInterval only accepts one interval [a,b]
         #   later, this should be expanded to pass different intervals 

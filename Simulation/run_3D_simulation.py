@@ -84,6 +84,9 @@ def main():
     Ts = 0.005 #default 0.005
     Tf = 20
     ifsave = 0
+    
+    # Learning Setup
+    
 
     # Choose trajectory settings
     # --------------------------- 
@@ -111,14 +114,9 @@ def main():
     ctrl = Control(quad, traj.yawType)
     wind = Wind('None', 2.0, 90, -15)
     
-    # Create fala object
+    # Create learning object
     # ---------------------------
-    nParams=14
-    nOptions=6
-    optionsInterval=[0.1,2]
-    learnRate=0.15
-    trialLen=4
-    fala = falaObj(nParams,nOptions,optionsInterval,learnRate,trialLen)
+    fala = falaObj()
     
     # Trajectory for First Desired States
     # ---------------------------
