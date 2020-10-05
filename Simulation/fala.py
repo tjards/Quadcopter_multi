@@ -125,7 +125,32 @@ class falaObj:
         
         return self.selectedVals.transpose().ravel()
 
-
+    # Run the learning
+    #------------------------
+    def learn(self,quad,traj,ctrl,Ts,t):
+        # Compute error for learning (using last timestep's params)
+        self.computeError(quad,traj)
+        self.trialCounter += Ts
+        if self.trialCounter > self.trialLen: #if the trial is over
+            # compute the reward signal
+            self.computeReward(self.error_accumulated)
+            # update the probabilities
+            self.updateProbs()
+            # update tuning parameters from fala (for next iteration)
+            selPars = self.getParams()
+            # send tuning parameters to controller (for next iteration)
+            ctrl.tune(selPars)
+            #print
+            print('Trial completed at ', t, 'secs,',' max prob = ',np.amax(self.Qtable,axis=0))
+            print('selected values: ',self.selectedVals)
+            print('reward signal: ',self.reward)
+            print('error = ',self.error_accumulated)
+            # reset counter
+            self.trialCounter = 0
+            # reset accumulated error
+            self.error_accumulated = 0   
+       
+        
 
 
 #%% ROUGH WORK            
