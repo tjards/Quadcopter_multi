@@ -27,13 +27,13 @@ def makeWaypoints():
     #                [0, 0, 0]])
     
     
-    nTrials=1000
-    t = np.arange(2,nTrials,1)
-    wp = np.random.randint(-1,1, size=(t.shape[0],3))
+    nTrials=2000
+    t = np.arange(4,nTrials,1)
+    wp = np.random.randint(-2,2, size=(t.shape[0],3))
     
         
     #yaw = np.array([20, -90, 120, 45, 0])
-    yaw = np.random.randint(-180,180, size=(t.shape[0]))
+    yaw = np.random.randint(-45,45, size=(t.shape[0]))
 
     t = np.hstack((t_ini, t)).astype(float)
     wp = np.vstack((wp_ini, wp)).astype(float)

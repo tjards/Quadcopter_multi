@@ -72,7 +72,10 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
         # send tuning parameters to controller (for next iteration)
         ctrl.tune(selPars)
         #print
-        print('Trial completed at ', t, 'secs, error = ', fala.error_accumulated, ' max prob = ',np.amax(fala.Qtable,axis=0))
+        print('Trial completed at ', t, 'secs,',' max prob = ',np.amax(fala.Qtable,axis=0))
+        print('selected values: ',fala.selectedVals)
+        print('reward signal: ',fala.reward)
+        print('error = ',fala.error_accumulated)
         # reset counter
         fala.trialCounter = 0
         # reset accumulated error
@@ -100,8 +103,8 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005 #default 0.005
-    Tf = 1000
-    ifsave = 0
+    Tf = 2000
+    ifsave = 1
 
     # Choose trajectory settings
     # --------------------------- 
@@ -132,10 +135,10 @@ def main():
     # Create fala object
     # ---------------------------
     nParams=14
-    nOptions=5
-    optionsInterval=[0.5,1.5]
-    learnRate=0.2
-    trialLen=2
+    nOptions=6
+    optionsInterval=[0.1,2]
+    learnRate=0.15
+    trialLen=4
     fala = falaObj(nParams,nOptions,optionsInterval,learnRate,trialLen)
     
     # Trajectory for First Desired States
