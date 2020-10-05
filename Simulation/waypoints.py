@@ -19,14 +19,21 @@ def makeWaypoints():
     v_average = 1.6
 
 
-    t = np.array([2, 5, 8, 11, 14])
-    wp = np.array([[2, 2, 1],
-                   [-2, 3, -3],
-                   [-2, -1, -3],
-                   [3, -2, 1],
-                   [0, 0, 0]])
+    # t = np.array([2, 5, 8, 11, 14])
+    # wp = np.array([[2, 2, 1],
+    #                [-2, 3, -3],
+    #                [-2, -1, -3],
+    #                [3, -2, 1],
+    #                [0, 0, 0]])
+    
+    
+    nTrials=1000
+    t = np.arange(2,nTrials,1)
+    wp = np.random.randint(-1,1, size=(t.shape[0],3))
+    
         
-    yaw = np.array([20, -90, 120, 45, 0])
+    #yaw = np.array([20, -90, 120, 45, 0])
+    yaw = np.random.randint(-180,180, size=(t.shape[0]))
 
     t = np.hstack((t_ini, t)).astype(float)
     wp = np.vstack((wp_ini, wp)).astype(float)

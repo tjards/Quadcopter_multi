@@ -38,7 +38,7 @@ class falaObj:
         # initialize attributes used to compute reward
         self.costMin = 1000000     # the minimum observed cost thus far (persistent valriable, start high)
         self.costAvg = 0           # the average observed cosr thus far (persistent valriable)
-        self.costIn = 0          # this cost will be passed in at the end of each trial 
+        #self.costIn = 0          # this cost will be passed in at the end of each trial 
         self.countSample = 0       # need to keep track of samples to compute average
         #self.reward_temp = 0       # for interim calculation
         self.reward_b = 1          # modulation for reward signal (optional, default 1)
@@ -83,11 +83,11 @@ class falaObj:
     
         # update stuff
         self.countSample += 1                                                       # increment the sample
-        self.costMin=np.minimum(self.costMin,self.costIn)                           # update the minimum cost
-        self.costAvg=self.costAvg+np.divide((self.costIn-self.costAvg),np.maximum(self.countSample,self.eps))     # update the average
+        self.costMin=np.minimum(self.costMin,costIn)                           # update the minimum cost
+        self.costAvg=self.costAvg+np.divide((costIn-self.costAvg),np.maximum(self.countSample,self.eps))     # update the average
         
         # compute reward signal 
-        reward_temp = np.minimum(np.maximum(0,(self.costAvg-self.costIn)/(self.costAvg-self.costMin+self.eps)),1)
+        reward_temp = np.minimum(np.maximum(0,(self.costAvg-costIn)/(self.costAvg-self.costMin+self.eps)),1)
         if reward_temp == 1:
             self.reward = reward_temp
         elif 1 > reward_temp > 0:

@@ -57,20 +57,10 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     quad.update(t, Ts, ctrl.w_cmd, wind)
     t += Ts
 
-    # Trajectory for Desired States (for next iteration)
-    # ---------------------------
-    sDes = traj.desiredState(t, Ts, quad)        
-
-    # Generate Commands (for next iteration)
-    # ---------------------------
-    ctrl.controller(traj, quad, sDes, Ts)
-
     # Learn from the trial
     # --------------------------
-    
     # Compute error for learning (using last timestep's params)
     fala.computeError(quad,traj)
-        
     fala.trialCounter += Ts
     if fala.trialCounter > fala.trialLen: #if the trial is over
         # compute the reward signal
@@ -86,6 +76,16 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
         # reset accumulated error
         fala.error_accumulated = 0
 
+    # Trajectory for Desired States (for next iteration)
+    # ---------------------------
+    sDes = traj.desiredState(t, Ts, quad)        
+
+    # Generate Commands (for next iteration)
+    # ---------------------------
+    ctrl.controller(traj, quad, sDes, Ts)
+
+   
+
 
     return t
     
@@ -97,7 +97,7 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005
-    Tf = 20
+    Tf = 1000
     ifsave = 0
 
     # Choose trajectory settings
@@ -131,7 +131,7 @@ def main():
     nParams=14
     nOptions=10
     optionsInterval=[0.9,1.1]
-    learnRate=0.1
+    learnRate=0.3
     trialLen=2
     fala = falaObj(nParams,nOptions,optionsInterval,learnRate,trialLen)
     
