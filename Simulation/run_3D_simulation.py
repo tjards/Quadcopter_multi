@@ -71,10 +71,13 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
         selPars = fala.getParams()
         # send tuning parameters to controller (for next iteration)
         ctrl.tune(selPars)
+        #print
+        print('Trial completed at ', t, 'secs, error = ', fala.error_accumulated, ' max prob = ',np.amax(fala.Qtable,axis=0))
         # reset counter
         fala.trialCounter = 0
         # reset accumulated error
         fala.error_accumulated = 0
+
 
     # Trajectory for Desired States (for next iteration)
     # ---------------------------
