@@ -4,7 +4,7 @@ This project implements Reinforcement Learning  - specifically, Finite Action-se
 
 A detailed description of the learning technique is described in the following paper:
 
-P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal
+*P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal*
 
 In short, we modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass @ MIT (available in the fork preceding this repository) to tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA). 
 
