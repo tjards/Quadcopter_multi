@@ -6,7 +6,10 @@ PID gains for a simulated Quadcopter using the technique described here:
 [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726)
 
 
-
+<p align="center">
+    <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif width="49%" />
+    <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="49%" />
+</p>
 
 
 # old readme:
