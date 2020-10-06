@@ -4,7 +4,12 @@ This project implements Reinforcement Learning  - specifically, Finite Action-se
 
 *P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal*
 
-In short, we modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass @ MIT (available in the fork preceding this repository) to tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA). 
+In short, we modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass @ MIT (available in the fork preceding this repository) to tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA).
+
+
+
+
+## Results
 
 In Figure 1, we provide an animated GIF showing the performance of the vehicle at the early phases of learning (i.e. with randomly selected gains). In Figure 2, we see that the vehicle performs much better after using gains learned with FALA. 
 
@@ -29,20 +34,17 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="left"> 
 
+# Summary of modofications
+
+* *run_3D_simulation.py* - this is the main script and was substantially modified to integrate new components of the learning architecture.
+* *fala.py* - totally new module that implement the reinforcement learning strategy as a new *fala* class
+* *cntrl.py* - the controller files were slightly modified to integrate with the learning module
+* *waypoints.py* - some minor modifications were made to waypoint generation in order to integrate with the module learning 
 
 
+# Description of the Quadcopter Simulator 
 
-# Quadcopter Simulation and Control (Quad_SimCon)
-
-[Quadcopter Exploration Project](https://github.com/bobzwik/Quad_Exploration)
-
-This project serves 2 purposes. The first is to provide a PyDy template for creating quadcopter dynamics and outputing the relevant equations of motion.
-
-The second purpose is to provide a simple working simulation of the quadcopter's dynamics and a simple controller that can handle position control and supports minimum snap (but also minimum velocity, acceleration and jerk) trajectory generation.
-
-<p align="center">
-  <img src="https://media.giphy.com/media/jRw4yeaglqVfyCauar/giphy.gif" width="65%" />
-</p>
+Detailed explaination of the simulator dynamics, control design, and trajectory generation is available [here](https://github.com/bobzwik/Quadcopter_SimCon)
 
 ## PyDy Quadcopter
 
@@ -108,34 +110,4 @@ The control algorithm is strongly inspired by the PX4 multicopter control algori
 There are multiple wind models implemented. One were the wind velocity, heading and elevation remain constant, one where they vary using a sine function, and one where they vary using a sine function with a random average value.
 
 The mixer (not based from PX4) allows to find the exact RPM of each motor given the desired thrust magnitude and desired moments.
-
-
-### Useful links
-* [PX4 "Position and Velocity Control" Source Code](https://github.com/PX4/Firmware/blob/master/src/modules/mc_pos_control/PositionControl.cpp)
-* [PX4 "Desired Thrust to Desired Attitude" Source Code](https://github.com/PX4/Firmware/blob/master/src/modules/mc_pos_control/Utility/ControlMath.cpp)
-* [PX4 "Attitude Control" Source Code](https://github.com/PX4/Firmware/blob/master/src/modules/mc_att_control/AttitudeControl/AttitudeControl.cpp) --- [Article](https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/154099/eth-7387-01.pdf)
-* [PX4 "Rate Control" Source Code](https://github.com/PX4/Firmware/blob/master/src/modules/mc_att_control/mc_att_control_main.cpp)
-* [Minimum Snap Trajectory](https://github.com/hbd730/quadcopter-simulation) --- [Article](http://www-personal.acfr.usyd.edu.au/spns/cdm/papers/Mellinger.pdf)
-
-## Gif Gallery
-
-<p align="center">
-  <!-- <img src="https://github.com/bobzwik/Quadcopter_SimCon/blob/dev/Gifs/animation_1_1.gif" width="49%" />
-  <img src="https://github.com/bobzwik/Quadcopter_SimCon/blob/dev/Gifs/animation_4_3.gif" width="49%" />
-  <img src="https://github.com/bobzwik/Quadcopter_SimCon/blob/dev/Gifs/animation_7_4.gif" width="49%" />
-  <img src="https://github.com/bobzwik/Quadcopter_SimCon/blob/dev/Gifs/animation_10_4.gif" width="49%" /> -->
-
-  <img src="https://media.giphy.com/media/lRvDorB2UjCTmUfZy0/giphy.gif" width="49%" />
-  <img src="https://media.giphy.com/media/JsVVYy9LoYzeOrYnbW/giphy.gif" width="49%" />
-  <img src="https://media.giphy.com/media/f8tiLmw1dHiLxlDNFz/giphy.gif" width="49%" />
-  <img src="https://media.giphy.com/media/J06bOoqaHQEj5ihpzw/giphy.gif" width="49%" />
- 
-</p>
-
-## To-Do
-* Add Perlin noise wind model
-* Develop method to find gains for best response
-* Add the possibility for more controllers (Attitude/Stabilize and Rate/Acro)
-* Add scheduler to simulate and display animation in realtime simultaneously
-* Simulate sensors and sensor noise, calculate states from sensor data (Maybe somehow running simultaneously? I'll have to figure out how.)
 
