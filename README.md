@@ -12,7 +12,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
 </p>
 
-<div align="center"> **Figure 1 (above)** - Poor performance with unlearned parameters 
+<div align="center"> __Figure 1 (above)__ - Poor performance with unlearned parameters 
 
 <div align="left"> 
 
