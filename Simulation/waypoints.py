@@ -27,8 +27,9 @@ def makeWaypoints():
     #                [0, 0, 0]])
     
     
-    nTrials=20
-    t = np.arange(4,nTrials,1)
+    nTrials=400
+    trialLen=4
+    t = np.arange(trialLen,nTrials*trialLen+trialLen,trialLen)
     wp = np.random.randint(-2,2, size=(t.shape[0],3))
     
         

@@ -1,36 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-The purpose of this prorject is to implement Finite Action-set Learning 
-Automata to tune the PID controller gains of the Quadcopter Sim developed in 
-the preceding fork.
+The purpose of this project is to implement Reinforcement Learning
+(specifically, Finite Action-set Learning Automata 
+to tune the PID controller gains of the Quadcopter Sim developed by:
 
 author: John Bass
 email: john.bobzwik@gmail.com
 license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
 
-
-Revisions of John Bass' original work made by: P. Travis Jardine
+Revisions of John Bass' original work made by: 
+    
+author P. Travis Jardine
 email: travis.jardine@gmail.com 
 licence: derived from above
-
-
-
-#Development notes:
-    
-    01Oct2020(ptj) - Animation was all messed up on my computer. Note the 
-        changed annotated as "my adds" in utils/animation.py that were
-        required. Namely, Anaconda's path from ffmpeg needed to be defined:
-        plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg'.
-    01Oct2020(ptj) - Just familiarizing with the Trajectory generation. Note,
-        The yaw "following" is a bit dirty in how it deals with flipping
-        Pi signs. Consider keeping at "zero" to avoid erroneous performance
-        Next steps: figure out how to access controller gains directly in 
-        real-time. If these are not attributes of the class, then this will 
-        probably be the best option. Adding tuners to controller.
-    02Oct2020(ptj) - FALA object and Controller now talking, controll
-        responds to tuning parameters 
-
 
 
 """
@@ -38,7 +21,7 @@ licence: derived from above
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import cProfile
+#import cProfile
 
 from trajectory import Trajectory
 from ctrl import Control
@@ -69,9 +52,6 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     # ---------------------------
     ctrl.controller(traj, quad, sDes, Ts)
 
-   
-
-
     return t
     
 
@@ -81,12 +61,9 @@ def main():
     # Simulation Setup
     # --------------------------- 
     Ti = 0
-    Ts = 0.005 #default 0.005
-    Tf = 20
-    ifsave = 0
-    
-    # Learning Setup
-    
+    Ts = 0.005 #default 0.005 (larger numbers could result in instability)
+    Tf = 1600
+    ifsave = 1
 
     # Choose trajectory settings
     # --------------------------- 
@@ -143,7 +120,10 @@ def main():
     wMotor_all     = np.zeros([numTimeStep, len(quad.wMotor)])
     thr_all        = np.zeros([numTimeStep, len(quad.thr)])
     tor_all        = np.zeros([numTimeStep, len(quad.tor)])
-    # this is where I would initize new stuff to plot
+    # learning items
+    #falaError_all  = np.zeros([numTimeStep, len(fala.error_accumulated)])
+    falaError_all  = np.zeros([numTimeStep, 1])
+    
 
     t_all[0]            = Ti
     s_all[0,:]          = quad.state
@@ -158,9 +138,9 @@ def main():
     wMotor_all[0,:]     = quad.wMotor
     thr_all[0,:]        = quad.thr
     tor_all[0,:]        = quad.tor
+    #learning items
+    falaError_all[0,:]  = fala.error_accumulated
 
-        
-    
     # Run Simulation
     # ---------------------------
     t = Ti
@@ -183,14 +163,15 @@ def main():
         wMotor_all[i,:]      = quad.wMotor
         thr_all[i,:]         = quad.thr
         tor_all[i,:]         = quad.tor
-        # this is where I would add stuff to plot later
+        # learning items
+        falaError_all[i,:]  = fala.error_accumulated
         
         i += 1
     
     end_time = time.time()
     print("Simulated {:.2f}s in {:.6f}s.".format(t, end_time - start_time))
     print(fala.Qtable)
-    np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
+    
 
     # View Results
     # ---------------------------
@@ -199,24 +180,28 @@ def main():
         
     # save data
     if ifsave:
-        data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all))
-        data_all_labels='t_all,\
-                         pos_all_x, pos_all_y,pos_all_z,\
-                             vel_all_x,vel_all_y,vel_all_z, \
-                                 quat_all,quat_all,quat_all,quat_all,\
-                                     omega_all_p,omega_all_q,omega_all_r,\
-                                         euler_all_phi,euler_all_theta,euler_all_psi,\
-                                             w_cmd_all,w_cmd_all,w_cmd_all,w_cmd_all,\
-                                                 wMotor_all,wMotor_all,wMotor_all,wMotor_all,\
-                                                     thr_all,thr_all,thr_all,thr_all,\
-                                                         tor_all,tor_all,tor_all,tor_all,\
-                                                             sDes_traj_all_x,sDes_traj_all_y,sDes_traj_all_z,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,sDes_traj_all,\
-                                                                 sDes_calc_all_x,sDes_calc_all_y,sDes_calc_all_z,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all,sDes_calc_all'
-        np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
+        np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
+        np.savetxt("Data/errors.csv", falaError_all, delimiter=",",header=" ")
+        plt.plot(np.array(falaError_all))
+        plt.show()
+        # data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all[:,0:3], falaError_all))
+        # data_all_labels='t_all,\
+        #                  pos_all_x, pos_all_y,pos_all_z,\
+        #                      vel_all_x,vel_all_y,vel_all_z, \
+        #                          quat_all,quat_all,quat_all,quat_all,\
+        #                              omega_all_p,omega_all_q,omega_all_r,\
+        #                                  euler_all_phi,euler_all_theta,euler_all_psi,\
+        #                                      w_cmd_all,w_cmd_all,w_cmd_all,w_cmd_all,\
+        #                                          wMotor_all,wMotor_all,wMotor_all,wMotor_all,\
+        #                                              thr_all,thr_all,thr_all,thr_all,\
+        #                                                  tor_all,tor_all,tor_all,tor_all,\
+        #                                                      sDes_traj_all_x,sDes_traj_all_y,sDes_traj_all_z,\
+        #                                                          falaError'
+        # np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
     
-    utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
-    ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
-    plt.show()
+    # utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
+    # ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
+    # plt.show()
     
     
 
