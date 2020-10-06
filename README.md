@@ -30,7 +30,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 <div align="left"> 
 
 
-<!--
+
 
 # Quadcopter Simulation and Control (Quad_SimCon)
 
@@ -139,4 +139,3 @@ The mixer (not based from PX4) allows to find the exact RPM of each motor given 
 * Add scheduler to simulate and display animation in realtime simultaneously
 * Simulate sensors and sensor noise, calculate states from sensor data (Maybe somehow running simultaneously? I'll have to figure out how.)
 
--->
