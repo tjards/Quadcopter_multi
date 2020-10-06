@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
 """
 The purpose of this project is to implement Reinforcement Learning
-(specifically, Finite Action-set Learning Automata 
-to tune the PID controller gains of the Quadcopter Sim developed by:
+(specifically, Finite Action-set Learning Automata) 
+to tune the PID controller gains of a simulated Quadcopter
+    
+editing author: P. Travis Jardine, PhD
+email: travis.jardine@gmail.com 
+
+The vehicle dynamics, controllers, and other files have been modified from the
+original implementation of:
 
 author: John Bass
 email: john.bobzwik@gmail.com
 license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
 
-Revisions of John Bass' original work made by: 
-    
-author P. Travis Jardine
-email: travis.jardine@gmail.com 
-licence: derived from above
-
+Summary of files that I have added/modfied:
+    run_3D_simulation.py - this, the main script, now includes a learning stage
+    fala.py - new, implementation of the reinforcement learning
+    cntrl.py - the controller files, slightly modified to integrate with learning
+    waypoints.py - some minor modifications to waypoint generation to integrate with learning 
 
 """
 

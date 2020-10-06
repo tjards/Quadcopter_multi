@@ -3,11 +3,15 @@
 """
 This program implements finite action-set learning automata 
 
+author: P. Travis Jardine, PhD
+email: travis.jardine@gmail.com 
 
-Created on Mon Jul  6 20:54:06 2020
+This technique is described in detail here:
+"Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design"
+https://ieeexplore.ieee.org/document/9130726
 
-@author: tjards
-
+and has been adopted for application on Quadcopter_SimCom by John Bass, 
+john.bobzwik@gmail.com
 
 """
 
@@ -17,11 +21,11 @@ import numpy as np
 #---------------
 
 nParams=14                  # number of controller parameters that need tuning
-nOptions=10                  # number of options per controller (assume all =)
+nOptions=10                 # number of options per controller (assume all =)
 optionsInterval=[0.1,2]     # range for parameters
 learnRate=0.15              # learning rate (<1)
 trialLen=3                  # lenght of each trial 
-doLearn = 0                   # 1 = yes, 0 = no
+doLearn = 0                 # 1 = yes, 0 = no
 
 class falaObj:
     
