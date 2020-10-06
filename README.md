@@ -8,7 +8,7 @@ PID gains for a simulated Quadcopter using the technique described here:
 
 <p align="center">
   <!-- <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="49%" />
-  <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="49%" />
+  <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="49%" /> -->
  
 </p>
 
