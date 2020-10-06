@@ -1,6 +1,6 @@
 # Automatic Control Tuning using Reinforcement Learning: Application to Quadcopter  
 
-This project implements Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the PID controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the following paper:
+This project implements Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the following paper:
 
 *P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal*
 
@@ -11,14 +11,21 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
 </p>
+
 <div align="center"> Figure 1 (above) - Poor performance with unlearned parameters 
 
-In Figure 2, we see that the vehicle performs much better after the learning
+<div align="left"> 
+
+In Figure 2, we see that the vehicle performs much better after using gains learned with FALA. 
+
+
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="65%" />
 </p>
+
 <div align="center"> Figure 2 (above) - Better performance with learned parameters 
 
+<div align="left"> 
 
 # old readme:
 
