@@ -6,11 +6,13 @@ This project implements Reinforcement Learning  - specifically, Finite Action-se
 
 In short, we modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass @ MIT (available in the fork preceding this repository) to tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA). 
 
-
+In Figure 1, we provide an animated GIF showing the performance of the vehicle at the early phases of learning (i.e. with randomly selected gains):
 
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
 </p>
+<div align="center"> Figure 1 - Poor performance with unlearned parameters 
+
 
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="65%" />
