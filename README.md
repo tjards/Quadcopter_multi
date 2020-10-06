@@ -1,40 +1,17 @@
 # Apply RL to tune PID gains on Quadcopter (Under Development) 
 
-This project will implement Reinforcement Learning to tune the 
-PID gains for bobzwik's Quadcopter_SimCon using the technique described here:
+This project implements Reinforcement Learning to tune the 
+PID gains for a simulated Quadcopter using the technique described here:
 
 [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726)
 
 
-Below are the contents of the original readme, which I intend to modify by integrating the theoretical and implementation details of this contribution. 
-
-... stay "tuned" :)
 
 
-# Things to do:
 
-## Changes required of current quad Class/Object 
-1. ~~Get all the packages working related to the original project~~
-2. ~~Access/modify PID gains online works~~ 
-3. ~~Create new "tuning" attributes to modify gains in real-time~~
-4. ~~Generate a random tuning signal inside FALA, test to see if this can modify in real time~~
-5. ~~For PORT to Learning OBJECT... Add PID gains as a new attribute (and save for full simulation)~~
-6. For PORT to Learning OBJECT... Extract key values for reward calculations: states, reference/waypoint
-7. Adjust Waypoint generation to match learning trial timeframe (these should be hard-linked between the two objects)
+# old readme:
 
 
-## Need Learning Class/Object 
-1. Intake values for reward calculation (errors... etc)
-2. Define a learning trial as follows: set timeframe + step reference
-3. Define learning class so I can create a FALA Object
-4. FOR PORT to Quad OBJECT... Define finite set of candidate PID gains
-5. Implement FALA (will need PyCumSum)
-6. Store the Probabilities from learning process
-
-
-# BREAK BREAK
-
-The remaining content is from the original readme
 
 # Quadcopter Simulation and Control (Quad_SimCon)
 

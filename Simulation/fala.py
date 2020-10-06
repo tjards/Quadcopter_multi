@@ -20,7 +20,8 @@ nParams=14                  # number of controller parameters that need tuning
 nOptions=10                  # number of options per controller (assume all =)
 optionsInterval=[0.1,2]     # range for parameters
 learnRate=0.15              # learning rate (<1)
-trialLen=4                  # lenght of each trial 
+trialLen=3                  # lenght of each trial 
+doLearn = 0                   # 1 = yes, 0 = no
 
 class falaObj:
     
@@ -43,6 +44,7 @@ class falaObj:
         self.trialLen = trialLen
         self.trialCounter = 0 
         self.error_accumulated = 0.0
+        self.doLearn = doLearn
         
         # initialize attributes used to compute reward
         self.costMin = 1000000     # the minimum observed cost thus far (persistent valriable, start high)
@@ -137,28 +139,31 @@ class falaObj:
     # Run the learning
     #------------------------
     def learn(self,quad,traj,ctrl,Ts,t):
-        # Compute error for learning (using last timestep's params)
-        self.computeError(quad,traj)
-        self.trialCounter += Ts
-        if self.trialCounter > self.trialLen: #if the trial is over
-            # compute the reward signal
-            self.computeReward(self.error_accumulated)
-            # update the probabilities
-            self.updateProbs()
-            # update tuning parameters from fala (for next iteration)
-            selPars = self.getParams()
-            # send tuning parameters to controller (for next iteration)
-            ctrl.tune(selPars)
-            #print
-            print('Trial completed: ', t)
-            #print('Trial completed at ', t, 'secs,',' max prob = ',np.amax(self.Qtable,axis=0))
-            #print('selected values: ',self.selectedVals)
-            #print('reward signal: ',self.reward)
-            #print('error = ',self.error_accumulated)
-            # reset counter
-            self.trialCounter = 0
-            # reset accumulated error
-            self.error_accumulated = 0   
+        
+        if self.doLearn == 1:
+        
+            # Compute error for learning (using last timestep's params)
+            self.computeError(quad,traj)
+            self.trialCounter += Ts
+            if self.trialCounter > self.trialLen: #if the trial is over
+                # compute the reward signal
+                self.computeReward(self.error_accumulated)
+                # update the probabilities
+                self.updateProbs()
+                # update tuning parameters from fala (for next iteration)
+                selPars = self.getParams()
+                # send tuning parameters to controller (for next iteration)
+                ctrl.tune(selPars)
+                #print
+                print('Trial completed: ', t)
+                #print('Trial completed at ', t, 'secs,',' max prob = ',np.amax(self.Qtable,axis=0))
+                #print('selected values: ',self.selectedVals)
+                #print('reward signal: ',self.reward)
+                #print('error = ',self.error_accumulated)
+                # reset counter
+                self.trialCounter = 0
+                # reset accumulated error
+                self.error_accumulated = 0   
        
         
 

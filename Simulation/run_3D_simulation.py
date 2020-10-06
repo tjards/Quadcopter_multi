@@ -62,7 +62,7 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-    Tf = 1600
+    Tf = 20
     ifsave = 1
 
     # Choose trajectory settings
@@ -182,8 +182,8 @@ def main():
     if ifsave:
         np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
         np.savetxt("Data/errors.csv", falaError_all, delimiter=",",header=" ")
-        plt.plot(np.array(falaError_all))
-        plt.show()
+        # plt.plot(np.array(falaError_all))
+        # plt.show()
         # data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all[:,0:3], falaError_all))
         # data_all_labels='t_all,\
         #                  pos_all_x, pos_all_y,pos_all_z,\
@@ -199,9 +199,9 @@ def main():
         #                                                          falaError'
         # np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
     
-    # utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
-    # ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
-    # plt.show()
+    utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
+    ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
+    plt.show()
     
     
 
