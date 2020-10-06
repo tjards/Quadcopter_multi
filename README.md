@@ -11,12 +11,14 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
 </p>
-<div align="center"> Figure 1 - Poor performance with unlearned parameters 
+<div align="center"> Figure 1 (above) - Poor performance with unlearned parameters 
 
-
+In Figure 2, we see that the vehicle performs much better after the learning
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="65%" />
 </p>
+<div align="center"> Figure 2 (above) - Better performance with learned parameters 
+
 
 # old readme:
 
