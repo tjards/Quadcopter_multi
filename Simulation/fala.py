@@ -150,10 +150,11 @@ class falaObj:
             # send tuning parameters to controller (for next iteration)
             ctrl.tune(selPars)
             #print
-            print('Trial completed at ', t, 'secs,',' max prob = ',np.amax(self.Qtable,axis=0))
-            print('selected values: ',self.selectedVals)
-            print('reward signal: ',self.reward)
-            print('error = ',self.error_accumulated)
+            print('Trial completed: ', t)
+            #print('Trial completed at ', t, 'secs,',' max prob = ',np.amax(self.Qtable,axis=0))
+            #print('selected values: ',self.selectedVals)
+            #print('reward signal: ',self.reward)
+            #print('error = ',self.error_accumulated)
             # reset counter
             self.trialCounter = 0
             # reset accumulated error
