@@ -11,7 +11,7 @@ In short, we modified the original [Quadcopter Simulation and Control (Quad_SimC
 
 ## Results
 
-In Figure 1, we provide an animated GIF showing the performance of the vehicle at the early phases of learning (i.e. with randomly selected gains). In Figure 2, we see that the vehicle performs much better after using gains learned with FALA. 
+In Figure 1, we provide an animated GIF showing the performance of the vehicle at the early phases of learning (i.e. with randomly selected gains). In Figure 2, we see that the vehicle performs much better when using gains learned with FALA. 
 
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
