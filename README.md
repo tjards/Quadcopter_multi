@@ -34,7 +34,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="left"> 
 
-# Summary of modofications
+# Summary of modifications
 
 * *run_3D_simulation.py* - this is the main script and was substantially modified to integrate new components of the learning architecture.
 * *fala.py* - totally new module that implement the reinforcement learning strategy as a new *fala* class
