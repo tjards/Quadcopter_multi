@@ -1,3 +1,9 @@
+# This project is in development
+
+It will extend the work below to multiple vehicles
+
+
+
 # Automatic Controller Tuning using Reinforcement Learning: Application to Quadcopter  
 
 This project implements Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the following paper:
