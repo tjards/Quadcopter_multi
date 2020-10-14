@@ -34,6 +34,8 @@ from quadFiles.quad import Quadcopter
 from utils.windModel import Wind
 import utils
 import config
+from utils.collectData import collect 
+
 
 from fala import falaObj 
 
@@ -67,7 +69,7 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-    Tf = 20
+    Tf = 5
     ifsave = 1
 
     # Choose trajectory settings
@@ -111,6 +113,9 @@ def main():
     # Initialize Result Matrixes
     # ---------------------------
     numTimeStep = int(Tf/Ts+1)
+    
+    
+    # TRAVIS will run collect_init() here
 
     t_all          = np.zeros(numTimeStep)
     s_all          = np.zeros([numTimeStep, len(quad.state)])
@@ -154,6 +159,10 @@ def main():
         
         t = quad_sim(t, Ts, quad, ctrl, wind, traj, fala)
         
+        
+        # TRAVIS WILL RUN collect() here
+        collect()
+        
         # print("{:.3f}".format(t))
         t_all[i]             = t
         s_all[i,:]           = quad.state
@@ -175,7 +184,7 @@ def main():
     
     end_time = time.time()
     print("Simulated {:.2f}s in {:.6f}s.".format(t, end_time - start_time))
-    print(fala.Qtable)
+    #print(fala.Qtable)
     
 
     # View Results
