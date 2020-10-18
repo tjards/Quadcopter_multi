@@ -75,7 +75,7 @@ def computeDesVel(pd,pt,Po,gamma,eta,obsRad):
 #test
 pd = np.array([0,0,0],ndmin=2).transpose()
 #Po = np.array([[x1,x2,x3],[y1,y2,y3],[z1,z2,z3]])
-Po = np.array([[2,1,1],[1.2,1.1,1.1],[1.3,1,1.8]])
+Po = np.array([[2,1,1],[1.2,1.1,1.1],[1.3,1,1.7]])
 pt = np.array([5,5,5],ndmin=2).transpose()
 
 gamma = 1
