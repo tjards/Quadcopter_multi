@@ -4,6 +4,14 @@ It will extend the work below to multiple vehicles (with obstacle avoidance)
 
 Track the project progress [here](https://github.com/users/tjards/projects/3)
 
+
+
+
+
+
+
+
+
 # Automatic Controller Tuning using Reinforcement Learning: Application to Quadcopter  
 
 This project implements Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the following paper:
@@ -20,7 +28,7 @@ In short, we modified the original [Quadcopter Simulation and Control (Quad_SimC
 In Figure 1, we provide an animated GIF showing the performance of the vehicle at the early phases of learning (i.e. with randomly selected gains). In Figure 2, we see that the vehicle performs much better when using gains learned with FALA. 
 
 <p align="center">
-  <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
 </p>
 
 <div align="center"> 
@@ -31,7 +39,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 
 <p align="center">
-  <img src="https://github.com/tjards/Quadcopter_SimCon/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="65%" />
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/animation_1_4_afterLearning.gif" width="65%" />
 </p>
 
 <div align="center"> 
