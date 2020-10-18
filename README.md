@@ -5,7 +5,17 @@ It will extend the work below to multiple vehicles (with obstacle avoidance)
 Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 
+## Initial Results
 
+Obstacle avoidance for obstacles at (-2, -1, -3) and (3, -2, 1)
+
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/animation_1_4_obs.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure ? ** - Avoiding obstacles 
 
 
 
