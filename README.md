@@ -1,6 +1,6 @@
 # This project is in development
 
-It will extend the work below to multiple vehicles
+It will extend the work below to multiple vehicles (with obstacle avoidance)
 
 Track the project progress [here](https://github.com/users/tjards/projects/3)
 
