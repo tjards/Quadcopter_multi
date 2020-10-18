@@ -24,7 +24,7 @@ writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 numFrames = 8
 
-def sameAxisAnimation(t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, params, xyzType, yawType, ifsave):
+def sameAxisAnimation(t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, params, xyzType, yawType, ifsave, Po, obsRad):
 
     x = pos_all[:,0]
     y = pos_all[:,1]
@@ -111,7 +111,12 @@ def sameAxisAnimation(t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, para
     elif (yawType == 4):
         yawTrajType = 'Zero'
 
-
+    # travis add
+    #o1 = np.array([-2, -1, -3])                  # obstacle 1 (x,y,z)
+    #o2 = np.array([3, -2, 1])               # obstacle 2 (x,y,z)
+    #Po = np.vstack((o1,o2)).transpose()     # stack obstacles
+    
+    ax.scatter(np.squeeze(Po[0,:]), np.squeeze(Po[1,:]), -np.squeeze(Po[2,:]), color='red', alpha=1, marker = 'o', s = 100*obsRad)    
 
     titleType1 = ax.text2D(0.95, 0.95, trajType, transform=ax.transAxes, horizontalalignment='right')
     titleType2 = ax.text2D(0.95, 0.91, 'Yaw: '+ yawTrajType, transform=ax.transAxes, horizontalalignment='right')   

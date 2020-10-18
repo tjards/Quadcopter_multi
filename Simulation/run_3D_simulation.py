@@ -128,7 +128,7 @@ def main():
     o2 = np.array([3, -2, 1])               # obstacle 2 (x,y,z)
     Po = np.vstack((o1,o2)).transpose()     # stack obstacles
     obsPF = pf(traj, Po, gamma=1, eta=0.5, obsRad=1)
-        
+    
     # Generate First Commands
     # ---------------------------
     ctrl.controller(traj, quad, sDes, Ts)
@@ -235,7 +235,7 @@ def main():
         # np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
     
     utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
-    ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
+    ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave, obsPF.Po, obsPF.obsRad)
     plt.show()
     #ani2 = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
     #plt.show()
