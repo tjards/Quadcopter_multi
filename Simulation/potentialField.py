@@ -36,16 +36,18 @@ def computeAttract(pd,pt,gamma):
 def computeRepulse(pd,Po,eta,obsRad):
     
     # pd is the vehicle position (vector)  
-    # po is the obstacle position(s) (array of vectors):
+    # Po is the obstacle position(s) (array of vectors):
     #   xo_1 xo_2 ... xo_n
     #   yo_1 yo_2 ... yo_n
     #   zo_1 zo_2 ... zo_n
+    #   example: Po = np.array([[x1,x2,x3],[y1,y2,y3],[z1,z2,z3]])
     # eta is the scaling factor
    
    nObs = len(Po[1])                # number of obstacles
    Pdo = np.zeros((3,nObs))         # initialize array of differences
    Pdo_mags = np.zeros((1,nObs))    # intialize magnitudes
    vr = np.zeros((3,1))
+   flag = 0                         # count the obstacles in range
    
    for i in range(0,nObs): 
        
@@ -53,30 +55,32 @@ def computeRepulse(pd,Po,eta,obsRad):
        Pdo_mags[0,i] = np.linalg.norm(Pdo[:,i])
        
        # only count the obstacle if inside the radius
-       if Pdo_mags[0,i] < obsRad:            
+       if 0 < Pdo_mags[0,i] < obsRad:            
            vr += eta*np.multiply(Pdo[:,[i]],np.divide(1,np.power(Pdo_mags[0,i],4)))
+           flag += 1
 
-   return Pdo, Pdo_mags, vr
+   return Pdo, Pdo_mags, vr, flag
 
 def computeDesVel(pd,pt,Po,gamma,eta,obsRad):
     
     va = computeAttract(pd,pt,gamma)
-    Pdo, Pdo_mags,vr = computeRepulse(pd,Po,eta,obsRad)
+    Pdo, Pdo_mags, vr, flag = computeRepulse(pd,Po,eta,obsRad)
     vd = va - vr
     
-    return vd
+    return vd, flag
     
     
        
        
 #test
 pd = np.array([0,0,0],ndmin=2).transpose()
-Po = np.array([[2,1,1],[1.2,3.4,1.1],[1.3,1,1.8]])
+#Po = np.array([[x1,x2,x3],[y1,y2,y3],[z1,z2,z3]])
+Po = np.array([[2,1,1],[1.2,1.1,1.1],[1.3,1,1.8]])
 pt = np.array([5,5,5],ndmin=2).transpose()
 
 gamma = 1
 eta = 0.2
 obsRad = 5  #only count obstacles in this radius
 
-vd = computeDesVel(pd,pt,Po,gamma,eta,obsRad)
+vd, flag = computeDesVel(pd,pt,Po,gamma,eta,obsRad)
   
