@@ -40,10 +40,10 @@ import config
 
 # my libraries
 from fala import falaObj 
-import potentialField as pf
+from potentialField import potentialField as pf
 
 
-def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
+def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF):
     
     # Dynamics (using last timestep's commands)
     # ---------------------------
@@ -58,21 +58,16 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     # ---------------------------
     sDes = traj.desiredState(t, Ts, quad)
 
-    # Compute the potential field for obstacles
-    # ---------------------------
-
-    Po = np.array([[1,-1],[1,-1],[1,-1]])      #force obstacle(s)
+    # Update the trajectory for obstacles with potential fields 
+    # ---------------------------    
     
-    pd = np.array(quad.state[0:3],ndmin=2).transpose()
-    pt = np.array(traj.sDes[0:3],ndmin=2).transpose()
-    vd, flag = pf.computeDesVel(pd, pt, Po, gamma=1, eta=0.2 ,obsRad=1)
-    if flag > 0:
-        print('obstacle detected')
-        traj.ctrlType = "xyz_vel"
-        traj.sDes[3:6] = np.squeeze(vd)
-    else:
-        traj.ctrlType = "xyz_pos"
-        
+    # ~~~~ update obstacle positions (if required) ~~~ #
+    #o1 = np.array([1,1,1])                      # obstacle 1 (x,y,z)
+    #o2 = np.array([-2,-1,-3])                   # obstacle 2 (x,y,z)
+    #obsPF.Po = np.vstack((o1,o2)).transpose()   # stack obstacles
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    
+    obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
 
     # Generate Commands (for next iteration)
     # ---------------------------
@@ -124,8 +119,16 @@ def main():
     
     # Trajectory for First Desired States
     # ---------------------------
-    sDes = traj.desiredState(0, Ts, quad)        
+    sDes = traj.desiredState(0, Ts, quad)    
 
+    # Create a Potential Field object
+    # note: there is something wrong with the obstacle positions
+    # -------------------------------
+    o1 = np.array([-2, -1, -3])                  # obstacle 1 (x,y,z)
+    o2 = np.array([3, -2, 1])               # obstacle 2 (x,y,z)
+    Po = np.vstack((o1,o2)).transpose()     # stack obstacles
+    obsPF = pf(traj, Po, gamma=1, eta=0.5, obsRad=1)
+        
     # Generate First Commands
     # ---------------------------
     ctrl.controller(traj, quad, sDes, Ts)
@@ -176,7 +179,7 @@ def main():
     i = 1
     while round(t,3) < Tf:
         
-        t = quad_sim(t, Ts, quad, ctrl, wind, traj, fala)
+        t = quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF)
         
         
         # TRAVIS WILL RUN collect() here
