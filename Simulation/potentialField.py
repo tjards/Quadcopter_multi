@@ -32,7 +32,7 @@ def computeAttract(pd,pt,gamma):
     
 
 # execute this only if with obstacle avoidance region 
-def computeRepulse(pd,Po,eta):
+def computeRepulse(pd,Po,eta,obsRad):
     
     # pd is the vehicle position (vector)  
     # po is the obstacle position(s) (array of vectors):
@@ -50,28 +50,32 @@ def computeRepulse(pd,Po,eta):
        
        Pdo[:,[i]] = pd - Po[:,[i]]
        Pdo_mags[0,i] = np.linalg.norm(Pdo[:,i])
-       vr += np.multiply(Pdo[:,[i]],np.divide(1,np.power(Pdo_mags[0,i],4)))
        
+       # only count the obstacle if inside the radius
+       if Pdo_mags[0,i] < obsRad:            
+           vr += eta*np.multiply(Pdo[:,[i]],np.divide(1,np.power(Pdo_mags[0,i],4)))
+
    return Pdo, Pdo_mags, vr
 
-def computeDesVel(pd,pt,Po,gamma,eta):
+def computeDesVel(pd,pt,Po,gamma,eta,obsRad):
     
     va = computeAttract(pd,pt,gamma)
-    Pdo, Pdo_mags,vr = computeRepulse(pd,Po,gamma)
+    Pdo, Pdo_mags,vr = computeRepulse(pd,Po,eta,obsRad)
     vd = va - vr
     
-    return vd
+    return va, vr, vd
     
     
        
        
 #test
 pd = np.array([0,0,0],ndmin=2).transpose()
-Po = np.array([[2,1,1],[1.2,3.4,1.1],[1.3,1,0.8]])
+Po = np.array([[2,1,1],[1.2,3.4,1.1],[1.3,1,1.8]])
 pt = np.array([5,5,5],ndmin=2).transpose()
 
-gamma = 0.5
+gamma = 1
 eta = 0.2
+obsRad = 5  #only count obstacles in this radius
 
-vd = computeDesVel(pd,pt,Po,gamma,eta)
+va, vr, vd = computeDesVel(pd,pt,Po,gamma,eta,obsRad)
   
