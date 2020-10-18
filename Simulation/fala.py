@@ -72,7 +72,7 @@ class falaObj:
         self.selectedVals[0,:]=self.optionsTable[0,:]
         
     
-        print('FALA Object created')
+        #print('FALA Object created')
         print('FALA Object has ',nParams, ' parameters, each with ',nOptions,' options')
         #print('Options Table:',self.OptionsTable)
         
