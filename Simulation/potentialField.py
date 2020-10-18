@@ -10,6 +10,9 @@ ref: https://arxiv.org/pdf/1704.04672.pdf
 
 """
 
+
+# this would need to be activated when inside an obstacle avoidance region
+
 def computeAttract(gamma,pd,pt):
     
     #   pd is the vehicle position (vector)
