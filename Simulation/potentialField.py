@@ -5,7 +5,8 @@ Created on Sun Oct 18 13:40:20 2020
 
 @author: tjards
 
-ref: https://arxiv.org/pdf/1704.04672.pdf
+This module implements potential fields for obstacle avoidance
+based on the technique @ ref: https://arxiv.org/pdf/1704.04672.pdf
 
 
 """
@@ -63,7 +64,7 @@ def computeDesVel(pd,pt,Po,gamma,eta,obsRad):
     Pdo, Pdo_mags,vr = computeRepulse(pd,Po,eta,obsRad)
     vd = va - vr
     
-    return va, vr, vd
+    return vd
     
     
        
@@ -77,5 +78,5 @@ gamma = 1
 eta = 0.2
 obsRad = 5  #only count obstacles in this radius
 
-va, vr, vd = computeDesVel(pd,pt,Po,gamma,eta,obsRad)
+vd = computeDesVel(pd,pt,Po,gamma,eta,obsRad)
   
