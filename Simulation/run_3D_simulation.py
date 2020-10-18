@@ -38,7 +38,9 @@ from utils.windModel import Wind
 import utils
 import config
 
+# my libraries
 from fala import falaObj 
+import potentialField as pf
 
 
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
@@ -54,7 +56,23 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala):
     
     # Trajectory for Desired States (for next iteration)
     # ---------------------------
-    sDes = traj.desiredState(t, Ts, quad)        
+    sDes = traj.desiredState(t, Ts, quad)
+
+    # Compute the potential field for obstacles
+    # ---------------------------
+
+    Po = np.array([[1,-1],[1,-1],[1,-1]])      #force obstacle(s)
+    
+    pd = np.array(quad.state[0:3],ndmin=2).transpose()
+    pt = np.array(traj.sDes[0:3],ndmin=2).transpose()
+    vd, flag = pf.computeDesVel(pd, pt, Po, gamma=1, eta=0.2 ,obsRad=1)
+    if flag > 0:
+        print('obstacle detected')
+        traj.ctrlType = "xyz_vel"
+        traj.sDes[3:6] = np.squeeze(vd)
+    else:
+        traj.ctrlType = "xyz_pos"
+        
 
     # Generate Commands (for next iteration)
     # ---------------------------
@@ -101,6 +119,7 @@ def main():
     
     # Create learning object
     # ---------------------------
+    # for the controller
     fala = falaObj(nParams=14, nOptions=10, optionsInterval=[0.1,2], learnRate=0.15, trialLen=3)
     
     # Trajectory for First Desired States
