@@ -20,20 +20,21 @@ import numpy as np
 # Learning setup
 #---------------
 
-nParams=14                  # number of controller parameters that need tuning
-nOptions=10                 # number of options per controller (assume all =)
-optionsInterval=[0.1,2]     # range for parameters
-learnRate=0.15              # learning rate (<1)
-trialLen=3                  # lenght of each trial 
+#nParams=14                  # number of controller parameters that need tuning
+#nOptions=10                 # number of options per controller (assume all =)
+#optionsInterval=[0.1,2]     # range for parameters
+#learnRate=0.15              # learning rate (<1)
+#trialLen=3                  # lenght of each trial 
 doLearn = 0                 # 1 = yes, 0 = no
 
 class falaObj:
     
-    def __init__(self):
+    def __init__(self,nParams,nOptions,optionsInterval, learnRate, trialLen):
         
         # dev note: right now optionsInterval only accepts one interval [a,b]
         #   later, this should be expanded to pass different intervals 
         #   for each parameter
+        
         
         #attributes
         self.nParams = nParams                              # how many parameters are being tuned

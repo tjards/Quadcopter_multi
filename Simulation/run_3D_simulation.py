@@ -70,7 +70,7 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-    Tf = 5
+    Tf = 20
     ifsave = 1
 
     # Choose trajectory settings
@@ -101,7 +101,7 @@ def main():
     
     # Create learning object
     # ---------------------------
-    fala = falaObj()
+    fala = falaObj(nParams=14, nOptions=10, optionsInterval=[0.1,2], learnRate=0.15, trialLen=3)
     
     # Trajectory for First Desired States
     # ---------------------------

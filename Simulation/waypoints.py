@@ -11,7 +11,7 @@ Please feel free to use and modify this, but keep the above information. Thanks!
 
 import numpy as np
 from numpy import pi
-import config
+#import config
 
 deg2rad = pi/180.0
 
@@ -36,7 +36,7 @@ def makeWaypoints():
     if wpType == 1:
     
         nTrials=10
-        trialLen=2
+        trialLen=3
         t = np.arange(trialLen,nTrials*trialLen+trialLen,trialLen)
         wp = np.random.randint(-2,2, size=(t.shape[0],3))
     
