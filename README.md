@@ -15,7 +15,7 @@ Obstacle avoidance for obstacles at (-2, -1, -3) and (3, -2, 1)
 
 <div align="center"> 
 
-**Figure ? ** - Avoiding obstacles 
+**Figure ?** - Avoiding obstacles 
 
 <div align="left"> 
 
