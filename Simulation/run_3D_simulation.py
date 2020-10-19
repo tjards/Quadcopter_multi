@@ -41,6 +41,7 @@ import config
 # my libraries
 from fala import falaObj 
 from potentialField import potentialField as pf
+import utils.collectData as collect
 
 
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF):
@@ -60,13 +61,11 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF):
 
     # Update the trajectory for obstacles with potential fields 
     # ---------------------------    
-    
     # ~~~~ update obstacle positions (if required) ~~~ #
     #o1 = np.array([1,1,1])                      # obstacle 1 (x,y,z)
     #o2 = np.array([-2,-1,-3])                   # obstacle 2 (x,y,z)
     #obsPF.Po = np.vstack((o1,o2)).transpose()   # stack obstacles
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    
     obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
 
     # Generate Commands (for next iteration)
@@ -83,8 +82,8 @@ def main():
     # --------------------------- 
     Ti = 0
     Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-    Tf = 20
-    ifsave = 1
+    Tf = 5
+    ifsave = 0
 
     # Choose trajectory settings
     # --------------------------- 
@@ -137,41 +136,42 @@ def main():
     # ---------------------------
     numTimeStep = int(Tf/Ts+1)
     
-    # TRAVIS will run collect_init() here
+    # TRAVIS 
+    myData = collect.quadata(quad, traj, ctrl, fala, Ti, numTimeStep)
 
-    t_all          = np.zeros(numTimeStep)
-    s_all          = np.zeros([numTimeStep, len(quad.state)])
-    pos_all        = np.zeros([numTimeStep, len(quad.pos)])
-    vel_all        = np.zeros([numTimeStep, len(quad.vel)])
-    quat_all       = np.zeros([numTimeStep, len(quad.quat)])
-    omega_all      = np.zeros([numTimeStep, len(quad.omega)])
-    euler_all      = np.zeros([numTimeStep, len(quad.euler)])
-    sDes_traj_all  = np.zeros([numTimeStep, len(traj.sDes)])
-    sDes_calc_all  = np.zeros([numTimeStep, len(ctrl.sDesCalc)])
-    w_cmd_all      = np.zeros([numTimeStep, len(ctrl.w_cmd)])
-    wMotor_all     = np.zeros([numTimeStep, len(quad.wMotor)])
-    thr_all        = np.zeros([numTimeStep, len(quad.thr)])
-    tor_all        = np.zeros([numTimeStep, len(quad.tor)])
-    # learning items
-    #falaError_all  = np.zeros([numTimeStep, len(fala.error_accumulated)])
-    falaError_all  = np.zeros([numTimeStep, 1])
+    # t_all          = np.zeros(numTimeStep)
+    # s_all          = np.zeros([numTimeStep, len(quad.state)])
+    # pos_all        = np.zeros([numTimeStep, len(quad.pos)])
+    # vel_all        = np.zeros([numTimeStep, len(quad.vel)])
+    # quat_all       = np.zeros([numTimeStep, len(quad.quat)])
+    # omega_all      = np.zeros([numTimeStep, len(quad.omega)])
+    # euler_all      = np.zeros([numTimeStep, len(quad.euler)])
+    # sDes_traj_all  = np.zeros([numTimeStep, len(traj.sDes)])
+    # sDes_calc_all  = np.zeros([numTimeStep, len(ctrl.sDesCalc)])
+    # w_cmd_all      = np.zeros([numTimeStep, len(ctrl.w_cmd)])
+    # wMotor_all     = np.zeros([numTimeStep, len(quad.wMotor)])
+    # thr_all        = np.zeros([numTimeStep, len(quad.thr)])
+    # tor_all        = np.zeros([numTimeStep, len(quad.tor)])
+    # # learning items
+    # #falaError_all  = np.zeros([numTimeStep, len(fala.error_accumulated)])
+    # falaError_all  = np.zeros([numTimeStep, 1])
     
 
-    t_all[0]            = Ti
-    s_all[0,:]          = quad.state
-    pos_all[0,:]        = quad.pos
-    vel_all[0,:]        = quad.vel
-    quat_all[0,:]       = quad.quat
-    omega_all[0,:]      = quad.omega
-    euler_all[0,:]      = quad.euler
-    sDes_traj_all[0,:]  = traj.sDes
-    sDes_calc_all[0,:]  = ctrl.sDesCalc
-    w_cmd_all[0,:]      = ctrl.w_cmd
-    wMotor_all[0,:]     = quad.wMotor
-    thr_all[0,:]        = quad.thr
-    tor_all[0,:]        = quad.tor
-    #learning items
-    falaError_all[0,:]  = fala.error_accumulated
+    # t_all[0]            = Ti
+    # s_all[0,:]          = quad.state
+    # pos_all[0,:]        = quad.pos
+    # vel_all[0,:]        = quad.vel
+    # quat_all[0,:]       = quad.quat
+    # omega_all[0,:]      = quad.omega
+    # euler_all[0,:]      = quad.euler
+    # sDes_traj_all[0,:]  = traj.sDes
+    # sDes_calc_all[0,:]  = ctrl.sDesCalc
+    # w_cmd_all[0,:]      = ctrl.w_cmd
+    # wMotor_all[0,:]     = quad.wMotor
+    # thr_all[0,:]        = quad.thr
+    # tor_all[0,:]        = quad.tor
+    # #learning items
+    # falaError_all[0,:]  = fala.error_accumulated
 
     # Run Simulation
     # ---------------------------
@@ -182,24 +182,26 @@ def main():
         t = quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF)
         
         
-        # TRAVIS WILL RUN collect() here
+        # TRAVIS 
+        myData.collect(t, quad, traj, ctrl, fala, i)
         
-        # print("{:.3f}".format(t))
-        t_all[i]             = t
-        s_all[i,:]           = quad.state
-        pos_all[i,:]         = quad.pos
-        vel_all[i,:]         = quad.vel
-        quat_all[i,:]        = quad.quat
-        omega_all[i,:]       = quad.omega
-        euler_all[i,:]       = quad.euler
-        sDes_traj_all[i,:]   = traj.sDes
-        sDes_calc_all[i,:]   = ctrl.sDesCalc
-        w_cmd_all[i,:]       = ctrl.w_cmd
-        wMotor_all[i,:]      = quad.wMotor
-        thr_all[i,:]         = quad.thr
-        tor_all[i,:]         = quad.tor
-        # learning items
-        falaError_all[i,:]  = fala.error_accumulated
+        
+        # # print("{:.3f}".format(t))
+        # t_all[i]             = t
+        # s_all[i,:]           = quad.state
+        # pos_all[i,:]         = quad.pos
+        # vel_all[i,:]         = quad.vel
+        # quat_all[i,:]        = quad.quat
+        # omega_all[i,:]       = quad.omega
+        # euler_all[i,:]       = quad.euler
+        # sDes_traj_all[i,:]   = traj.sDes
+        # sDes_calc_all[i,:]   = ctrl.sDesCalc
+        # w_cmd_all[i,:]       = ctrl.w_cmd
+        # wMotor_all[i,:]      = quad.wMotor
+        # thr_all[i,:]         = quad.thr
+        # tor_all[i,:]         = quad.tor
+        # # learning items
+        # falaError_all[i,:]  = fala.error_accumulated
         
         i += 1
     
@@ -216,7 +218,8 @@ def main():
     # save data
     if ifsave:
         np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
-        np.savetxt("Data/errors.csv", falaError_all, delimiter=",",header=" ")
+        #np.savetxt("Data/errors.csv", falaError_all, delimiter=",",header=" ")
+        np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
         # plt.plot(np.array(falaError_all))
         # plt.show()
         # data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all[:,0:3], falaError_all))
@@ -234,8 +237,10 @@ def main():
         #                                                          falaError'
         # np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
     
-    utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
-    ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave, obsPF.Po, obsPF.obsRad)
+    #utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
+    #ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave, obsPF.Po, obsPF.obsRad)
+    utils.makeFigures(quad.params, myData.t_all, myData.pos_all, myData.vel_all, myData.quat_all, myData.omega_all, myData.euler_all, myData.w_cmd_all, myData.wMotor_all, myData.thr_all, myData.tor_all, myData.sDes_traj_all, myData.sDes_calc_all)
+    ani = utils.sameAxisAnimation(myData.t_all, traj.wps, myData.pos_all, myData.quat_all, myData.sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave, obsPF.Po, obsPF.obsRad)
     plt.show()
     #ani2 = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
     #plt.show()
