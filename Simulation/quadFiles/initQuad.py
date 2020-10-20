@@ -10,10 +10,10 @@ import numpy as np
 from numpy import pi
 from numpy.linalg import inv
 import utils
-import config
+#import config
 
 
-def sys_params():
+def sys_params(config):
     mB  = 1.2       # mass (kg)
     g   = 9.81      # gravity (m/s/s)
     dxm = 0.16      # arm length (m)
@@ -40,7 +40,7 @@ def sys_params():
     params["Cd"]         = 0.1
     params["kTh"]        = 1.076e-5 # thrust coeff (N/(rad/s)^2)  (1.18e-7 N/RPM^2)
     params["kTo"]        = 1.632e-7 # torque coeff (Nm/(rad/s)^2)  (1.79e-9 Nm/RPM^2)
-    params["mixerFM"]    = makeMixerFM(params) # Make mixer that calculated Thrust (F) and moments (M) as a function on motor speeds
+    params["mixerFM"]    = makeMixerFM(params,config) # Make mixer that calculated Thrust (F) and moments (M) as a function on motor speeds
     params["mixerFMinv"] = inv(params["mixerFM"])
     params["minThr"]     = 0.1*4    # Minimum total thrust
     params["maxThr"]     = 9.18*4   # Maximum total thrust
@@ -63,7 +63,7 @@ def sys_params():
     
     return params
 
-def makeMixerFM(params):
+def makeMixerFM(params,config):
     dxm = params["dxm"]
     dym = params["dym"]
     kTh = params["kTh"]
@@ -103,7 +103,7 @@ def init_cmd(params):
     cmd_hover = (w_hover-c0)/c1
     return [cmd_hover, w_hover, thr_hover, tor_hover]
 
-def init_state(params):
+def init_state(params,config):
     
     x0     = 0.  # m
     y0     = 0.  # m

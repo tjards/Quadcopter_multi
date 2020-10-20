@@ -17,7 +17,7 @@ from numpy import pi
 from numpy import sin, cos, tan, sqrt
 from numpy.linalg import norm
 import utils
-import config
+#import config
 
 rad2deg = 180.0/pi
 deg2rad = pi/180.0
@@ -167,7 +167,9 @@ class Control:
         self.setYawWeight()
 
     
-    def controller(self, traj, quad, sDes, Ts):
+    def controller(self, traj, quad, sDes, config):
+
+        Ts = config.Ts
 
         # Desired State (Create a copy, hence the [:])
         # ---------------------------
@@ -183,27 +185,27 @@ class Control:
         # ---------------------------
         if (traj.ctrlType == "xyz_vel"):
             self.saturateVel()
-            self.z_vel_control(quad, Ts)
+            self.z_vel_control(quad, Ts, config)
             self.xy_vel_control(quad, Ts)
-            self.thrustToAttitude(quad, Ts)
-            self.attitude_control(quad, Ts)
+            self.thrustToAttitude(quad, Ts, config)
+            self.attitude_control(quad, Ts, config)
             self.rate_control(quad, Ts)
         elif (traj.ctrlType == "xy_vel_z_pos"):
             self.z_pos_control(quad, Ts)
             self.saturateVel()
-            self.z_vel_control(quad, Ts)
+            self.z_vel_control(quad, Ts, config)
             self.xy_vel_control(quad, Ts)
-            self.thrustToAttitude(quad, Ts)
-            self.attitude_control(quad, Ts)
+            self.thrustToAttitude(quad, Ts, config)
+            self.attitude_control(quad, Ts, config)
             self.rate_control(quad, Ts)
         elif (traj.ctrlType == "xyz_pos"):
             self.z_pos_control(quad, Ts)
             self.xy_pos_control(quad, Ts)
             self.saturateVel()
-            self.z_vel_control(quad, Ts)
+            self.z_vel_control(quad, Ts, config)
             self.xy_vel_control(quad, Ts)
-            self.thrustToAttitude(quad, Ts)
-            self.attitude_control(quad, Ts)
+            self.thrustToAttitude(quad, Ts, config)
+            self.attitude_control(quad, Ts, config)
             self.rate_control(quad, Ts)
 
         # Mixer
@@ -250,7 +252,7 @@ class Control:
                 self.vel_sp = self.vel_sp/totalVel_sp*velMaxAll
 
 
-    def z_vel_control(self, quad, Ts): 
+    def z_vel_control(self, quad, Ts, config): 
         
         # Z Velocity Control (Thrust in D-direction) (tuning added)
         # ---------------------------
@@ -314,7 +316,7 @@ class Control:
         #@ self.thr_int[0:2] += vel_I_gain[0:2]*vel_err_lim*Ts * quad.params["useIntergral"]
         self.thr_int[0:2] += self.cTune_vel_I_gain[0:2]*vel_I_gain[0:2]*vel_err_lim*Ts * quad.params["useIntergral"]
     
-    def thrustToAttitude(self, quad, Ts):
+    def thrustToAttitude(self, quad, Ts, config):
         
         # Create Full Desired Quaternion Based on Thrust Setpoint and Desired Yaw Angle
         # ---------------------------
@@ -342,7 +344,7 @@ class Control:
         self.qd_full = utils.RotToQuat(R_sp)
         
         
-    def attitude_control(self, quad, Ts):
+    def attitude_control(self, quad, Ts, config):
 
         # Current thrust orientation e_z and desired thrust orientation e_z_d
         e_z = quad.dcm[:,2]

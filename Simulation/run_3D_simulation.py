@@ -36,7 +36,7 @@ from ctrl import Control
 from quadFiles.quad import Quadcopter
 from utils.windModel import Wind
 import utils
-import config
+import config as simConfig
 
 # my libraries
 from fala import falaObj 
@@ -44,11 +44,11 @@ from potentialField import potentialField as pf
 import utils.collectData as collect
 
 
-def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF):
+def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     
     # Dynamics (using last timestep's commands)
     # ---------------------------
-    quad.update(t, Ts, ctrl.w_cmd, wind)
+    quad.update(t, Ts, ctrl.w_cmd, wind, config)
     t += Ts
 
     # Learn from the trial
@@ -61,16 +61,16 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF):
 
     # Update the trajectory for obstacles with potential fields 
     # ---------------------------    
-    # ~~~~ update obstacle positions (if required) ~~~ #
+   
+    # ----> this is where to insert the object states  
     #o1 = np.array([1,1,1])                      # obstacle 1 (x,y,z)
     #o2 = np.array([-2,-1,-3])                   # obstacle 2 (x,y,z)
     #obsPF.Po = np.vstack((o1,o2)).transpose()   # stack obstacles
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
 
     # Generate Commands (for next iteration)
     # ---------------------------
-    ctrl.controller(traj, quad, sDes, Ts)
+    ctrl.controller(traj, quad, sDes, config)
 
     return t
     
@@ -80,34 +80,12 @@ def main():
 
     # Simulation Setup
     # --------------------------- 
-    Ti = 0
-    Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-    Tf = 5
-    ifsave = 0
-
-    # Choose trajectory settings
-    # --------------------------- 
-    ctrlOptions = ["xyz_pos", "xy_vel_z_pos", "xyz_vel"]
-    trajSelect = np.zeros(3)
-
-    # Select Control Type             (0: xyz_pos,                  1: xy_vel_z_pos,            2: xyz_vel)
-    ctrlType = ctrlOptions[0]   
-    # Select Position Trajectory Type (0: hover,                    1: pos_waypoint_timed,      2: pos_waypoint_interp,    
-    #                                  3: minimum velocity          4: minimum accel,           5: minimum jerk,           6: minimum snap
-    #                                  7: minimum accel_stop        8: minimum jerk_stop        9: minimum snap_stop
-    #                                 10: minimum jerk_full_stop   11: minimum snap_full_stop
-    #                                 12: pos_waypoint_arrived
-    trajSelect[0] = 1         
-    # Select Yaw Trajectory Type      (0: none                      1: yaw_waypoint_timed,      2: yaw_waypoint_interp     3: follow          4: zero)
-    trajSelect[1] = 4           
-    # Select if waypoint time is used, or if average speed is used to calculate waypoint time   (0: waypoint time,   1: average speed)
-    trajSelect[2] = 0           
-    print("Control type: {}".format(ctrlType))
+    config=simConfig.config()
 
     # Initialize Quadcopter, Controller, Wind, Result Matrixes
     # ---------------------------
-    quad = Quadcopter(Ti)
-    traj = Trajectory(quad, ctrlType, trajSelect)
+    quad = Quadcopter(config)
+    traj = Trajectory(quad, config.ctrlType, config.trajSelect)
     ctrl = Control(quad, traj.yawType)
     wind = Wind('None', 2.0, 90, -15)
     
@@ -118,96 +96,42 @@ def main():
     
     # Trajectory for First Desired States
     # ---------------------------
-    sDes = traj.desiredState(0, Ts, quad)    
+    sDes = traj.desiredState(0, config.Ts, quad)    
 
     # Create a Potential Field object
-    # note: there is something wrong with the obstacle positions
     # -------------------------------
-    o1 = np.array([-2, -1, -3])                  # obstacle 1 (x,y,z)
+    o1 = np.array([-2, -1, -3])             # obstacle 1 (x,y,z)
     o2 = np.array([3, -2, 1])               # obstacle 2 (x,y,z)
     Po = np.vstack((o1,o2)).transpose()     # stack obstacles
     obsPF = pf(traj, Po, gamma=1, eta=0.5, obsRad=1)
     
     # Generate First Commands
     # ---------------------------
-    ctrl.controller(traj, quad, sDes, Ts)
+    ctrl.controller(traj, quad, sDes, config)
     
     # Initialize Result Matrixes
     # ---------------------------
-    numTimeStep = int(Tf/Ts+1)
-    
-    # TRAVIS 
-    myData = collect.quadata(quad, traj, ctrl, fala, Ti, numTimeStep)
-
-    # t_all          = np.zeros(numTimeStep)
-    # s_all          = np.zeros([numTimeStep, len(quad.state)])
-    # pos_all        = np.zeros([numTimeStep, len(quad.pos)])
-    # vel_all        = np.zeros([numTimeStep, len(quad.vel)])
-    # quat_all       = np.zeros([numTimeStep, len(quad.quat)])
-    # omega_all      = np.zeros([numTimeStep, len(quad.omega)])
-    # euler_all      = np.zeros([numTimeStep, len(quad.euler)])
-    # sDes_traj_all  = np.zeros([numTimeStep, len(traj.sDes)])
-    # sDes_calc_all  = np.zeros([numTimeStep, len(ctrl.sDesCalc)])
-    # w_cmd_all      = np.zeros([numTimeStep, len(ctrl.w_cmd)])
-    # wMotor_all     = np.zeros([numTimeStep, len(quad.wMotor)])
-    # thr_all        = np.zeros([numTimeStep, len(quad.thr)])
-    # tor_all        = np.zeros([numTimeStep, len(quad.tor)])
-    # # learning items
-    # #falaError_all  = np.zeros([numTimeStep, len(fala.error_accumulated)])
-    # falaError_all  = np.zeros([numTimeStep, 1])
-    
-
-    # t_all[0]            = Ti
-    # s_all[0,:]          = quad.state
-    # pos_all[0,:]        = quad.pos
-    # vel_all[0,:]        = quad.vel
-    # quat_all[0,:]       = quad.quat
-    # omega_all[0,:]      = quad.omega
-    # euler_all[0,:]      = quad.euler
-    # sDes_traj_all[0,:]  = traj.sDes
-    # sDes_calc_all[0,:]  = ctrl.sDesCalc
-    # w_cmd_all[0,:]      = ctrl.w_cmd
-    # wMotor_all[0,:]     = quad.wMotor
-    # thr_all[0,:]        = quad.thr
-    # tor_all[0,:]        = quad.tor
-    # #learning items
-    # falaError_all[0,:]  = fala.error_accumulated
+    numTimeStep = int(config.Tf/config.Ts+1)
+    myData = collect.quadata(quad, traj, ctrl, fala, config.Ti, numTimeStep)
 
     # Run Simulation
     # ---------------------------
-    t = Ti
+    t = config.Ti
     i = 1
-    while round(t,3) < Tf:
+    while round(t,3) < config.Tf:
         
-        t = quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF)
+        # Integrate through the dynamics
+        # ------------------------------
+        t = quad_sim(t, config.Ts, quad, ctrl, wind, traj, fala, obsPF, config)
         
-        
-        # TRAVIS 
+        # Collect data from this timestep
+        # -------------------------------
         myData.collect(t, quad, traj, ctrl, fala, i)
-        
-        
-        # # print("{:.3f}".format(t))
-        # t_all[i]             = t
-        # s_all[i,:]           = quad.state
-        # pos_all[i,:]         = quad.pos
-        # vel_all[i,:]         = quad.vel
-        # quat_all[i,:]        = quad.quat
-        # omega_all[i,:]       = quad.omega
-        # euler_all[i,:]       = quad.euler
-        # sDes_traj_all[i,:]   = traj.sDes
-        # sDes_calc_all[i,:]   = ctrl.sDesCalc
-        # w_cmd_all[i,:]       = ctrl.w_cmd
-        # wMotor_all[i,:]      = quad.wMotor
-        # thr_all[i,:]         = quad.thr
-        # tor_all[i,:]         = quad.tor
-        # # learning items
-        # falaError_all[i,:]  = fala.error_accumulated
         
         i += 1
     
     end_time = time.time()
     print("Simulated {:.2f}s in {:.6f}s.".format(t, end_time - start_time))
-    #print(fala.Qtable)
     
 
     # View Results
@@ -216,7 +140,7 @@ def main():
     #utils.fullprint(sDes_traj_all[:,3:6])
         
     # save data
-    if ifsave:
+    if config.ifsave:
         np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
         #np.savetxt("Data/errors.csv", falaError_all, delimiter=",",header=" ")
         np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
@@ -240,22 +164,20 @@ def main():
     #utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
     #ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave, obsPF.Po, obsPF.obsRad)
     utils.makeFigures(quad.params, myData.t_all, myData.pos_all, myData.vel_all, myData.quat_all, myData.omega_all, myData.euler_all, myData.w_cmd_all, myData.wMotor_all, myData.thr_all, myData.tor_all, myData.sDes_traj_all, myData.sDes_calc_all)
-    ani = utils.sameAxisAnimation(myData.t_all, traj.wps, myData.pos_all, myData.quat_all, myData.sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave, obsPF.Po, obsPF.obsRad)
+    utils.sameAxisAnimation(config, myData.t_all, traj.wps, myData.pos_all, myData.quat_all, myData.sDes_traj_all, config.Ts, quad.params, traj.xyzType, traj.yawType, config.ifsave, obsPF.Po, obsPF.obsRad)
     plt.show()
     #ani2 = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
     #plt.show()
     
     
 
+
 if __name__ == "__main__":
-    if (config.orient == "NED" or config.orient == "ENU"):
-        main()
-        # cProfile.run('main()')
-    else:
-        raise Exception("{} is not a valid orientation. Verify config.py file.".format(config.orient))
-        
-        
-        
+    print('running...')
+    main()
+    
+
+   
         
         
         

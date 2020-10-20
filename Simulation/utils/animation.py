@@ -24,7 +24,7 @@ writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 numFrames = 8
 
-def sameAxisAnimation(t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, params, xyzType, yawType, ifsave, Po, obsRad):
+def sameAxisAnimation(config, t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, params, xyzType, yawType, ifsave, Po, obsRad):
 
     x = pos_all[:,0]
     y = pos_all[:,1]

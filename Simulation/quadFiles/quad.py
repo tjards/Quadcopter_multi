@@ -12,17 +12,19 @@ from scipy.integrate import ode
 
 from quadFiles.initQuad import sys_params, init_cmd, init_state
 import utils
-import config
+#import config
 
 deg2rad = pi/180.0
 
 class Quadcopter:
 
-    def __init__(self, Ti):
+    def __init__(self, config):
+        
+        Ti = config.Ti
         
         # Quad Params
         # ---------------------------
-        self.params = sys_params()
+        self.params = sys_params(config)
         
         # Command for initial stable hover
         # ---------------------------
@@ -35,7 +37,7 @@ class Quadcopter:
 
         # Initial State
         # ---------------------------
-        self.state = init_state(self.params)
+        self.state = init_state(self.params,config)
 
         self.pos   = self.state[0:3]
         self.quat  = self.state[3:7]
@@ -74,7 +76,7 @@ class Quadcopter:
         self.thr = self.params["kTh"]*self.wMotor*self.wMotor
         self.tor = self.params["kTo"]*self.wMotor*self.wMotor
 
-    def state_dot(self, t, state, cmd, wind):
+    def state_dot(self, t, state, cmd, wind, config):
 
         # Import Params
         # ---------------------------    
@@ -221,12 +223,12 @@ class Quadcopter:
 
         return sdot
 
-    def update(self, t, Ts, cmd, wind):
+    def update(self, t, Ts, cmd, wind, config):
 
         prev_vel   = self.vel
         prev_omega = self.omega
 
-        self.integrator.set_f_params(cmd, wind)
+        self.integrator.set_f_params(cmd, wind, config)
         self.state = self.integrator.integrate(t, t+Ts)
 
         self.pos   = self.state[0:3]
