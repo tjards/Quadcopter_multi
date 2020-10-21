@@ -135,9 +135,7 @@ def main():
     
 
     # View Results
-    # ---------------------------
-
-        
+    # ---------------------------    
     # save data
     if config.ifsave:
         # text
@@ -148,9 +146,10 @@ def main():
         utils.sameAxisAnimation(config, myData, traj, quad.params, obsPF, myColour = 'blue')
         plt.show()
 
-    
-    
 
+
+#%% COMMAND LINE/TERMINAL
+# just type:  > python run_3D_simulation.py
 
 if __name__ == "__main__":
     print('running...')
