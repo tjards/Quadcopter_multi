@@ -27,15 +27,13 @@ class config():
         # Set to False if rotor inertia isn't known (gyro precession has negigeable effect on drone dynamics)
         self.usePrecession = bool(False)
         
-    
         # Simulation Setup
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
         self.Tf = 20
         self.ifsave = 1
-        
-        
+         
         # Choose trajectory settings
         # --------------------------- 
         ctrlOptions = ["xyz_pos", "xy_vel_z_pos", "xyz_vel"]

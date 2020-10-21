@@ -14,7 +14,7 @@ plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg' #my add - this p
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
 import utils
-import config
+#import config
 
 
 # my add - Set up formatting for the movie files
@@ -24,7 +24,21 @@ writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
 numFrames = 8
 
-def sameAxisAnimation(config, t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, params, xyzType, yawType, ifsave, Po, obsRad):
+#def sameAxisAnimation(config, t_all, waypoints, pos_all, quat_all, sDes_tr_all, Ts, params, xyzType, yawType, ifsave, Po, obsRad):
+def sameAxisAnimation(config, myData, traj, params, obsPF, myColour = 'blue'):
+
+    # travis cleanup
+    t_all = myData.t_all 
+    waypoints = traj.wps 
+    pos_all = myData.pos_all 
+    quat_all = myData.quat_all 
+    sDes_tr_all = myData.sDes_traj_all 
+    Ts = config.Ts  
+    xyzType = traj.xyzType 
+    yawType = traj.yawType 
+    ifsave = config.ifsave 
+    Po = obsPF.Po 
+    obsRad = obsPF.obsRad
 
     x = pos_all[:,0]
     y = pos_all[:,1]
@@ -45,9 +59,10 @@ def sameAxisAnimation(config, t_all, waypoints, pos_all, quat_all, sDes_tr_all, 
 
     fig = plt.figure()
     ax = p3.Axes3D(fig)
-    line1, = ax.plot([], [], [], lw=2, color='red')
-    line2, = ax.plot([], [], [], lw=2, color='blue')
-    line3, = ax.plot([], [], [], '--', lw=1, color='blue')
+    line1, = ax.plot([], [], [], lw=2, color=myColour)
+    line2, = ax.plot([], [], [], lw=2, color='gray')
+    #line3, = ax.plot([], [], [], '--', lw=1, color='blue')
+    line3, = ax.plot([], [], [], '--', lw=1, color=myColour)
 
     # Setting the axes properties
     extraEachSide = 0.5
@@ -74,11 +89,11 @@ def sameAxisAnimation(config, t_all, waypoints, pos_all, quat_all, sDes_tr_all, 
     if (xyzType == 0):
         trajType = 'Hover'
     else:
-        ax.scatter(x_wp, y_wp, z_wp, color='green', alpha=1, marker = 'o', s = 25)
+        ax.scatter(x_wp, y_wp, z_wp, color=myColour, alpha=1, marker = 'o', s = 25)
         if (xyzType == 1 or xyzType == 12):
             trajType = 'Simple Waypoints'
         else:
-            ax.plot(xDes, yDes, zDes, ':', lw=1.3, color='green')
+            ax.plot(xDes, yDes, zDes, ':', lw=1.3, color=myColour)
             if (xyzType == 2):
                 trajType = 'Simple Waypoint Interpolation'
             elif (xyzType == 3):
@@ -187,5 +202,5 @@ def sameAxisAnimation(config, t_all, waypoints, pos_all, quat_all, sDes_tr_all, 
  
   
         
-    plt.show()
+    #plt.show()
     return line_ani

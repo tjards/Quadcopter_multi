@@ -24,7 +24,28 @@ def fullprint(*args, **kwargs):
     np.set_printoptions(opt)
 
 
-def makeFigures(params, time, pos_all, vel_all, quat_all, omega_all, euler_all, commands, wMotor_all, thrust, torque, sDes_traj, sDes_calc):
+#def makeFigures(params, time, pos_all, vel_all, quat_all, omega_all, euler_all, commands, wMotor_all, thrust, torque, sDes_traj, sDes_calc):
+def makeFigures(params, myData):
+    
+    
+    #travis: clean up what gets imported
+    time = myData.t_all 
+    pos_all = myData.pos_all
+    vel_all = myData.vel_all 
+    quat_all = myData.quat_all 
+    omega_all = myData.omega_all 
+    euler_all = myData.euler_all 
+    commands = myData.w_cmd_all 
+    wMotor_all = myData.wMotor_all 
+    thrust = myData.thr_all 
+    torque = myData.tor_all 
+    sDes_traj = myData.sDes_traj_all 
+    sDes_calc = myData.sDes_calc_all
+    
+    
+    
+    
+    
     x    = pos_all[:,0]
     y    = pos_all[:,1]
     z    = pos_all[:,2]

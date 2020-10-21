@@ -36,13 +36,13 @@ from ctrl import Control
 from quadFiles.quad import Quadcopter
 from utils.windModel import Wind
 import utils
-import config as simConfig
+#import config as simConfig
 
 # my libraries
 from fala import falaObj 
 from potentialField import potentialField as pf
 import utils.collectData as collect
-
+import config as simConfig
 
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     
@@ -100,8 +100,8 @@ def main():
 
     # Create a Potential Field object
     # -------------------------------
-    o1 = np.array([-2, -1, -3])             # obstacle 1 (x,y,z)
-    o2 = np.array([3, -2, 1])               # obstacle 2 (x,y,z)
+    o1 = np.array([-2.2, -1, -3.1])             # obstacle 1 (x,y,z)
+    o2 = np.array([3, -1.8, 1])               # obstacle 2 (x,y,z)
     Po = np.vstack((o1,o2)).transpose()     # stack obstacles
     obsPF = pf(traj, Po, gamma=1, eta=0.5, obsRad=1)
     
@@ -137,13 +137,30 @@ def main():
     # View Results
     # ---------------------------
 
-    #utils.fullprint(sDes_traj_all[:,3:6])
         
     # save data
     if config.ifsave:
+        # text
         np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
-        #np.savetxt("Data/errors.csv", falaError_all, delimiter=",",header=" ")
         np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
+        #plots
+        #utils.makeFigures(quad.params, myData)
+        utils.sameAxisAnimation(config, myData, traj, quad.params, obsPF, myColour = 'blue')
+        plt.show()
+
+    
+    
+
+
+if __name__ == "__main__":
+    print('running...')
+    main()
+    
+
+   
+        
+        
+ #%% LEGACY Code
         # plt.plot(np.array(falaError_all))
         # plt.show()
         # data_all=np.hstack((np.array(t_all,ndmin=2).transpose(),pos_all,vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all[:,0:3], falaError_all))
@@ -160,28 +177,17 @@ def main():
         #                                                      sDes_traj_all_x,sDes_traj_all_y,sDes_traj_all_z,\
         #                                                          falaError'
         # np.savetxt("Data/data_all.csv", data_all, delimiter=",", header=data_all_labels)
-    
+        #np.savetxt("Data/errors.csv", falaError_all, delimiter=",",header=" ")
+
+
+
     #utils.makeFigures(quad.params, t_all, pos_all, vel_all, quat_all, omega_all, euler_all, w_cmd_all, wMotor_all, thr_all, tor_all, sDes_traj_all, sDes_calc_all)
     #ani = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave, obsPF.Po, obsPF.obsRad)
-    utils.makeFigures(quad.params, myData.t_all, myData.pos_all, myData.vel_all, myData.quat_all, myData.omega_all, myData.euler_all, myData.w_cmd_all, myData.wMotor_all, myData.thr_all, myData.tor_all, myData.sDes_traj_all, myData.sDes_calc_all)
-    utils.sameAxisAnimation(config, myData.t_all, traj.wps, myData.pos_all, myData.quat_all, myData.sDes_traj_all, config.Ts, quad.params, traj.xyzType, traj.yawType, config.ifsave, obsPF.Po, obsPF.obsRad)
-    plt.show()
+    #utils.makeFigures(quad.params, myData.t_all, myData.pos_all, myData.vel_all, myData.quat_all, myData.omega_all, myData.euler_all, myData.w_cmd_all, myData.wMotor_all, myData.thr_all, myData.tor_all, myData.sDes_traj_all, myData.sDes_calc_all)       
+    #utils.sameAxisAnimation(config, myData.t_all, traj.wps, myData.pos_all, myData.quat_all, myData.sDes_traj_all, config.Ts, quad.params, traj.xyzType, traj.yawType, config.ifsave, obsPF.Po, obsPF.obsRad)
+        
     #ani2 = utils.sameAxisAnimation(t_all, traj.wps, pos_all, quat_all, sDes_traj_all, Ts, quad.params, traj.xyzType, traj.yawType, ifsave)
-    #plt.show()
-    
-    
-
-
-if __name__ == "__main__":
-    print('running...')
-    main()
-    
-
-   
+    #plt.show()        
         
-        
-        
-        
-        
-        
+    #utils.fullprint(myData.sDes_traj_all[:,3:6])
         
