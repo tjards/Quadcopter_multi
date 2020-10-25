@@ -8,104 +8,140 @@ Created on Wed Oct 21 20:19:56 2020
 import numpy as np
 from scipy import optimize as opt
 from matplotlib import pyplot as plt
+from matplotlib.animation import FuncAnimation
+import sys 
 
 
 
 
 
-def computeXp(x,xo,r,ro,rb):
+
+def myAnimation():
+  
+    def computeXp(x,xo,r,ro,rb):
+        
+        # compute distance between the two
+        d = np.linalg.norm(x-xo)
+        # find xp
+        
+        xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))
+        #xp = xo + np.multiply(buffer,(x-xo))
+        
+        return xp, d
     
-    # compute distance between the two
-    d = np.linalg.norm(x-xo)
-    # find xp
-    xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))
+    def runOpt(x, xt, xp):
+        
+        # A = np.array([[ 1., 1.],
+        #               [-1., 2.],
+        #               [-1., 0.],
+        #               [0., -1.],
+        #               [0.,  1.]])
+        
+        A = np.zeros([1,2])
+        A[0,:] = xo - xp
+        
+        #b = np.array([7., 4., 0., 0., 4.])
+        b = np.dot(xp,(xo-xp))
+        
+        
+        
+        cons = {'type':'ineq',
+                'fun':lambda x: b - np.dot(A,x),
+                'jac':lambda x: -A}
+               
+       # x0 = np.array([0, 2.5])
+        x0 = x
+        
+        # unconstrained case
+        ux = opt.minimize(f, x0, constraints=None, args = [xt[0], xt[1]])
+        # constrained case
+        #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
+        cx = opt.minimize(f, x0, constraints=cons, args = [xt[0], xt[1]])
+        
+        return ux, cx, A, b
     
-    return xp
-
-def runOpt(x, xt, xp):
+    def f(x, xt):
+        
+        #dx = x - xt  
+        #return -(2*x[0]*x[1] + 2*x[0] - x[0]**2 - 2*x[1]**2)
+        return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
     
-    # A = np.array([[ 1., 1.],
-    #               [-1., 2.],
-    #               [-1., 0.],
-    #               [0., -1.],
-    #               [0.,  1.]])
+    #%% Initialize Parameters 
     
+    xv = np.array([-3.7, -4.7])   # vehicle position
+    xo = np.array([-1, -1.5])  # obstacle position
+    xt = np.array([0,0])  # target position 
+    ro = 0.1
+    r = 0.1
+    rb = 0.3
+    #buffer = 0.3
+    
+    fig, ax = plt.subplots()
+    plotSize = 5
+    x = np.linspace(-plotSize, plotSize, 100)
+    y = np.linspace(-plotSize, plotSize, 100)
+    X, Y = np.meshgrid(x, y)
+    Z = f(np.vstack([X.ravel(), Y.ravel()]), xt).reshape((100,100))
+    ax.contour(X, Y, Z, np.arange(-2,20, 1), alpha=0.3)
+    # initialize lines that need updating 
+    line_obs = ax.scatter(xo[0], xo[1], s=4000*ro, marker = 'o', alpha = 0.2, color = 'blue')
+    line_veh = ax.scatter(xv[0], xv[1], s=4000*ro, marker = 'o', alpha = 0.2, color = 'green')
+    line_tar = ax.scatter(xt[0], xt[1], s=4000*ro, marker = 'o', alpha = 0.2, color = 'black')
+    line_ux = ax.scatter(xt[0], xt[1], s=1000*ro, marker = 'x', alpha = 1, color = 'black')
+    line_cx = ax.scatter(xt[0], xt[1], s=1000*ro, marker = 'x', alpha = 1, color = 'red')
+    line_xv2cx, = ax.plot([xv[0],xt[0]],[xv[1],xt[1]], 'g:', linewidth=1)
+    line_xt2cx, = ax.plot([xt[0],xt[0]],[xt[1],xt[1]], 'b:', linewidth=1)
     A = np.zeros([1,2])
-    A[0,:] = xo - xp
+    b = 0
+    yy = -np.divide(A[0,0],A[0,1])*x+np.divide(b,A[0,1])
+    line_const, = ax.plot(x, yy, 'r:', linewidth=1)
+    plt.axis([-plotSize,plotSize,-plotSize,plotSize])
+    plt.xlabel('x-direction')
+    plt.ylabel('y-direction')
+    plt.title('obstacle avoid')
+    plt.show()
     
-    #b = np.array([7., 4., 0., 0., 4.])
-    b = np.dot(xp,(xo-xp))
+    
+    def update(i):
+      
+        #%% Move 
+        xv[0] = xv[0] + 0.1*i*0.2
+        xv[1] = xv[1] + 0.3
+        
+        if i > 8:
+            
+            xv[1] = xv[1] - 0.1
+    
+        # my new ones
+        line_obs.set_offsets([xo[0],xo[1]])
+        line_veh.set_offsets([xv[0],xv[1]])
+        line_tar.set_offsets([xt[0],xt[1]])
     
     
+        #%% Compute point on edge of obstacle 
+        
+        xp, d = computeXp(xv,xo,r,ro,rb)
+        
+        #%% Run the optimization 
+        
+        ux, cx, A, b = runOpt(xv, xt, xp)
+        
+        # my new one
+        line_ux.set_offsets([ux['x'][0], ux['x'][1]])
+        line_cx.set_offsets([cx['x'][0], cx['x'][1]])
+        line_xv2cx.set_xdata([xv[0],cx['x'][0]])
+        line_xv2cx.set_ydata([xv[1],cx['x'][1]])
+        line_xt2cx.set_xdata([xt[0],cx['x'][0]])
+        line_xt2cx.set_ydata([xt[1],cx['x'][1]])
+        
+        yy = -np.divide(A[0,0],A[0,1])*x+np.divide(b,A[0,1])
+        line_const.set_xdata(x)
+        line_const.set_ydata(yy)    
+        
     
-    cons = {'type':'ineq',
-            'fun':lambda x: b - np.dot(A,x),
-            'jac':lambda x: -A}
-           
-   # x0 = np.array([0, 2.5])
-    x0 = x
     
-    # unconstrained case
-    ux = opt.minimize(f, x0, constraints=None, args = [xt[0], xt[1]])
-    # constrained case
-    #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
-    cx = opt.minimize(f, x0, constraints=cons, args = [xt[0], xt[1]])
-    
-    return ux, cx, A, b
-
-def f(x, xt):
-    
-    #dx = x - xt  
-    #return -(2*x[0]*x[1] + 2*x[0] - x[0]**2 - 2*x[1]**2)
-    return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
-
-
-
-
-#%% Initialize Parameters 
-
-xv = np.array([1,1.5])   # vehicle position
-xo = np.array([2.5,2])  # obstacle position
-xt = np.array([3,3])  # target position 
-r = 0.1
-ro = 0.1
-rb = 0.5
-
-#%% Compute point on edge of obstacle 
-
-xp = computeXp(xv,xo,r,ro,rb)
-
-#%% Run the optimization 
-
-ux, cx, A, b = runOpt(xv, xt, xp)
-
-#%% plot
-plt.figure()
-plotSize = 5
-x = np.linspace(0, plotSize, 100)
-y = np.linspace(0, plotSize, 100)
-X, Y = np.meshgrid(x, y)
-Z = f(np.vstack([X.ravel(), Y.ravel()]), xt).reshape((100,100))
-plt.contour(X, Y, Z, np.arange(-2,10, 1), alpha=0.3)
-#plt.plot(x, x**3, 'k:', linewidth=1)
-#plt.plot(x, (x-1)**4+2, 'k:', linewidth=1)
-plt.text(ux['x'][0], ux['x'][1], 'x', va='center', ha='center', size=20, color='blue')
-plt.text(cx['x'][0], cx['x'][1], 'x', va='center', ha='center', size=20, color='red')
-plt.text(xv[0],xv[1], 'v', va='center', ha='center', size=20, color='green')
-plt.scatter(xv[0], xv[1], s=4000*ro, marker = 'o', alpha = 0.2, color = 'green')
-plt.text(xo[0],xo[1], 'o', va='center', ha='center', size=20, color = 'blue')
-plt.scatter(xo[0], xo[1], s=4000*ro, marker = 'o', alpha = 0.2, color = 'blue')
-yy = -np.divide(A[0,0],A[0,1])*x+np.divide(b,A[0,1])
-plt.plot(x, yy, 'r:', linewidth=1)
-#plt.fill([0.5,0.5,1.5,1.5], [2.5,1.5,1.5,2.5], alpha=0.3)
-#plt.fill([0.5,0.5,1.5,1.5], [2.5,1.5,1.5,2.5], alpha=0.3)
-plt.plot([xv[0],cx['x'][0]],[xv[1],cx['x'][1]], 'g:', linewidth=1)
-plt.plot([xt[0],cx['x'][0]],[xt[1],cx['x'][1]], 'b:', linewidth=1)
-plt.axis([0,plotSize,0,plotSize])
-plt.xlabel('x-direction')
-plt.ylabel('y-direction')
-plt.title('obstacle avoid')
-plt.show()
+    anim = FuncAnimation(fig, update, frames=np.arange(0, 20), interval=200, blit=False)
+    anim.save('test.gif', writer='ffmpeg') #my add
 
 #%% LEGACY stuff
 
