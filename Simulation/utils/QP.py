@@ -14,11 +14,7 @@ import sys
 
 
 
-
-
-def myAnimation():
-  
-    def computeXp(x,xo,r,ro,rb):
+def computeXp(x,xo,r,ro,rb):
         
         # compute distance between the two
         d = np.linalg.norm(x-xo)
@@ -28,53 +24,87 @@ def myAnimation():
         #xp = xo + np.multiply(buffer,(x-xo))
         
         return xp, d
+
     
-    def runOpt(x, xt, xp):
+def runOpt(x, xt, xp, A, b):
+    
+
+    cons = {'type':'ineq',
+            'fun':lambda x: b - np.dot(A,x),
+            'jac':lambda x: -A}
+           
+   # x0 = np.array([0, 2.5])
+    x0 = x
+    
+    # unconstrained case
+    ux = opt.minimize(f, x0, constraints=None, args = [xt[0], xt[1]])
+    # constrained case
+    #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
+    cx = opt.minimize(f, x0, constraints=cons, args = [xt[0], xt[1]])
+    
+    return ux, cx, A, b
+
+def f(x, xt):
+    
+    #dx = x - xt  
+    #return -(2*x[0]*x[1] + 2*x[0] - x[0]**2 - 2*x[1]**2)
+    return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
+
+
+
+def myAnimation(xv,xo,xt,A,b,r,ro,rb):
+  
+    # def computeXp(x,xo,r,ro,rb):
         
-        # A = np.array([[ 1., 1.],
-        #               [-1., 2.],
-        #               [-1., 0.],
-        #               [0., -1.],
-        #               [0.,  1.]])
+    #     # compute distance between the two
+    #     d = np.linalg.norm(x-xo)
+    #     # find xp
         
-        A = np.zeros([1,2])
-        A[0,:] = xo - xp
+    #     xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))
+    #     #xp = xo + np.multiply(buffer,(x-xo))
         
-        #b = np.array([7., 4., 0., 0., 4.])
-        b = np.dot(xp,(xo-xp))
+    #     return xp, d
+    
+    # def runOpt(x, xt, xp):
+        
+    #     # A = np.array([[ 1., 1.],
+    #     #               [-1., 2.],
+    #     #               [-1., 0.],
+    #     #               [0., -1.],
+    #     #               [0.,  1.]])
+        
+    #     A = np.zeros([1,2])
+    #     A[0,:] = xo - xp
+        
+    #     #b = np.array([7., 4., 0., 0., 4.])
+    #     b = np.dot(xp,(xo-xp))
         
         
         
-        cons = {'type':'ineq',
-                'fun':lambda x: b - np.dot(A,x),
-                'jac':lambda x: -A}
+    #     cons = {'type':'ineq',
+    #             'fun':lambda x: b - np.dot(A,x),
+    #             'jac':lambda x: -A}
                
-       # x0 = np.array([0, 2.5])
-        x0 = x
+    #    # x0 = np.array([0, 2.5])
+    #     x0 = x
         
-        # unconstrained case
-        ux = opt.minimize(f, x0, constraints=None, args = [xt[0], xt[1]])
-        # constrained case
-        #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
-        cx = opt.minimize(f, x0, constraints=cons, args = [xt[0], xt[1]])
+    #     # unconstrained case
+    #     ux = opt.minimize(f, x0, constraints=None, args = [xt[0], xt[1]])
+    #     # constrained case
+    #     #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
+    #     cx = opt.minimize(f, x0, constraints=cons, args = [xt[0], xt[1]])
         
-        return ux, cx, A, b
+    #     return ux, cx, A, b
     
-    def f(x, xt):
+    # def f(x, xt):
         
-        #dx = x - xt  
-        #return -(2*x[0]*x[1] + 2*x[0] - x[0]**2 - 2*x[1]**2)
-        return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
+    #     #dx = x - xt  
+    #     #return -(2*x[0]*x[1] + 2*x[0] - x[0]**2 - 2*x[1]**2)
+    #     return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
     
     #%% Initialize Parameters 
     
-    xv = np.array([-3.7, -4.7])   # vehicle position
-    xo = np.array([-1, -1.5])  # obstacle position
-    xt = np.array([0,0])  # target position 
-    ro = 0.1
-    r = 0.1
-    rb = 0.3
-    #buffer = 0.3
+
     
     fig, ax = plt.subplots()
     plotSize = 5
@@ -91,8 +121,8 @@ def myAnimation():
     line_cx = ax.scatter(xt[0], xt[1], s=1000*ro, marker = 'x', alpha = 1, color = 'red')
     line_xv2cx, = ax.plot([xv[0],xt[0]],[xv[1],xt[1]], 'g:', linewidth=1)
     line_xt2cx, = ax.plot([xt[0],xt[0]],[xt[1],xt[1]], 'b:', linewidth=1)
-    A = np.zeros([1,2])
-    b = 0
+    #A = np.zeros([1,2])
+    #b = 0
     yy = -np.divide(A[0,0],A[0,1])*x+np.divide(b,A[0,1])
     line_const, = ax.plot(x, yy, 'r:', linewidth=1)
     plt.axis([-plotSize,plotSize,-plotSize,plotSize])
@@ -107,9 +137,7 @@ def myAnimation():
         #%% Move 
         xv[0] = xv[0] + 0.1*i*0.2
         xv[1] = xv[1] + 0.3
-        
-        if i > 8:
-            
+        if i > 8:    
             xv[1] = xv[1] - 0.1
     
         # my new ones
@@ -122,9 +150,14 @@ def myAnimation():
         
         xp, d = computeXp(xv,xo,r,ro,rb)
         
+        #update constraints 
+        A = np.zeros([1,2])
+        A[0,:] = xo - xp
+        b = np.dot(xp,(xo-xp))
+        
         #%% Run the optimization 
         
-        ux, cx, A, b = runOpt(xv, xt, xp)
+        ux, cx, A, b = runOpt(xv, xt, xp, A, b)
         
         # my new one
         line_ux.set_offsets([ux['x'][0], ux['x'][1]])
