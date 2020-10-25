@@ -28,15 +28,15 @@ numFrames = 8
 def sameAxisAnimation(config, myData, traj, params, obsPF, myColour = 'blue'):
 
     # travis cleanup
+    Ts = config.Ts  
+    ifsave = config.ifsave 
     t_all = myData.t_all 
-    waypoints = traj.wps 
     pos_all = myData.pos_all 
     quat_all = myData.quat_all 
     sDes_tr_all = myData.sDes_traj_all 
-    Ts = config.Ts  
+    waypoints = traj.wps 
     xyzType = traj.xyzType 
     yawType = traj.yawType 
-    ifsave = config.ifsave 
     Po = obsPF.Po 
     obsRad = obsPF.obsRad
 
