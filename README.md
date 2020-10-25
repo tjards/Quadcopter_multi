@@ -7,6 +7,22 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 ## Initial Results
 
+
+Here's an example of the shifting potential fields idea this will use:
+
+
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/goMulti/Simulation/Gifs/Raw/shifting.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure ?** - Shifting target using PICs (2D for now) 
+
+<div align="left"> 
+
+
+
 Obstacle avoidance for obstacles at (-2, -1, -3) and (3, -2, 1)
 
 <p align="center">
