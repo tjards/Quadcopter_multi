@@ -33,6 +33,7 @@ def runOpt(x, xt, xp, A, b):
     
     # constrained case
     cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1]])
+    #cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1], xt[2]])
     #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
 
     return cx
@@ -43,21 +44,22 @@ def runOpt(x, xt, xp, A, b):
 def f(x, xt):
     
     return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
+    #return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2 + (x[2]-xt[2])**2)
 
 
 # animate the obstacle avoidance
 # -----------------------------
-def myAnimation(myData_QP):
+def myAnimation(myData_QP,nStates):
 
     # initialize data store 
     # ---------------------
-    xv = myData_QP[0,0:2] 
-    xo = myData_QP[0,2:4] 
-    xt = myData_QP[0,4:6] 
-    A = myData_QP[0,6:8] 
-    b = myData_QP[0,8:9] 
-    ux = myData_QP[0,9:11] 
-    cx = myData_QP[0,11:13]
+    xv = myData_QP[0,0:nStates] 
+    xo = myData_QP[0,nStates:2*nStates] 
+    xt = myData_QP[0,2*nStates:3*nStates] 
+    A = myData_QP[0,3*nStates:4*nStates] 
+    b = myData_QP[0,4*nStates:4*nStates+1] 
+    ux = myData_QP[0,4*nStates+1:5*nStates+1] 
+    cx = myData_QP[0,5*nStates+1:6*nStates+1]
 
     # initiate the figure
     # -------------------
@@ -79,7 +81,7 @@ def myAnimation(myData_QP):
     line_xv2cx, = ax.plot([xv[0],xt[0]],[xv[1],xt[1]], 'g:', linewidth=1)
     line_xt2cx, = ax.plot([xt[0],xt[0]],[xt[1],xt[1]], 'b:', linewidth=1)
 
-    # %% this is the constraint illustration
+    #%% this is the constraint illustration
     # --------------------------------------
     #yy = -np.divide(A[0,0],A[0,1])*x+np.divide(b,A[0,1])
     yy = -np.divide(A[0],A[1])*x+np.divide(b,A[1])
@@ -91,10 +93,11 @@ def myAnimation(myData_QP):
     plt.title('obstacle avoid')
     #plt.show()
     
-    
+    #%% update the lines
+    # ------------------
     def update(i):
       
-        #%% extract data
+        # extract data
         # --------------
         xv = myData_QP[i,0:2] 
         xo = myData_QP[i,2:4] 
@@ -104,7 +107,7 @@ def myAnimation(myData_QP):
         ux = myData_QP[i,9:11] 
         cx = myData_QP[i,11:13]
         
-        #%% update the lines
+        # update the lines
         # -----------------
         line_obs.set_offsets([xo[0],xo[1]])
         line_veh.set_offsets([xv[0],xv[1]])
