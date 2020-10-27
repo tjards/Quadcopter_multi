@@ -19,9 +19,9 @@ rb = np.minimum(1-(ro+r),rb)    # total buffer must be < 1
 # xv = np.array([-3.7, -4.7])   # vehicle position
 # xo = np.array([-1, -1.5])     # obstacle position
 # xt = np.array([0,0])          # target position 
-xv = np.array([-3.7, -4.7])   # vehicle position
-xo = np.array([-1, -1.5])     # obstacle position
-xt = np.array([0, 0])          # target position 
+xv = np.array([-3.7, -4.7, 1])   # vehicle position
+xo = np.array([-1, -1.5, 1.3])     # obstacle position
+xt = np.array([0, 0, 1])          # target position 
 nStates=len(xv)
 
 #%% update the constraints
@@ -71,4 +71,15 @@ for i in range(0,nTrials):
     # we would feed these new points into here
     # ---> feed cx here
  
-QP.myAnimation(myData_QP,nStates)
+QP.myAnimation(myData_QP,nStates,'xy')
+
+# do a little hack (with schmanzy slices) to show show altitudes :)_
+myData_QP_z = myData_QP  
+myData_QP_z[:,[1,2]] = myData_QP_z[:,[2,1]] 
+myData_QP_z[:,[4,5]] = myData_QP_z[:,[5,4]]
+myData_QP_z[:,[7,8]] = myData_QP_z[:,[8,7]]
+myData_QP_z[:,[14,15]] = myData_QP_z[:,[15,14]]  
+myData_QP_z[:,[17,18]] = myData_QP_z[:,[18,17]]      
+    
+QP.myAnimation(myData_QP,nStates,'xz')
+

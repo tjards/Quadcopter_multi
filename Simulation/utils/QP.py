@@ -32,8 +32,10 @@ def runOpt(x, xt, xp, A, b):
     # ux = opt.minimize(f, x, constraints=None, args = [xt[0], xt[1]])
     
     # constrained case
-    cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1]])
-    #cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1], xt[2]])
+    if len(x) == 2:
+        cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1]])
+    elif len(x) == 3:
+        cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1], xt[2]])
     #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
 
     return cx
@@ -43,13 +45,19 @@ def runOpt(x, xt, xp, A, b):
 # ----------------------
 def f(x, xt):
     
-    return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
+    if len(x) == 2:
+        cost = ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
+    elif len(x) == 3:
+        cost = ((x[0]-xt[0])**2 + (x[1]-xt[1])**2 + (x[2]-xt[2])**2)
+        
+    return cost 
+    #return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2)
     #return ((x[0]-xt[0])**2 + (x[1]-xt[1])**2 + (x[2]-xt[2])**2)
 
 
 # animate the obstacle avoidance
 # -----------------------------
-def myAnimation(myData_QP,nStates):
+def myAnimation(myData_QP,nStates,name):
 
     # initialize data store 
     # ---------------------
@@ -68,8 +76,9 @@ def myAnimation(myData_QP,nStates):
     x = np.linspace(-plotSize, plotSize, 100)
     y = np.linspace(-plotSize, plotSize, 100)
     X, Y = np.meshgrid(x, y)
-    Z = f(np.vstack([X.ravel(), Y.ravel()]), xt).reshape((100,100))
-    ax.contour(X, Y, Z, np.arange(-2,20, 1), alpha=0.3)
+    if nStates == 2: # only run contours for 2-D case
+        Z = f(np.vstack([X.ravel(), Y.ravel()]), xt).reshape((100,100))
+        ax.contour(X, Y, Z, np.arange(-2,20, 1), alpha=0.3)
     
     # initialize lines that need updating
     # ------------------------------------
@@ -84,8 +93,9 @@ def myAnimation(myData_QP,nStates):
     #%% this is the constraint illustration
     # --------------------------------------
     #yy = -np.divide(A[0,0],A[0,1])*x+np.divide(b,A[0,1])
-    yy = -np.divide(A[0],A[1])*x+np.divide(b,A[1])
-    line_const, = ax.plot(x, yy, 'r:', linewidth=1)
+    if nStates == 2:
+        yy = -np.divide(A[0],A[1])*x+np.divide(b,A[1])
+        line_const, = ax.plot(x, yy, 'r:', linewidth=1)
     
     plt.axis([-plotSize,plotSize,-plotSize,plotSize])
     plt.xlabel('x-direction')
@@ -99,13 +109,22 @@ def myAnimation(myData_QP,nStates):
       
         # extract data
         # --------------
-        xv = myData_QP[i,0:2] 
-        xo = myData_QP[i,2:4] 
-        xt = myData_QP[i,4:6] 
-        A = myData_QP[i,6:8] 
-        b = myData_QP[i,8:9] 
-        ux = myData_QP[i,9:11] 
-        cx = myData_QP[i,11:13]
+        
+        xv = myData_QP[i,0:nStates] 
+        xo = myData_QP[i,nStates:2*nStates] 
+        xt = myData_QP[i,2*nStates:3*nStates] 
+        A = myData_QP[i,3*nStates:4*nStates] 
+        b = myData_QP[i,4*nStates:4*nStates+1] 
+        ux = myData_QP[i,4*nStates+1:5*nStates+1] 
+        cx = myData_QP[i,5*nStates+1:6*nStates+1]
+        
+        # xv = myData_QP[i,0:2] 
+        # xo = myData_QP[i,2:4] 
+        # xt = myData_QP[i,4:6] 
+        # A = myData_QP[i,6:8] 
+        # b = myData_QP[i,8:9] 
+        # ux = myData_QP[i,9:11] 
+        # cx = myData_QP[i,11:13]
         
         # update the lines
         # -----------------
@@ -119,15 +138,17 @@ def myAnimation(myData_QP,nStates):
         line_xt2cx.set_xdata([xt[0],cx[0]])
         line_xt2cx.set_ydata([xt[1],cx[1]])
         #yy = -np.divide(A[0,0],A[0,1])*x+np.divide(b,A[0,1])
-        yy = -np.divide(A[0],A[1])*x+np.divide(b,A[1])
-        line_const.set_xdata(x)
-        line_const.set_ydata(yy)    
+        
+        if nStates == 2:
+            yy = -np.divide(A[0],A[1])*x+np.divide(b,A[1])
+            line_const.set_xdata(x)
+            line_const.set_ydata(yy)    
         
     
     #%% build the animation
     # ---------------------
     anim = FuncAnimation(fig, update, frames=np.arange(0, 20), interval=200, blit=False)
-    anim.save('test.gif', writer='ffmpeg') #my add
+    anim.save('test{}.gif'.format(name), writer='ffmpeg') #my add
 
 
 
