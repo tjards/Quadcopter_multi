@@ -4,9 +4,9 @@ It will extend the work below to multiple vehicles (with obstacle avoidance). Tr
 
 ## Initial Result (Multi-agent)
 
-<<<<<<< HEAD
 Just finished implementing two types of Obstacle Avoidance (below). Working on multi agent now...
-=======
+
+
 ## Initial Result (Multi-agent)
 
 Just finished implementing two types of Obstacle Avoidance (below). Working on multi agent now...
