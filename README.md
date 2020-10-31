@@ -2,12 +2,13 @@
 
 It will extend the work below to multiple vehicles (with obstacle avoidance). Track the project progress [here](https://github.com/users/tjards/projects/3)
 
+## Initial Result (Multi-agent)
 
-## Initial Results
+Just finished implementing two types of Obstacle Avoidance (below). Working on multi agent now...
 
+## Initial Results (Obstacle Avoidance)
 
 Here were compare standard Potential Fields against Potential Fields with Planar Inequality Constraint Shifting.
-
 
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/without_PIC.gif" width="65%" />
