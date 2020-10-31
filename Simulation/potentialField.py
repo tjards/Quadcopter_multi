@@ -17,7 +17,7 @@ import numpy as np
 
 class potentialField:
 
-    def __init__(self, traj, Po, gamma=1, eta=0.2 ,obsRad=1):
+    def __init__(self, traj, Po, gamma=1, eta=1 ,obsRad=1):
     
         self.Po = Po
         self.gamma = gamma

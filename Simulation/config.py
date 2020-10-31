@@ -51,6 +51,9 @@ class config():
         self.trajSelect[1] = 4           
         # Select if waypoint time is used, or if average speed is used to calculate waypoint time   (0: waypoint time,   1: average speed)
         self.trajSelect[2] = 0 
+        
+        # Choose Obstacle Avoidance settings
+        self.PIC = 0    # do we want to using planar inequality constraint shifting 
     
     #return orient, usePrecession, Ti, Ts, Tf, ifsave, ctrlOptions, trajSelect, ctrlType, trajSelect
     

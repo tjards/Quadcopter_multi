@@ -43,6 +43,7 @@ from fala import falaObj
 from potentialField import potentialField as pf
 import utils.collectData as collect
 import config as simConfig
+import utils.QP as QP
 
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     
@@ -58,6 +59,16 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     # Trajectory for Desired States (for next iteration)
     # ---------------------------
     sDes = traj.desiredState(t, Ts, quad)
+
+    # Use PIC shifting to move target
+    # note: just try with first obstacle for now
+    # to slow down the shifting, do it at 1/10th speed
+    # -----------------------
+    if config.PIC:
+        xv = np.reshape(quad.state[0:3], (1,3))
+        xt = np.reshape(traj.sDes[0:3], (1,3))
+        cx = QP.moveTarget(quad.state, obsPF.Po, xv, xt, 0.1, 0.1, 0.3)
+        traj.sDes[0:3] = np.array(cx['x'][:]) 
 
     # Update the trajectory for obstacles with potential fields 
     # ---------------------------    
@@ -100,8 +111,8 @@ def main():
 
     # Create a Potential Field object
     # -------------------------------
-    o1 = np.array([-2.2, -1, -3.1])             # obstacle 1 (x,y,z)
-    o2 = np.array([3, -1.8, 1])               # obstacle 2 (x,y,z)
+    o1 = np.array([-2.1, 0, -3],)             # obstacle 1 (x,y,z)
+    o2 = np.array([2, -1.2, 0.9])               # obstacle 2 (x,y,z)
     Po = np.vstack((o1,o2)).transpose()     # stack obstacles
     obsPF = pf(traj, Po, gamma=1, eta=0.5, obsRad=1)
     
@@ -142,7 +153,7 @@ def main():
         np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
         np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
         #plots
-        #utils.makeFigures(quad.params, myData)
+        utils.makeFigures(quad.params, myData)
         utils.sameAxisAnimation(config, myData, traj, quad.params, obsPF, myColour = 'blue')
         plt.show()
 
