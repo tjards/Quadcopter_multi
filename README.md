@@ -1,18 +1,43 @@
 # This project is in development
 
-It will extend the work below to multiple vehicles (with obstacle avoidance)
-
-Track the project progress [here](https://github.com/users/tjards/projects/3)
+It will extend the work below to multiple vehicles (with obstacle avoidance). Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 
 ## Initial Results
 
 
-Here's an example of the shifting potential fields idea this will use:
+Here were compare standard Potential Fields against Potential Fields with Planar Inequality Constraint Shifting.
 
 
 <p align="center">
-  <img src="https://github.com/tjards/Quadcopter_multi/blob/goMulti/Simulation/Gifs/Raw/shifting.gif" width="65%" />
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/without_PIC.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure ?** - Potential Fields only 
+
+<div align="left"> 
+
+
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/without_PIC.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure ?** - Potential Fields with Planar Inequality Constraint Shifting 
+
+<div align="left">
+
+
+
+
+Illustration of planary inequality constraint shifting (2D case)
+
+
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/shifting.gif" width="65%" />
 </p>
 
 <div align="center"> 
@@ -23,7 +48,7 @@ Here's an example of the shifting potential fields idea this will use:
 
 
 
-Obstacle avoidance for obstacles at (-2, -1, -3) and (3, -2, 1)
+Obstacle avoidance using Potential Fields for obstacles at (-2, -1, -3) and (3, -2, 1)
 
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/animation_1_4_obs.gif" width="65%" />
