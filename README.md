@@ -21,7 +21,7 @@ Here were compare standard Potential Fields against Potential Fields with Planar
 
 
 <p align="center">
-  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/without_PIC.gif" width="65%" />
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/with_PIC.gif" width="65%" />
 </p>
 
 <div align="center"> 
