@@ -2,11 +2,11 @@
 
 It will extend the work below to multiple vehicles (with obstacle avoidance). Track the project progress [here](https://github.com/users/tjards/projects/3)
 
-**Planar Inequality Constraint Shifting described here:**
-P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
+**Planar Inequality Constraint Shifting** described here:
+- P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
 
-**Potential Fields described here**
-A. Woods and H. La, [A Novel Potential Field Controller for Use on Aerial Robots](https://arxiv.org/pdf/1704.04672.pdf) , *arXiv*, 15 Apr 2017
+**Potential Fields** described here:
+- A. Woods and H. La, [A Novel Potential Field Controller for Use on Aerial Robots](https://arxiv.org/pdf/1704.04672.pdf) , *arXiv*, 15 Apr 2017
 
 ## Initial Result (Multi-agent)
 
