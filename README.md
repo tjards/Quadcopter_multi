@@ -11,8 +11,6 @@ Just finished implementing two types of Obstacle Avoidance (below). Working on m
 
 Just finished implementing two types of Obstacle Avoidance (below). Working on multi agent now...
 
-## Initial Results (Obstacle Avoidance)
->>>>>>> f1b251d5cc3a69e6b7eeb7e760c01b48ff99caab
 
 ## Initial Results (Obstacle Avoidance)
 
