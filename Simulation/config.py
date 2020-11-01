@@ -31,7 +31,7 @@ class config():
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-        self.Tf = 25
+        self.Tf = 26
         self.ifsave = 1
          
         # Choose trajectory settings

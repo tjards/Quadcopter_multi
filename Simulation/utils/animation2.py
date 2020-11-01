@@ -344,5 +344,5 @@ def sameAxisAnimation2(config, myData, traj, params, myData2, traj2, params2, ob
  
   
         
-    #plt.show()
+    plt.show()
     return line_ani

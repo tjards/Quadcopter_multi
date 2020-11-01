@@ -181,8 +181,10 @@ def main():
         #utils.makeFigures(quad.params, myData)
         #sameAxisAnimation2(config, myData, traj, quad.params, obsPF, myColour = 'blue')
         #sameAxisAnimation2(config, myData2, traj2, quad2.params, obsPF, myColour = 'red')
-        sameAxisAnimation2(config, myData, traj, quad.params, myData2, traj2, quad2.params, obsPF, 'blue', 'green')
+        ani = sameAxisAnimation2(config, myData, traj, quad.params, myData2, traj2, quad2.params, obsPF, 'blue', 'green')
         plt.show()
+        
+    #return ani
 
 
 
