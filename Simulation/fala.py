@@ -25,16 +25,24 @@ import numpy as np
 #optionsInterval=[0.1,2]     # range for parameters
 #learnRate=0.15              # learning rate (<1)
 #trialLen=3                  # lenght of each trial 
-doLearn = 0                 # 1 = yes, 0 = no
+#doLearn = 0                 # 1 = yes, 0 = no
 
 class falaObj:
     
-    def __init__(self,nParams,nOptions,optionsInterval, learnRate, trialLen):
+    def __init__(self,config):
         
         # dev note: right now optionsInterval only accepts one interval [a,b]
         #   later, this should be expanded to pass different intervals 
         #   for each parameter
         
+        # break out the learning stuff
+        nParams = config.nParams
+        nOptions = config.nOptions
+        optionsInterval = config.optionsInterval 
+        learnRate = config.learnRate
+        trialLen = config.trialLen
+        doLearn = config.doLearn
+        nVeh = config.nVeh
         
         #attributes
         self.nParams = nParams                              # how many parameters are being tuned
@@ -50,6 +58,7 @@ class falaObj:
         self.trialCounter = 0 
         self.error_accumulated = 0.0
         self.doLearn = doLearn
+        self.nVeh = nVeh
         
         # initialize attributes used to compute reward
         self.costMin = 1000000     # the minimum observed cost thus far (persistent valriable, start high)
@@ -149,8 +158,8 @@ class falaObj:
         
             # Compute error for learning (using last timestep's params)
             self.computeError(quad,traj)
-            self.trialCounter += Ts
-            if self.trialCounter > self.trialLen: #if the trial is over
+            self.trialCounter += Ts/self.nVeh
+            if self.trialCounter > self.trialLen: #if the trial is over (remember # of vehicles matters)
                 # compute the reward signal
                 self.computeReward(self.error_accumulated)
                 # update the probabilities
@@ -166,7 +175,8 @@ class falaObj:
                 #print('reward signal: ',self.reward)
                 #print('error = ',self.error_accumulated)
                 # reset counter
-                self.trialCounter = 0
+                #self.trialCounter = 0
+                self.trialCounter = Ts
                 # reset accumulated error
                 self.error_accumulated = 0   
        

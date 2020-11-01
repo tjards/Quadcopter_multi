@@ -22,14 +22,14 @@ import config
 
 class Trajectory:
 
-    def __init__(self, quad, ctrlType, trajSelect):
+    def __init__(self, quad, ctrlType, trajSelect, config):
 
         self.ctrlType = ctrlType
         self.xyzType = trajSelect[0]
         self.yawType = trajSelect[1]
         self.averVel = trajSelect[2]
 
-        t_wps, wps, y_wps, v_wp = makeWaypoints()
+        t_wps, wps, y_wps, v_wp = makeWaypoints(config)
         self.t_wps = t_wps
         self.wps   = wps
         self.y_wps = y_wps

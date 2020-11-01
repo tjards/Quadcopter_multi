@@ -95,19 +95,19 @@ def main():
     # Initialize Quadcopter, Controller, Wind, Result Matrixes
     # ---------------------------
     quad = Quadcopter(config)
-    traj = Trajectory(quad, config.ctrlType, config.trajSelect)
+    traj = Trajectory(quad, config.ctrlType, config.trajSelect, config)
     ctrl = Control(quad, traj.yawType)
     wind = Wind('None', 2.0, 90, -15)
     
     # second vehicle
     quad2 = Quadcopter(config)
-    traj2 = Trajectory(quad2, config.ctrlType, config.trajSelect)
+    traj2 = Trajectory(quad2, config.ctrlType, config.trajSelect, config)
     ctrl2 = Control(quad2, traj2.yawType)
 
     # Create learning object
     # ---------------------------
     # for the controller
-    fala = falaObj(nParams=14, nOptions=10, optionsInterval=[0.1,2], learnRate=0.15, trialLen=3)
+    fala = falaObj(config)
     
     # Trajectory for First Desired States
     # ---------------------------
@@ -154,9 +154,9 @@ def main():
         
         # Integrate through the dynamics
         # ------------------------------
-        config.PIC = 0      # turn off PIC
+        #config.PIC = 0      # turn off PIC
         t = quad_sim(t, config.Ts, quad, ctrl, wind, traj, fala, obsPF, config)
-        config.PIC = 1      # turn on PIC
+        #config.PIC = 0      # turn off PIC
         t2 = quad_sim(t, config.Ts, quad2, ctrl2, wind, traj2, fala, obsPF2, config)
         
         # Collect data from this timestep
@@ -183,7 +183,10 @@ def main():
         #sameAxisAnimation2(config, myData2, traj2, quad2.params, obsPF, myColour = 'red')
         ani = sameAxisAnimation2(config, myData, traj, quad.params, myData2, traj2, quad2.params, obsPF, 'blue', 'green')
         plt.show()
-        
+    
+    np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
+    np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
+    
     #return ani
 
 
