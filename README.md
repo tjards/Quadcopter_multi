@@ -13,7 +13,7 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 ## Initial Result (Multi-agent)
 
 <p align="center">
-  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/compare_animation_multi_blue_and_green.gif" width="65%" />
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/animation_multi_blue_and_green_random3.gif" width="65%" />
 </p>
 
 <div align="center"> 
