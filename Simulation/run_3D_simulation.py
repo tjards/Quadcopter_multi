@@ -100,6 +100,11 @@ def main():
     ctrl = Control(quad, traj.yawType)
     wind = Wind('None', 2.0, 90, -15)
     
+    # second vehicle
+    quad2 = Quadcopter(config)
+    traj2 = Trajectory(quad2, config.ctrlType, config.trajSelect)
+    ctrl2 = Control(quad2, traj2.yawType)
+
     # Create learning object
     # ---------------------------
     # for the controller
@@ -119,11 +124,13 @@ def main():
     # Generate First Commands
     # ---------------------------
     ctrl.controller(traj, quad, sDes, config)
+    ctrl2.controller(traj2, quad2, sDes, config)
     
     # Initialize Result Matrixes
     # ---------------------------
     numTimeStep = int(config.Tf/config.Ts+1)
     myData = collect.quadata(quad, traj, ctrl, fala, config.Ti, numTimeStep)
+    myData2 = collect.quadata(quad2, traj2, ctrl2, fala, config.Ti, numTimeStep)
 
     # Run Simulation
     # ---------------------------
@@ -133,11 +140,15 @@ def main():
         
         # Integrate through the dynamics
         # ------------------------------
+        config.PIC = 0      # turn off PIC
         t = quad_sim(t, config.Ts, quad, ctrl, wind, traj, fala, obsPF, config)
+        config.PIC = 1      # turn on PIC
+        t2 = quad_sim(t, config.Ts, quad2, ctrl2, wind, traj2, fala, obsPF, config)
         
         # Collect data from this timestep
         # -------------------------------
         myData.collect(t, quad, traj, ctrl, fala, i)
+        myData2.collect(t2, quad2, traj2, ctrl2, fala, i)
         
         i += 1
     
@@ -153,8 +164,9 @@ def main():
         np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
         np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
         #plots
-        utils.makeFigures(quad.params, myData)
+        #utils.makeFigures(quad.params, myData)
         utils.sameAxisAnimation(config, myData, traj, quad.params, obsPF, myColour = 'blue')
+        utils.sameAxisAnimation(config, myData2, traj2, quad2.params, obsPF, myColour = 'red')
         plt.show()
 
 

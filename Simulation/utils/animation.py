@@ -198,7 +198,7 @@ def sameAxisAnimation(config, myData, traj, params, obsPF, myColour = 'blue'):
     
     if (ifsave):
         # ORIGINAL line_ani.save('Gifs/Raw/animation_{0:.0f}_{1:.0f}.gif'.format(xyzType,yawType), dpi=80, writer='imagemagick', fps=25)
-        line_ani.save('Gifs/Raw/animation_{0:.0f}_{1:.0f}.gif'.format(xyzType,yawType), writer=writer) #my add
+        line_ani.save('Gifs/Raw/animation_{0:.0f}_{1:.0f}_{2}.gif'.format(xyzType,yawType,myColour), writer=writer) #my add
  
   
         
