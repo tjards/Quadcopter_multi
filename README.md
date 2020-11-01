@@ -10,7 +10,15 @@ It will extend the work below to multiple vehicles (with obstacle avoidance). Tr
 
 ## Initial Result (Multi-agent)
 
-Just finished implementing two types of Obstacle Avoidance (below). Working on multi agent now...
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/addMulti/Simulation/Gifs/Raw/compare_animation_multi_blue_and_green.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure ?** - Multi-agent with Obstacle Avoidance
+
+<div align="left"> 
 
 
 ## Initial Results (Obstacle Avoidance)

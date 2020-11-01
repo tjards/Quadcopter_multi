@@ -44,7 +44,11 @@ from potentialField import potentialField as pf
 import utils.collectData as collect
 import config as simConfig
 import utils.QP as QP
+from utils.animation2 import sameAxisAnimation2 as sameAxisAnimation2
 
+
+
+# this is called by each vehicle, so no need to send in  two vehicle data
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     
     # Dynamics (using last timestep's commands)
@@ -71,12 +75,7 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
         traj.sDes[0:3] = np.array(cx['x'][:]) 
 
     # Update the trajectory for obstacles with potential fields 
-    # ---------------------------    
-   
-    # ----> this is where to insert the object states  
-    #o1 = np.array([1,1,1])                      # obstacle 1 (x,y,z)
-    #o2 = np.array([-2,-1,-3])                   # obstacle 2 (x,y,z)
-    #obsPF.Po = np.vstack((o1,o2)).transpose()   # stack obstacles
+    # ---------------------------       
     obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
 
     # Generate Commands (for next iteration)
@@ -112,19 +111,25 @@ def main():
     
     # Trajectory for First Desired States
     # ---------------------------
-    sDes = traj.desiredState(0, config.Ts, quad)    
+    sDes = traj.desiredState(0, config.Ts, quad) 
+    sDes2 = traj2.desiredState(0, config.Ts, quad2) 
 
     # Create a Potential Field object
     # -------------------------------
-    o1 = np.array([-2.1, 0, -3],)             # obstacle 1 (x,y,z)
-    o2 = np.array([2, -1.2, 0.9])               # obstacle 2 (x,y,z)
-    Po = np.vstack((o1,o2)).transpose()     # stack obstacles
+    o1 = config.o1  # np.array([-2.1, 0, -3],)           # obstacle 1 (x,y,z)
+    o2 = config.o2  # np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
+    o3 = config.o3  # np.array([0, 2.5, -2.5])           # obstacle 2 (x,y,z)
+    #Po = np.vstack((o1,o2)).transpose()     # stack obstacles
+    Po = np.vstack((o1,o2,o3,quad2.state[0:3])).transpose()     # stack obstacles (include other vehicle)
+    Po2 = np.vstack((o1,o2,o3,quad.state[0:3])).transpose() 
+    
     obsPF = pf(traj, Po, gamma=1, eta=0.5, obsRad=1)
+    obsPF2 = pf(traj2, Po2, gamma=1, eta=0.5, obsRad=1)
     
     # Generate First Commands
     # ---------------------------
     ctrl.controller(traj, quad, sDes, config)
-    ctrl2.controller(traj2, quad2, sDes, config)
+    ctrl2.controller(traj2, quad2, sDes2, config)
     
     # Initialize Result Matrixes
     # ---------------------------
@@ -138,12 +143,21 @@ def main():
     i = 1
     while round(t,3) < config.Tf:
         
+        # Update the obstacle positions
+        # -----------------------------
+        if t > 0.1:
+            o1 = config.o1  # np.array([-2.1, 0, -3],)           # obstacle 1 (x,y,z)
+            o2 = config.o2  # np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
+            o3 = config.o3  # np.array([0, 2.5, -2.5])           # obstacle 2 (x,y,z)
+            obsPF.Po = np.vstack((o1,o2,o3,quad2.state[0:3])).transpose()     # stack obstacles (include other vehicle)
+            obsPF2.Po = np.vstack((o1,o2,o3,quad.state[0:3])).transpose() 
+        
         # Integrate through the dynamics
         # ------------------------------
         config.PIC = 0      # turn off PIC
         t = quad_sim(t, config.Ts, quad, ctrl, wind, traj, fala, obsPF, config)
         config.PIC = 1      # turn on PIC
-        t2 = quad_sim(t, config.Ts, quad2, ctrl2, wind, traj2, fala, obsPF, config)
+        t2 = quad_sim(t, config.Ts, quad2, ctrl2, wind, traj2, fala, obsPF2, config)
         
         # Collect data from this timestep
         # -------------------------------
@@ -165,8 +179,9 @@ def main():
         np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
         #plots
         #utils.makeFigures(quad.params, myData)
-        utils.sameAxisAnimation(config, myData, traj, quad.params, obsPF, myColour = 'blue')
-        utils.sameAxisAnimation(config, myData2, traj2, quad2.params, obsPF, myColour = 'red')
+        #sameAxisAnimation2(config, myData, traj, quad.params, obsPF, myColour = 'blue')
+        #sameAxisAnimation2(config, myData2, traj2, quad2.params, obsPF, myColour = 'red')
+        sameAxisAnimation2(config, myData, traj, quad.params, myData2, traj2, quad2.params, obsPF, 'blue', 'green')
         plt.show()
 
 
