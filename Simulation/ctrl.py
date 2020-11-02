@@ -406,7 +406,7 @@ class Control:
         
         
     # Tuner (adjusts the tuning gains based on parameters received)
-    # ------------------------
+    # -------------------------------------------------------------
     def tune(self,selPars):
                              
             # Position P gains
