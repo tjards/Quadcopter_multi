@@ -31,7 +31,7 @@ class config():
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-        self.Tf = 2000 #26
+        self.Tf = 1000 #26
         self.ifsave = 0
         self.trialLen = 3
         self.wpType = 0   # now inked to dolearn
@@ -63,13 +63,13 @@ class config():
         # -------------------------------
         self.o1 = np.array([-2.1, 0, -3],)           # obstacle 1 (x,y,z)
         self.o2 = np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
-        self.o3 = np.array([0, 2.5, -2.5])           # obstacle 2 (x,y,z)
+        self.o3 = np.array([0, 2.5, -2.5])           # obstacle 3 (x,y,z)
         
         # Learning stuff
         # ---------------
-        self.nParams = 14 
-        self.nOptions = 10
-        self.optionsInterval = [0.1,2] 
+        self.nParams = 14       # for now this must be 14, based on the control architecture 
+        self.nOptions = 6
+        self.optionsInterval = [0.1,5] 
         self.wpRange = 2
         self.learnRate = 0.15 
         self.doLearn = 1

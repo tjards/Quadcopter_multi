@@ -55,7 +55,7 @@ class falaObj:
         self.error_pos    = np.zeros(3)
         self.error_vel   = np.zeros(3)
         self.trialLen = trialLen
-        self.trialCounter = 0 
+        #self.trialCounter = 0 
         self.error_accumulated = 0.0
         self.doLearn = doLearn
         self.nVeh = nVeh
@@ -81,7 +81,11 @@ class falaObj:
         self.selectedVals=np.zeros((1,self.nParams))
         self.selectedVals[0,:]=self.optionsTable[0,:]
         
-    
+        
+        #travis new idea
+        self.trialCounter2 = 0
+        self.flag = 0
+        
         #print('FALA Object created')
         #print('FALA Object has ',nParams, ' parameters, each with ',nOptions,' options')
         #print('Options Table:',self.OptionsTable)
@@ -158,8 +162,9 @@ class falaObj:
         
             # Compute error for learning (using last timestep's params)
             self.computeError(quad,traj)
-            self.trialCounter += Ts/self.nVeh
-            if self.trialCounter > self.trialLen: #if the trial is over (remember # of vehicles matters)
+            #self.trialCounter += Ts/self.nVeh
+            #if self.trialCounter > self.trialLen: #if the trial is over (remember # of vehicles matters)
+            if t > traj.t_wps[int(self.trialCounter2)+1]: #if the trial is over (remember # of vehicles matters)
                 # compute the reward signal
                 self.computeReward(self.error_accumulated)
                 # update the probabilities
@@ -169,17 +174,51 @@ class falaObj:
                 # send tuning parameters to controller (for next iteration)
                 ctrl.tune(selPars)
                 #print
-                print('Trial completed: ', t)
+                #print('Trial completed: ', t)
+                #print(self.pVector)
+                #print('Err Acc/Avg: ', self.error_accumulated/self.costAvg, 'reward: ', self.reward  )
+                #print('Accumulated Error = ', )
                 #print('Trial completed at ', t, 'secs,',' max prob = ',np.amax(self.Qtable,axis=0))
                 #print('selected values: ',self.selectedVals)
                 #print('reward signal: ',self.reward)
                 #print('error = ',self.error_accumulated)
                 # reset counter
                 #self.trialCounter = 0
-                self.trialCounter = Ts
+                #self.trialCounter = Ts
                 # reset accumulated error
-                self.error_accumulated = 0   
-       
+                self.error_accumulated = 0
+                self.trialCounter2 += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.1 and self.flag == 0:
+                    print('10 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.2 and self.flag == 1:
+                    print('20 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.3 and self.flag == 2:
+                    print('30 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.4 and self.flag == 3:
+                    print('40 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.5 and self.flag == 4:
+                    print('50 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.6 and self.flag == 5:
+                    print('60 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.7 and self.flag == 6:
+                    print('70 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.8 and self.flag == 7:
+                    print('80 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.9 and self.flag == 8:
+                    print('90 percent done at', t, 'sec')
+                    self.flag += 1
+                if np.amin(np.amax(self.Qtable, 0)) > 0.95 and self.flag == 9:
+                    print('95 percent done at', t, 'sec')
+                    self.flag += 1
+        
         
 
 
