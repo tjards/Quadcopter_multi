@@ -31,10 +31,10 @@ class config():
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-        self.Tf = 26
+        self.Tf = 500 # 26
         self.ifsave = 0
         self.trialLen = 3
-        self.wpType = 0   # now inked to dolearn
+        self.wpType = 1   # [0 = fixed, 1 = random, 2 = TBD , 3 = learning (linked to doLearn below)] 
         self.nVeh = 2    # don't mess with this yet, I need to make this a reference in main()
          
         # Choose trajectory settings
@@ -67,20 +67,19 @@ class config():
         
         # Learning stuff
         # ---------------
+        self.doLearn = 1
         #self.nParams = 14       # moved lower based on the control architecture 
         self.nOptions = 6
         self.optionsInterval = [0.9,1.1] 
-        self.wpRange = 1
-        self.learnRate = 0.15
+        self.wpRange = 2
+        self.learnRate = 0.2
         self.a = 1               # weight of positive reinforcement (default one)
         self.b = 0               # weight of negative reinforcement (default zero)
         self.learnWhat = [0, 0, 1, 0]
         #                [1 = pos (2), 1 = vel (6), 1 = att (2), 1 = rate (4)]   
         self.nParams = 2*self.learnWhat[0] + 6*self.learnWhat[1] + 2*self.learnWhat[2] + 4*self.learnWhat[3] 
-        self.doLearn = 1
         if self.doLearn == 1:
             self.wpType = 3     # wp type must be 3 for learning (see waypoints.py)
-            #self.trialLen = 3  # moved to Simulation setup above, for consistency 
     
     
         

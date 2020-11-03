@@ -56,9 +56,10 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     quad.update(t, Ts, ctrl.w_cmd, wind, config)
     t += Ts
 
-    # Learn from the trial
+    # Learn from the trial 
     # --------------------------
-    fala.learn(quad,traj,ctrl,Ts,t)
+    if fala != 0:
+        fala.learn(quad,traj,ctrl,Ts,t)
     
     # Trajectory for Desired States (for next iteration)
     # ---------------------------
@@ -156,8 +157,9 @@ def main():
         # ------------------------------
         #config.PIC = 0      # turn off PIC
         t = quad_sim(t, config.Ts, quad, ctrl, wind, traj, fala, obsPF, config)
+        
         #config.PIC = 0      # turn off PIC
-        t2 = quad_sim(t, config.Ts, quad2, ctrl2, wind, traj2, fala, obsPF2, config)
+        t2 = quad_sim(t, config.Ts, quad2, ctrl2, wind, traj2, 0, obsPF2, config)
         
         # Collect data from this timestep
         # -------------------------------
