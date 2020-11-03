@@ -407,53 +407,89 @@ class Control:
         
     # Tuner (adjusts the tuning gains based on parameters received)
     # -------------------------------------------------------------
-    def tune(self,selPars):
+    def tune(self,selPars, learnWhat):
                              
+            tIndex = 0
+            
             # Position P gains
-            cTune_Py    = selPars[0]
-            cTune_Px    = cTune_Py # due to symetry 
-            cTune_Pz    = selPars[1]
-            #consolidate
-            self.cTune_pos_P_gain = np.array([cTune_Px, cTune_Py, cTune_Pz])
+            if learnWhat[0]:
+                #cTune_Py    = selPars[0]
+                cTune_Py    = selPars[tIndex]
+                tIndex += 1
+                cTune_Px    = cTune_Py # due to symetry 
+                #cTune_Pz    = selPars[1]
+                cTune_Pz    = selPars[tIndex]
+                tIndex += 1
+                #consolidate
+                self.cTune_pos_P_gain = np.array([cTune_Px, cTune_Py, cTune_Pz])
     
             # Velocity P-D gains
-            # x-dir
-            cTune_Pxdot = selPars[2]
-            cTune_Dxdot = selPars[3]
-            cTune_Ixdot = selPars[4]
-            # y-dir
-            cTune_Pydot = cTune_Pxdot # due to symmetry 
-            cTune_Dydot = cTune_Dxdot # due to symmetry 
-            cTune_Iydot = cTune_Ixdot # due to symmetry 
-            # z-dir
-            cTune_Pzdot = selPars[5]
-            cTune_Dzdot = selPars[6]
-            cTune_Izdot = selPars[7]
-            # consolidate
-            self.cTune_vel_P_gain = np.array([cTune_Pxdot, cTune_Pydot, cTune_Pzdot])
-            self.cTune_vel_D_gain = np.array([cTune_Dxdot, cTune_Dydot, cTune_Dzdot])
-            self.cTune_vel_I_gain = np.array([cTune_Ixdot, cTune_Iydot, cTune_Izdot])
+            if learnWhat[1]:
+                # x-dir
+                #cTune_Pxdot = selPars[2]
+                #cTune_Dxdot = selPars[3]
+                #cTune_Ixdot = selPars[4]
+                cTune_Pxdot = selPars[tIndex]
+                tIndex += 1
+                cTune_Dxdot = selPars[tIndex]
+                tIndex += 1
+                cTune_Ixdot = selPars[tIndex]
+                tIndex += 1
+                
+                # y-dir
+                cTune_Pydot = cTune_Pxdot # due to symmetry 
+                cTune_Dydot = cTune_Dxdot # due to symmetry 
+                cTune_Iydot = cTune_Ixdot # due to symmetry 
+                # z-dir
+                #cTune_Pzdot = selPars[5]
+                #cTune_Dzdot = selPars[6]
+                #cTune_Izdot = selPars[7]
+                cTune_Pzdot = selPars[tIndex]
+                tIndex += 1
+                cTune_Dzdot = selPars[tIndex]
+                tIndex += 1
+                cTune_Izdot = selPars[tIndex]
+                tIndex += 1
+ 
+                # consolidate
+                self.cTune_vel_P_gain = np.array([cTune_Pxdot, cTune_Pydot, cTune_Pzdot])
+                self.cTune_vel_D_gain = np.array([cTune_Dxdot, cTune_Dydot, cTune_Dzdot])
+                self.cTune_vel_I_gain = np.array([cTune_Ixdot, cTune_Iydot, cTune_Izdot])
             
             # Attitude P gains
-            cTune_Pphi = selPars[8]
-            cTune_Ptheta = cTune_Pphi #due to symmetry 
-            cTune_Ppsi = selPars[9]
-            #cTune_PpsiStrong = 1
-            #consolidate
-            self.cTune_att_P_gain = np.array([cTune_Pphi, cTune_Ptheta, cTune_Ppsi])
+            if learnWhat[2]:
+                #cTune_Pphi = selPars[8]
+                cTune_Pphi = selPars[tIndex]
+                tIndex += 1
+                cTune_Ptheta = cTune_Pphi #due to symmetry 
+                #cTune_Ppsi = selPars[9]
+                cTune_Ppsi = selPars[tIndex]
+                tIndex += 1
+                #cTune_PpsiStrong = 1
+                #consolidate
+                self.cTune_att_P_gain = np.array([cTune_Pphi, cTune_Ptheta, cTune_Ppsi])
             
             # Rate P-D gains
-            # p
-            cTune_Pp = selPars[10]
-            cTune_Dp = selPars[11]
-            # q
-            cTune_Pq = cTune_Pp #due to symmetry 
-            cTune_Dq = cTune_Dp #due to symmetry 
-            # r
-            cTune_Pr = selPars[12]
-            cTune_Dr = selPars[13]
-            #consolidate
-            self.cTune_rate_P_gain = np.array([cTune_Pp, cTune_Pq, cTune_Pr])
-            self.cTune_rate_D_gain = np.array([cTune_Dp, cTune_Dq, cTune_Dr])
+            if learnWhat[3]:
+                # p
+                #cTune_Pp = selPars[10]
+                #cTune_Dp = selPars[11]
+                cTune_Pp = selPars[tIndex]
+                tIndex += 1
+                cTune_Dp = selPars[tIndex]
+                tIndex += 1
+                # q
+                cTune_Pq = cTune_Pp #due to symmetry 
+                cTune_Dq = cTune_Dp #due to symmetry 
+                # r
+                #cTune_Pr = selPars[12]
+                #cTune_Dr = selPars[13]
+                cTune_Pr = selPars[tIndex]
+                tIndex += 1
+                cTune_Dr = selPars[tIndex]
+                tIndex += 1
+                #consolidate
+                self.cTune_rate_P_gain = np.array([cTune_Pp, cTune_Pq, cTune_Pr])
+                self.cTune_rate_D_gain = np.array([cTune_Dp, cTune_Dq, cTune_Dr])
 
     

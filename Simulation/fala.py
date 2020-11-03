@@ -43,6 +43,8 @@ class falaObj:
         trialLen = config.trialLen
         doLearn = config.doLearn
         nVeh = config.nVeh
+        configa = config.a
+        configb = config.b
         
         #attributes
         self.nParams = nParams                              # how many parameters are being tuned
@@ -73,8 +75,8 @@ class falaObj:
         #initialize attributes used to update the Qtable
         self.learnRate = learnRate
         self.probLimit = 1       # maximum probabillity (default 1, related to exploit vs explore)
-        self.a = 1               # weight of positive reinforcement (default one)
-        self.b = 0               # weight of negative reinforcement (default zero)
+        self.a = configa               # weight of positive reinforcement (default one)
+        self.b = configb               # weight of negative reinforcement (default zero)
         self.pVector=np.zeros((1,self.nParams))
         self.pVector[0,:]=self.Qtable[0,:]        # initialize pVector using first row of Q table
         self.selectedIndex=np.zeros((1,self.nParams),dtype=int) 
@@ -85,6 +87,7 @@ class falaObj:
         #travis new idea
         self.trialCounter2 = 0
         self.flag = 0
+        self.learnWhat = config.learnWhat
         
         #print('FALA Object created')
         #print('FALA Object has ',nParams, ' parameters, each with ',nOptions,' options')
@@ -172,7 +175,7 @@ class falaObj:
                 # update tuning parameters from fala (for next iteration)
                 selPars = self.getParams()
                 # send tuning parameters to controller (for next iteration)
-                ctrl.tune(selPars)
+                ctrl.tune(selPars, self.learnWhat)
                 #print
                 #print('Trial completed: ', t)
                 #print(self.pVector)

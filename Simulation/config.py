@@ -31,7 +31,7 @@ class config():
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-        self.Tf = 1000 #26
+        self.Tf = 26
         self.ifsave = 0
         self.trialLen = 3
         self.wpType = 0   # now inked to dolearn
@@ -67,16 +67,22 @@ class config():
         
         # Learning stuff
         # ---------------
-        self.nParams = 14       # for now this must be 14, based on the control architecture 
+        #self.nParams = 14       # moved lower based on the control architecture 
         self.nOptions = 6
-        self.optionsInterval = [0.1,5] 
-        self.wpRange = 2
-        self.learnRate = 0.15 
+        self.optionsInterval = [0.9,1.1] 
+        self.wpRange = 1
+        self.learnRate = 0.15
+        self.a = 1               # weight of positive reinforcement (default one)
+        self.b = 0               # weight of negative reinforcement (default zero)
+        self.learnWhat = [0, 0, 1, 0]
+        #                [1 = pos (2), 1 = vel (6), 1 = att (2), 1 = rate (4)]   
+        self.nParams = 2*self.learnWhat[0] + 6*self.learnWhat[1] + 2*self.learnWhat[2] + 4*self.learnWhat[3] 
         self.doLearn = 1
         if self.doLearn == 1:
             self.wpType = 3     # wp type must be 3 for learning (see waypoints.py)
-        #self.trialLen = 3  # moved to Simulation setup below, for consistency 
-        
+            #self.trialLen = 3  # moved to Simulation setup above, for consistency 
+    
+    
         
     
     #return orient, usePrecession, Ti, Ts, Tf, ifsave, ctrlOptions, trajSelect, ctrlType, trajSelect
