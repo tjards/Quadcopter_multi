@@ -177,8 +177,8 @@ def main():
     # save data
     if config.ifsave:
         # text
-        np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
-        np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
+        #np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
+        #np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
         #plots
         #utils.makeFigures(quad.params, myData)
         #sameAxisAnimation2(config, myData, traj, quad.params, obsPF, myColour = 'blue')

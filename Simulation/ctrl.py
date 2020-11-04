@@ -65,6 +65,7 @@ Pq = Pp
 Dq = Dp 
 
 Pr = 1.0
+#Pr = 0.3 # intentionally wrong
 Dr = 0.1
 
 rate_P_gain = np.array([Pp, Pq, Pr])

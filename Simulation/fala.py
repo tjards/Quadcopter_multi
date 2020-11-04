@@ -150,9 +150,11 @@ class falaObj:
             # randomly select an option according to the current distribution in the Q table
             self.selectedIndex[0,i] = (np.cumsum(self.Qtable[:,i]) >= np.random.random()).argmax()
             # selected value cooresponding to that index
-            self.selectedVals[0,i] = self.optionsTable[self.selectedIndex[0,i],0]
+            ### self.selectedVals[0,i] = self.optionsTable[self.selectedIndex[0,i],0]
+            self.selectedVals[0,i] = self.optionsTable[self.selectedIndex[0,i],i] # Travis I think this was the source of the duplicate Qtable error
             # build a new vector composed of the corresponding probabilities 
-            self.pVector[0,i]=self.Qtable[self.selectedIndex[0,i],0]
+            #### self.pVector[0,i]=self.Qtable[self.selectedIndex[0,i],0]
+            self.pVector[0,i]=self.Qtable[self.selectedIndex[0,i],i] # Travis I think this was the source of same duplicated Qtable error
             #Return the parameters
         
         return self.selectedVals.transpose().ravel()
@@ -189,6 +191,8 @@ class falaObj:
                 #self.trialCounter = 0
                 #self.trialCounter = Ts
                 # reset accumulated error
+                print(t)
+                print(self.Qtable)
                 self.error_accumulated = 0
                 self.trialCounter2 += 1
                 if np.amin(np.amax(self.Qtable, 0)) > 0.1 and self.flag == 0:
