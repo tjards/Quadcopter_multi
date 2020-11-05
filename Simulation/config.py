@@ -31,7 +31,7 @@ class config():
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-        self.Tf = 1000 # 26
+        self.Tf = 1500 # 26
         self.ifsave = 0
         self.trialLen = 3
         self.wpType = 1   # [0 = fixed, 1 = random, 2 = TBD , 3 = learning (linked to doLearn below)] 
@@ -69,10 +69,10 @@ class config():
         # ---------------
         self.doLearn = 1
         #self.nParams = 14       # moved lower based on the control architecture 
-        self.nOptions = 5
+        self.nOptions = 7
         self.optionsInterval = [0.1,5] 
-        self.wpRange = 2
-        self.learnRate = 0.2
+        self.wpRange = 1
+        self.learnRate = 0.1
         self.a = 1               # weight of positive reinforcement (default one)
         self.b = 0               # weight of negative reinforcement (default zero)
         self.learnWhat = [0, 0, 0, 1]

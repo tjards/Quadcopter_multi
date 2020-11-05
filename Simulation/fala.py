@@ -191,8 +191,8 @@ class falaObj:
                 #self.trialCounter = 0
                 #self.trialCounter = Ts
                 # reset accumulated error
-                print(t)
-                print(self.Qtable)
+                #print(t)
+                #print(self.Qtable)
                 self.error_accumulated = 0
                 self.trialCounter2 += 1
                 if np.amin(np.amax(self.Qtable, 0)) > 0.1 and self.flag == 0:

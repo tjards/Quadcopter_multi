@@ -58,14 +58,14 @@ PpsiStrong = 8
 att_P_gain = np.array([Pphi, Ptheta, Ppsi])
 
 # Rate P-D gains
-Pp = 1.5
+#Pp = 1.5
+Pp = 0.4 # intentionally wrong
 Dp = 0.04
 
 Pq = Pp
 Dq = Dp 
 
 Pr = 1.0
-#Pr = 0.3 # intentionally wrong
 Dr = 0.1
 
 rate_P_gain = np.array([Pp, Pq, Pr])
