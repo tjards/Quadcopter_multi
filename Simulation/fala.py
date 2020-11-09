@@ -108,6 +108,9 @@ class falaObj:
         self.error=np.sum(self.error_pos)
         self.error_accumulated += self.error #this resets after trials
         
+        #ctrl.rate_sp - quad.omega # (possible cost function for rate control)
+        
+        
 
     # Compute reward signal (after total trials accumulateded @ 0.005, remember to reset whatever trial clock)
     # --------------------

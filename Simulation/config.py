@@ -31,8 +31,8 @@ class config():
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-        self.Tf = 1500 # 26
-        self.ifsave = 0
+        self.Tf = 5 #1500 # 26
+        self.ifsave = 1
         self.trialLen = 3
         self.wpType = 1   # [0 = fixed, 1 = random, 2 = TBD , 3 = learning (linked to doLearn below)] 
         self.nVeh = 2    # don't mess with this yet, I need to make this a reference in main()
@@ -57,17 +57,18 @@ class config():
         
         # Choose Obstacle Avoidance settings
         # ----------------------------------
-        self.PIC = 0    # do we want to using planar inequality constraint shifting
+        self.PIC = 0    # do we want to using planar inequality constraint shifting?
+        self.PF = 1     # do we want to use potential fields?
         
-        # Create a Potential Field object
-        # -------------------------------
+        # Create obstacle(s)
+        # -----------------------------------------
         self.o1 = np.array([-2.1, 0, -3],)           # obstacle 1 (x,y,z)
         self.o2 = np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
         self.o3 = np.array([0, 2.5, -2.5])           # obstacle 3 (x,y,z)
         
         # Learning stuff
         # ---------------
-        self.doLearn = 1
+        self.doLearn = 0
         #self.nParams = 14       # moved lower based on the control architecture 
         self.nOptions = 7
         self.optionsInterval = [0.1,5] 

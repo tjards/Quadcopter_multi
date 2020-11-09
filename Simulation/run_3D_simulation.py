@@ -77,7 +77,8 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
 
     # Update the trajectory for obstacles with potential fields 
     # ---------------------------       
-    obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
+    if config:
+        obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
 
     # Generate Commands (for next iteration)
     # ---------------------------
@@ -95,11 +96,12 @@ def main():
 
     # Initialize Quadcopter, Controller, Wind, Result Matrixes
     # ---------------------------
+    wind = Wind('None', 2.0, 90, -15)
+        
     quad = Quadcopter(config)
     traj = Trajectory(quad, config.ctrlType, config.trajSelect, config)
     ctrl = Control(quad, traj.yawType)
-    wind = Wind('None', 2.0, 90, -15)
-    
+
     # second vehicle
     quad2 = Quadcopter(config)
     traj2 = Trajectory(quad2, config.ctrlType, config.trajSelect, config)
