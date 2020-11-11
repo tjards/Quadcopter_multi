@@ -10,8 +10,8 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 ## Results
 
 <p float="left">
-  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pf_animation_multi_blue_and_green.gif" width="65%" />
-  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pic_animation_multi_blue_and_green.gif" width="65%" />
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pf_animation_multi_blue_and_green.gif" width="45%" />
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pic_animation_multi_blue_and_green.gif" width="45%" />
 </p>
 
 
