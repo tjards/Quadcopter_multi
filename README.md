@@ -4,6 +4,35 @@ This project expands on the previous work to include multi-agent obstacle avoida
 
 Track the project progress [here](https://github.com/users/tjards/projects/3)
 
+
+
+
+## Results
+
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pf_animation_multi_blue_and_green.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure ?** - Potential Fields Only (path)
+
+<div align="left"> 
+
+
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pic_animation_multi_blue_and_green.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure ?** - Potential Fields with Shifting PICs
+
+<div align="left"> 
+
+
+
+
 **Planar Inequality Constraint Shifting** described here:
 - P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
 
