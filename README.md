@@ -4,16 +4,17 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 - Implement multiple vehicles and obstacle avoidance 
 - Improve on standard potential fields using shifting planar inequality constraints
-- Tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA)
+- Tune the proportional-integral-derivative (PID) gains in real-time using Reinforcement Learning 
 
 **Status**: The code is working; just cleaning things up. Track the project progress [here](https://github.com/users/tjards/projects/3)
 
-# Motivation
+## Motivation
 
-**Why shifting planary inequality constraints?**
-Potential Fields is common strategy for obstacle avoidance. It's simple and effective but is not tailored for aerial vehicles. As opposed to ground vehicles, aerial vehicles require constant corrections to stay in flight. These unique energy characteristics motivate our work in improving on potential fields so that aerial vehicles can save energy when maneuvering around obstacles.   
+**Why implement shifting planary inequality constraints?**
+Potential Fields is common strategy for obstacle avoidance. It is simple and effective but is not tailored for aerial vehicles. As opposed to ground vehicles, aerial vehicles require constant corrections to stay in flight. These unique energy characteristics motivate our work in improving on potential fields so that aerial vehicles can save energy when maneuvering around obstacles.   
 
-
+**Why implement reinforcement learning?**
+Designing a controller for aerial vehicles involves tuning a number of parameters (gains). These can be derived from first principles or, as we have done here, through data-drive methods like reinforcement learning. 
 
 ## Relevant Publications
 
