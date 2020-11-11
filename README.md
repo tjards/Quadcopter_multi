@@ -7,7 +7,7 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 
 
-## Results
+## Smoother Trajectory Tracking Amidst Obstacles 
 
 <p float="left">
   <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pf_animation_multi_blue_and_green.gif" width="45%" />
@@ -31,13 +31,16 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 <div align="left"> 
 
-
+## Relevant References 
 
 **Planar Inequality Constraint Shifting** described here:
 - P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
 
 **Potential Fields** described here:
 - A. Woods and H. La, [A Novel Potential Field Controller for Use on Aerial Robots](https://arxiv.org/pdf/1704.04672.pdf) , *arXiv*, 15 Apr 2017
+
+
+<!---
 
 ## Initial Result (Multi-agent)
 
@@ -50,6 +53,9 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 **Figure ?** - Multi-agent with Obstacle Avoidance
 
 <div align="left"> 
+
+--->
+
 
 
 ## Initial Results (Obstacle Avoidance)
