@@ -5,7 +5,7 @@ This project expands on the previous work to include multi-agent obstacle avoida
 Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 
-
+# Results - Obstacle Avoidance 
 
 ## Smoother Trajectory Tracking Amidst Obstacles 
 
@@ -114,15 +114,13 @@ Obstacle avoidance using Potential Fields for obstacles at (-2, -1, -3) and (3, 
 --->
 
 
-# Automatic Controller Tuning using Reinforcement Learning: Application to Quadcopter  
+# Results - Automatic Controller Tuning using Reinforcement Learning  
 
 This project implements Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the following paper:
 
 *P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal*
 
 In short, we modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass @ MIT (available in the fork preceding this repository) to tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA).
-
-
 
 
 ## Results
