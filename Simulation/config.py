@@ -33,6 +33,7 @@ class config():
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
         self.Tf = 26 #1500 # 26
         self.ifsave = 1
+        self.ifsavedata = 0     # subset of ifsave
         self.trialLen = 3
         self.wpType = 0   # [0 = fixed, 1 = random, 2 = TBD , 3 = learning (linked to doLearn below)] 
         self.nVeh = 2    # don't mess with this yet, I need to make this a reference in main()

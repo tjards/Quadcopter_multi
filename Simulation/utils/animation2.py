@@ -127,8 +127,8 @@ def sameAxisAnimation2(config, myData, traj, params, myData2, traj2, params2, ob
     ax.set_zlabel('Altitude')
 
     titleTime = ax.text2D(0.05, 0.95, "", transform=ax.transAxes)
-    titleVeh1 = ax.text2D(0.05, 0.91, "drone 1 (PF)", color=myColour, transform=ax.transAxes)
-    titleVeh2 = ax.text2D(0.05, 0.87, "drone 2 (PF + PICS)", color=myColour2, transform=ax.transAxes)
+    titleVeh1 = ax.text2D(0.05, 0.91, "vehicle 1", color=myColour, transform=ax.transAxes)
+    titleVeh2 = ax.text2D(0.05, 0.87, "vehicle 2", color=myColour2, transform=ax.transAxes)
 
     # first vehicle
     trajType = ''

@@ -221,3 +221,14 @@ def makeFigures(params, myData):
     plt.xlabel('Time (s)')
     plt.ylabel('Position Error (m)')
     plt.draw()
+    
+    plt.figure()
+    plt.plot(time, - np.cumsum(np.cumsum(torque, axis=0), axis = 1)[:,3])
+    #plt.title('Total Energy Draw')
+    plt.grid(True)
+    #plt.legend(['Pos x error','Pos y error','Pos z error'])
+    plt.xlabel('Time (s)')
+    plt.ylabel('Total Energy Draw (J)')
+    plt.draw()
+    
+    

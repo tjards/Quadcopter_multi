@@ -180,10 +180,36 @@ def main():
             np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
             #np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
             np.savetxt("Data/errors.csv", myDataList[0].falaError_all, delimiter=",",header=" ")
+            
+        # save energy draw    
+        torque0 = myDataList[0].tor_all 
+        eDraw0 = np.cumsum(np.cumsum(torque0, axis=0), axis = 1)[:,3]
+        np.save('Data/energyDepletion_veh0',eDraw0)
+        torque1 = myDataList[1].tor_all 
+        eDraw1 = np.cumsum(np.cumsum(torque1, axis=0), axis = 1)[:,3]
+        np.save('Data/energyDepletion_veh1',eDraw1)
         
-        np.save('Data/myData_veh_0',myDataList[0])
-        np.save('Data/myData_veh_1',myDataList[1])
-    
+        
+        if config.ifsavedata:
+            #save states
+            x    = myDataList[0].pos_all[:,0]
+            y    = myDataList[0].pos_all[:,1]
+            z    = myDataList[0].pos_all[:,2]
+            x_sp  = myDataList[0].sDes_calc_all[:,0]
+            y_sp  = myDataList[0].sDes_calc_all[:,1]
+            z_sp  = myDataList[0].sDes_calc_all[:,2]
+            states0 = np.vstack([x,y,z,x_sp,y_sp,z_sp]).transpose()
+            np.save('Data/states0',states0)
+            x    = myDataList[1].pos_all[:,0]
+            y    = myDataList[1].pos_all[:,1]
+            z    = myDataList[1].pos_all[:,2]
+            x_sp  = myDataList[1].sDes_calc_all[:,0]
+            y_sp  = myDataList[1].sDes_calc_all[:,1]
+            z_sp  = myDataList[1].sDes_calc_all[:,2]
+            states1 = np.vstack([x,y,z,x_sp,y_sp,z_sp]).transpose()
+            np.save('Data/states1',states1)
+        
+        
     #return ani
 
 
