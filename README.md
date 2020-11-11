@@ -18,13 +18,13 @@ Designing a controller for aerial vehicles involves tuning a number of parameter
 
 ## Relevant Publications
 
-**Planar Inequality Constraint Shifting** described here:
+**Planar Inequality Constraint Shifting** described here (applied to the more sophisticated control technique, Model Predictive Control ):
 - P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
 
 **Potential Fields** described here:
 - A. Woods and H. La, [A Novel Potential Field Controller for Use on Aerial Robots](https://arxiv.org/pdf/1704.04672.pdf) , *arXiv*, 2017
 
-**Fintite-set Learning Automata** described here:
+**Fintite-set Learning Automata** described here (from a systems-of-system perspective):
 - P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal, July 2020
 
 
