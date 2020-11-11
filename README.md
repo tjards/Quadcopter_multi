@@ -14,6 +14,11 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
   <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pic_animation_multi_blue_and_green.gif" width="45%" />
 </p>
 
+<div align="center"> 
+
+**Figure ?** - (a) Potential Fields only (b) With shifting planar inequalities
+
+<div align="left"> 
 
 
 
