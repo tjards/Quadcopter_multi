@@ -44,6 +44,7 @@ from potentialField import potentialField as pf
 import utils.collectData as collect
 import config as simConfig
 import utils.QP as QP
+from utils.animation import sameAxisAnimation as sameAxisAnimation
 from utils.animation2 import sameAxisAnimation2 as sameAxisAnimation2
 
 
@@ -57,27 +58,25 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     t += Ts
 
     # Learn from the trial 
-    # --------------------------
+    # ---------------------
     if fala != 0:
         fala.learn(quad,traj,ctrl,Ts,t)
     
     # Trajectory for Desired States (for next iteration)
-    # ---------------------------
+    # -------------------------------------------------
     sDes = traj.desiredState(t, Ts, quad)
 
     # Use PIC shifting to move target
-    # note: just try with first obstacle for now
-    # to slow down the shifting, do it at 1/10th speed
-    # -----------------------
+    # -------------------------------
     if config.PIC:
         xv = np.reshape(quad.state[0:3], (1,3))
         xt = np.reshape(traj.sDes[0:3], (1,3))
-        cx = QP.moveTarget(quad.state, obsPF.Po, xv, xt, 0.1, 0.1, 0.3)
+        cx = QP.moveTarget(quad.state, obsPF.Po, xv, xt, 0.1, 0.1, 0.5)
         traj.sDes[0:3] = np.array(cx['x'][:]) 
 
-    # Update the trajectory for obstacles with potential fields 
-    # ---------------------------       
-    if config:
+    # Avoid obstacles using potential fields 
+    # --------------------------------------       
+    if config.PF:
         obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
 
     # Generate Commands (for next iteration)
@@ -97,81 +96,65 @@ def main():
     # Initialize Quadcopter, Controller, Wind, Result Matrixes
     # ---------------------------
     wind = Wind('None', 2.0, 90, -15)
+    
+    # Initialize list for objects
+    # ---------------------------
+    numTimeStep = int(config.Tf/config.Ts+1)
+    quadList = []
+    trajList = []
+    ctrlList = []
+    sDesList = []
+    obsPFList = []
+    myDataList = []   
+    
+    for objectIndex in range(0,config.nVeh):
         
-    quad = Quadcopter(config)
-    traj = Trajectory(quad, config.ctrlType, config.trajSelect, config)
-    ctrl = Control(quad, traj.yawType)
-
-    # second vehicle
-    quad2 = Quadcopter(config)
-    traj2 = Trajectory(quad2, config.ctrlType, config.trajSelect, config)
-    ctrl2 = Control(quad2, traj2.yawType)
+        quadList.append(Quadcopter(config))
+        trajList.append(Trajectory(quadList[objectIndex], config.ctrlType, config.trajSelect, config))
+        ctrlList.append(Control(quadList[objectIndex], trajList[objectIndex].yawType))
+        sDesList.append(trajList[objectIndex].desiredState(0, config.Ts, quadList[objectIndex]) )
+        obsPFList.append(pf(trajList[objectIndex], np.vstack((config.o1,config.o2,config.o3,quadList[objectIndex-1].state[0:3])).transpose() , gamma=1, eta=0.2, obsRad=0.5))
+        # generate first command
+        ctrlList[objectIndex].controller(trajList[objectIndex], quadList[objectIndex], sDesList[objectIndex], config)
 
     # Create learning object
     # ---------------------------
-    # for the controller
     fala = falaObj(config)
-    
-    # Trajectory for First Desired States
-    # ---------------------------
-    sDes = traj.desiredState(0, config.Ts, quad) 
-    sDes2 = traj2.desiredState(0, config.Ts, quad2) 
-
-    # Create a Potential Field object
-    # -------------------------------
-    o1 = config.o1  # np.array([-2.1, 0, -3],)           # obstacle 1 (x,y,z)
-    o2 = config.o2  # np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
-    o3 = config.o3  # np.array([0, 2.5, -2.5])           # obstacle 2 (x,y,z)
-    #Po = np.vstack((o1,o2)).transpose()     # stack obstacles
-    Po = np.vstack((o1,o2,o3,quad2.state[0:3])).transpose()     # stack obstacles (include other vehicle)
-    Po2 = np.vstack((o1,o2,o3,quad.state[0:3])).transpose() 
-    
-    obsPF = pf(traj, Po, gamma=1, eta=0.5, obsRad=1)
-    obsPF2 = pf(traj2, Po2, gamma=1, eta=0.5, obsRad=1)
-    
-    # Generate First Commands
-    # ---------------------------
-    ctrl.controller(traj, quad, sDes, config)
-    ctrl2.controller(traj2, quad2, sDes2, config)
     
     # Initialize Result Matrixes
     # ---------------------------
-    numTimeStep = int(config.Tf/config.Ts+1)
-    myData = collect.quadata(quad, traj, ctrl, fala, config.Ti, numTimeStep)
-    myData2 = collect.quadata(quad2, traj2, ctrl2, fala, config.Ti, numTimeStep)
-
+    for objectIndex in range(0,config.nVeh):
+        # initialize result matrices
+        myDataList.append(collect.quadata(quadList[objectIndex], trajList[objectIndex], ctrlList[objectIndex], fala, config.Ti, numTimeStep))
+    
     # Run Simulation
     # ---------------------------
-    t = config.Ti
+    t = config.Ti*np.ones(config.nVeh) 
+     
     i = 1
-    while round(t,3) < config.Tf:
+    while round(t[0],3) < config.Tf:
         
         # Update the obstacle positions
         # -----------------------------
-        if t > 0.1:
+        if t[0] > 0.1:
             o1 = config.o1  # np.array([-2.1, 0, -3],)           # obstacle 1 (x,y,z)
             o2 = config.o2  # np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
             o3 = config.o3  # np.array([0, 2.5, -2.5])           # obstacle 2 (x,y,z)
-            obsPF.Po = np.vstack((o1,o2,o3,quad2.state[0:3])).transpose()     # stack obstacles (include other vehicle)
-            obsPF2.Po = np.vstack((o1,o2,o3,quad.state[0:3])).transpose() 
-        
+            obsPFList[0].Po = np.vstack((o1,o2,o3,quadList[1].state[0:3])).transpose() 
+            obsPFList[1].Po = np.vstack((o1,o2,o3,quadList[0].state[0:3])).transpose()
+ 
         # Integrate through the dynamics
         # ------------------------------
-        #config.PIC = 0      # turn off PIC
-        t = quad_sim(t, config.Ts, quad, ctrl, wind, traj, fala, obsPF, config)
-        
-        #config.PIC = 0      # turn off PIC
-        t2 = quad_sim(t, config.Ts, quad2, ctrl2, wind, traj2, 0, obsPF2, config)
-        
-        # Collect data from this timestep
-        # -------------------------------
-        myData.collect(t, quad, traj, ctrl, fala, i)
-        myData2.collect(t2, quad2, traj2, ctrl2, fala, i)
+        for objectIndex in range(0,config.nVeh):
+            
+            t[objectIndex] = quad_sim(t[objectIndex], config.Ts, quadList[objectIndex], ctrlList[objectIndex], wind, trajList[objectIndex], fala, obsPFList[objectIndex], config)
+            myDataList[objectIndex].collect(t[objectIndex], quadList[objectIndex], trajList[objectIndex], ctrlList[objectIndex], fala, i)
+
         
         i += 1
     
     end_time = time.time()
-    print("Simulated {:.2f}s in {:.6f}s.".format(t, end_time - start_time))
+    print("Simulated {:.2f}s in {:.6f}s.".format(t[0], end_time - start_time))
     
 
     # View Results
@@ -183,13 +166,23 @@ def main():
         #np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
         #plots
         #utils.makeFigures(quad.params, myData)
+        utils.makeFigures(quadList[0].params, myDataList[0])
         #sameAxisAnimation2(config, myData, traj, quad.params, obsPF, myColour = 'blue')
         #sameAxisAnimation2(config, myData2, traj2, quad2.params, obsPF, myColour = 'red')
-        ani = sameAxisAnimation2(config, myData, traj, quad.params, myData2, traj2, quad2.params, obsPF, 'blue', 'green')
+        #ani = sameAxisAnimation2(config, myData, traj, quad.params, myData2, traj2, quad2.params, obsPF, 'blue', 'green')
+        if config.nVeh == 1:
+            ani = sameAxisAnimation(config, myDataList[0], trajList[0], quadList[0].params, obsPFList[0], myColour = 'blue')      
+        if config.nVeh == 2:
+            ani = sameAxisAnimation2(config, myDataList[0], trajList[0], quadList[0].params, myDataList[1], trajList[1], quadList[1].params, obsPFList[0], 'blue', 'green')
         plt.show()
     
-    np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
-    np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
+        if config.doLearn:
+            np.savetxt("Data/Qtable.csv", fala.Qtable, delimiter=",",header=" ")
+            #np.savetxt("Data/errors.csv", myData.falaError_all, delimiter=",",header=" ")
+            np.savetxt("Data/errors.csv", myDataList[0].falaError_all, delimiter=",",header=" ")
+        
+        np.save('Data/myData_veh_0',myDataList[0])
+        np.save('Data/myData_veh_1',myDataList[1])
     
     #return ani
 

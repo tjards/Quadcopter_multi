@@ -74,8 +74,14 @@ def computeCons(xv, xo, r, ro, rb):
 # ------------------------------------------
 def computeXp(x,xo,r,ro,rb):
         
-        d = np.linalg.norm(x-xo)                            # distance between obs and veh    
-        xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))  # compute centerpoint
+        
+        diff = x-xo
+        d = np.linalg.norm(diff)                            # distance between obs and veh    
+        #xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))  # compute centerpoint
+        if diff.all() == 0:
+            xp = xo
+        else:
+            xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))  # compute centerpoint
 
         return xp, d
 

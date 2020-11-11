@@ -10,7 +10,7 @@ import csv
 import pandas as pd
 
 
-df = pd.read_csv("errors0p1.csv")
+df = pd.read_csv("errors.csv")
 df.plot()
 
 
