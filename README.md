@@ -56,7 +56,7 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 --->
 
-
+<!---
 
 ## Initial Results (Obstacle Avoidance)
 
@@ -111,7 +111,7 @@ Obstacle avoidance using Potential Fields for obstacles at (-2, -1, -3) and (3, 
 
 <div align="left"> 
 
-
+--->
 
 
 # Automatic Controller Tuning using Reinforcement Learning: Application to Quadcopter  
