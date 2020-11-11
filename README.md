@@ -1,6 +1,6 @@
 # Project Description
 
-We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass (available in the fork preceding this repository) to: 
+We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass to: 
 
 - Implement multiple vehicles and obstacle avoidance 
 - Improve on standard potential fields using shifting planar inequality constraints
@@ -20,7 +20,7 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 <div align="center"> 
 
-**Figure ?** - (a) Potential Fields only; (b) With shifting planar inequalities
+**Figure 1** - (a) Potential Fields only; (b) With shifting planar inequalities
 
 <div align="left"> 
 
@@ -31,7 +31,7 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 <div align="center"> 
 
-**Figure ?** - (a) Improvements in Error Accumlation; (b) Energy Savings 
+**Figure 2** - (a) Improvements in Error Accumlation; (b) Energy Savings 
 
 <div align="left"> 
 
@@ -54,7 +54,7 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 <div align="center"> 
 
-**Figure ?** - Multi-agent with Obstacle Avoidance
+**Figure 3** - Multi-agent with Obstacle Avoidance
 
 <div align="left"> 
 
@@ -132,7 +132,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="center"> 
 
-**Figure 1** - Poor performance with unlearned parameters 
+**Figure 4** - Poor performance with unlearned parameters 
 
 <div align="left"> 
 
@@ -143,7 +143,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="center"> 
 
-**Figure 2** - Better performance with learned parameters
+**Figure 5** - Better performance with learned parameters
 
 <div align="left"> 
 
