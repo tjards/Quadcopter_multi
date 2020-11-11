@@ -18,7 +18,7 @@ Designing a controller for aerial vehicles involves tuning a number of parameter
 
 ## Relevant Publications
 
-**Planar Inequality Constraint Shifting** described here (applied to the more sophisticated control technique, Model Predictive Control ):
+**Planar Inequality Constraint Shifting** described here (applied to the more sophisticated control technique, *Model Predictive Control*):
 - P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
 
 **Potential Fields** described here:
