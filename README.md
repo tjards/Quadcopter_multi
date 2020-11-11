@@ -8,6 +8,12 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 **Status**: The code is working; just cleaning things up. Track the project progress [here](https://github.com/users/tjards/projects/3)
 
+# Motivation
+
+**Why shifting planary inequality constraints?**
+Potential Fields is common strategy for obstacle avoidance. It's simple and effective but is not tailored for aerial vehicles. As opposed to ground vehicles, aerial vehicles require constant corrections to stay in flight. These unique energy characteristics motivate our work in improving on potential fields so that aerial vehicles can save energy when maneuvering around obstacles.   
+
+
 
 ## Relevant Publications
 
