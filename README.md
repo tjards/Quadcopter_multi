@@ -16,7 +16,7 @@ Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 <div align="center"> 
 
-**Figure ?** - (a) Potential Fields only (b) With shifting planar inequalities
+**Figure ?** - (a) Potential Fields only    (b) With shifting planar inequalities
 
 <div align="left"> 
 
