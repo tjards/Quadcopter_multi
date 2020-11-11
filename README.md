@@ -9,6 +9,18 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 **Status**: The code is working; just cleaning things up. Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 
+## Relevant References 
+
+**Planar Inequality Constraint Shifting** described here:
+- P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
+
+**Potential Fields** described here:
+- A. Woods and H. La, [A Novel Potential Field Controller for Use on Aerial Robots](https://arxiv.org/pdf/1704.04672.pdf) , *arXiv*, 2017
+
+**Fintite-set Learning Automata** described here:
+- P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal, July 2020
+
+
 # Smoother Trajectory Tracking Amidst Obstacles 
 
 ## Results
@@ -35,13 +47,6 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 <div align="left"> 
 
-## Relevant References 
-
-**Planar Inequality Constraint Shifting** described here:
-- P. T. Jardine, S. Givigi, and S. Yousefi, [Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter](https://www.sciencedirect.com/science/article/pii/S2405896317323091?via%3Dihub) , *IFAC-PapersOnLine*, Volume 50, Issue 1, July 2017, Pages 9095-9100
-
-**Potential Fields** described here:
-- A. Woods and H. La, [A Novel Potential Field Controller for Use on Aerial Robots](https://arxiv.org/pdf/1704.04672.pdf) , *arXiv*, 15 Apr 2017
 
 
 <!---
@@ -120,7 +125,7 @@ Obstacle avoidance using Potential Fields for obstacles at (-2, -1, -3) and (3, 
 
 # Automatic Controller Tuning using Reinforcement Learning  
 
-We implemented Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the publication below.
+We implemented Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the publications above.
 
 ## Results
 
@@ -153,10 +158,6 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 * *fala.py* - totally new module that implements the reinforcement learning strategy as a new *fala* class
 * *cntrl.py* - the controller files were slightly modified to integrate with the learning module
 * *waypoints.py* - some minor modifications were made to waypoint generation in order to integrate with the learning module
-
-## Relevant publications 
-
-*P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal*
 
 
 # Description of the Quadcopter Simulator 
