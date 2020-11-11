@@ -1,8 +1,12 @@
-# This project is in development
+# Project Description
 
-This project expands on the previous work to include multi-agent obstacle avoidance. 
+We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass (available in the fork preceding this repository) to: 
 
-Track the project progress [here](https://github.com/users/tjards/projects/3)
+- Implement multiple vehicles and obstacle avoidance 
+- Improve on standard potential fields using shifting planar inequality constraints
+- Tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA)
+
+**Status**: The code is working; just cleaning things up. Track the project progress [here](https://github.com/users/tjards/projects/3)
 
 
 # Results - Obstacle Avoidance 
@@ -116,12 +120,10 @@ Obstacle avoidance using Potential Fields for obstacles at (-2, -1, -3) and (3, 
 
 # Results - Automatic Controller Tuning using Reinforcement Learning  
 
+
 This project implements Reinforcement Learning  - specifically, Finite Action-set Learning Automata (FALA) - to tune the controller gains of a simulated Quadcopter. A detailed description of the learning technique is described in the following paper:
 
-*P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal*
-
-In short, we modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass @ MIT (available in the fork preceding this repository) to tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA).
-
+We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass (available in the fork preceding this repository) to tune the proportional-integral-derivative (PID) gains in real-time using Finite Action-set Learning Automata (FALA).
 
 ## Results
 
@@ -148,12 +150,17 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="left"> 
 
-# Summary of modifications
+## Summary of modifications
 
 * *run_3D_simulation.py* - this is the main script and was substantially modified to integrate new components of the learning architecture.
 * *fala.py* - totally new module that implements the reinforcement learning strategy as a new *fala* class
 * *cntrl.py* - the controller files were slightly modified to integrate with the learning module
 * *waypoints.py* - some minor modifications were made to waypoint generation in order to integrate with the learning module
+
+## Relevant publications 
+
+*P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal*
+
 
 
 # Description of the Quadcopter Simulator 
