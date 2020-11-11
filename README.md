@@ -1,4 +1,4 @@
-# Project Description
+# Modern Techniques for Improving Aerial Vehicle Performance 
 
 We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass to: 
 
@@ -14,7 +14,7 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 Potential Fields is common strategy for obstacle avoidance. It is simple and effective but is not tailored for aerial vehicles. As opposed to ground vehicles, aerial vehicles require constant corrections to stay in flight. These unique energy characteristics motivate our work in improving on potential fields so that aerial vehicles can save energy when maneuvering around obstacles.   
 
 **Why implement reinforcement learning?**
-Designing a controller for aerial vehicles involves tuning a number of parameters (gains). These can be derived from first principles or, as we have done here, through data-drive methods like reinforcement learning. 
+Designing a controller for aerial vehicles involves tuning a number of parameters (gains). These can be derived from first principles or, as we have done here, through data-driven methods like reinforcement learning. 
 
 ## Relevant Publications
 
