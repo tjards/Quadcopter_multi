@@ -27,6 +27,8 @@ Quaternions are kind of an abstract concept, but they're awesome. By replacing t
 
 **Potential Fields** described here:
 - A. Woods and H. La, [A Novel Potential Field Controller for Use on Aerial Robots](https://arxiv.org/pdf/1704.04672.pdf) , *arXiv*, 2017
+- Y. Koren and J. Borenstein, [Potential Field Methods and Their Inherent Limitations for Mobile Robot Navigation](https://www.cs.cmu.edu/~motionplanning/papers/sbp_papers/integrated1/borenstein_potential_field_limitations.pdf) , *Proceedings of the IEEE Conference on Robotics and Automation*, Sacramento, California, April 1991, pp. 1398-1404 
+
 
 **Finite Action-set Learning Automata** described here (from a system-of-systems perspective):
 - P.T. Jardine, S.N. Givigi, and S.Yousefi, [Leveraging Data Engineering to Improve Unmanned Aerial Vehicle Control Design](https://ieeexplore.ieee.org/document/9130726), IEEE Systems Journal, July 2020
