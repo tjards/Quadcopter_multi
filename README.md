@@ -17,7 +17,7 @@ Potential Fields is common strategy for obstacle avoidance. It is simple and eff
 Designing a controller for aerial vehicles involves tuning a number of parameters (gains). These can be derived from first principles or, as we have done here, through data-driven methods like reinforcement learning. 
 
 **Why quaternions?**
-Quaternions are kind of an abstract concept, but they're awesome. By replacing the sine and cosine terms with a vector in the equations of motion, quaternions save computation time. They also help resolve some practical problems when operating in computationally inconvenient flight configurations (mainly at angles like 0, 90, 180, and 270 degrees). 
+Quaternions are kind of an abstract concept, but they're awesome. By replacing the sine and cosine terms with a vector in the equations of motion, quaternions save computation time. They also help resolve some practical problems when operating in computationally inconvenient flight configurations (mainly at angles like 0, 90, 180, and 270 degrees). Thank you to John Bass for sharing this aspect of the code. 
 
 
 ## Relevant Publications
