@@ -148,7 +148,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="center"> 
 
-**Figure 4** - Poor performance with unlearned parameters 
+**Figure 3** - Poor performance with unlearned parameters 
 
 <div align="left"> 
 
@@ -159,7 +159,7 @@ In Figure 1, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="center"> 
 
-**Figure 5** - Better performance with learned parameters
+**Figure 4** - Better performance with learned parameters
 
 <div align="left"> 
 
