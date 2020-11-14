@@ -1,6 +1,6 @@
 # Modern Techniques for Improving Aerial Vehicle Performance 
 
-In this project, we implement a few modern techniques for improving the performace of aerial vehicles. We build on the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass as follows: 
+In this project, we implement a few modern techniques for improving the performance of aerial vehicles. We build on the original [Quadcopter Simulation and Control (Quad_SimCon)](https://github.com/bobzwik/Quadcopter_SimCon) program developed by John Bass as follows: 
 
 - Implement multiple vehicles and obstacle avoidance 
 - Improve on standard potential fields using shifting planar inequality constraints
