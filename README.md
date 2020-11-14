@@ -10,7 +10,7 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 ## Motivation
 
-**Why implement shifting planary inequality constraints?**
+**Why implement shifting planar inequality constraints?**
 Potential Fields is common strategy for obstacle avoidance. It is simple and effective but is not tailored for aerial vehicles. As opposed to ground vehicles, aerial vehicles require constant corrections to stay in flight. These unique energy characteristics motivate our work in improving on potential fields so that aerial vehicles can save energy when maneuvering around obstacles.   
 
 **Why implement reinforcement learning?**

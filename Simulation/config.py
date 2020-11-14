@@ -36,8 +36,8 @@ class config():
         self.ifsavedata = 0     # subset of ifsave
         self.trialLen = 3
         self.wpType = 0   # [0 = fixed, 1 = random, 2 = TBD , 3 = learning (linked to doLearn below)] 
-        self.nVeh = 2    # don't mess with this yet, I need to make this a reference in main()
-         
+        self.nVeh = 2     # only tested for 1 or 2 right now
+        
         # Choose trajectory settings
         # --------------------------- 
         ctrlOptions = ["xyz_pos", "xy_vel_z_pos", "xyz_vel"]
@@ -58,7 +58,7 @@ class config():
         
         # Choose Obstacle Avoidance settings
         # ----------------------------------
-        self.PIC = 1    # do we want to using planar inequality constraint shifting?
+        self.PIC = 0    # do we want to using planar inequality constraint shifting?
         self.PF = 1     # do we want to use potential fields?
         
         # Create obstacle(s)

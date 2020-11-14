@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-The purpose of this project is to implement Reinforcement Learning
+The project implements Reinforcement Learning
 (specifically, Finite Action-set Learning Automata) 
 to tune the PID controller gains of a simulated Quadcopter
 + multi-vehicle 
-+ obstacle avoidance
++ obstacle avoidance using potential fields
++ plus an improvement on potential fields using shifting planar inequalities
 
-Track the full project status here:
-    https://github.com/users/tjards/projects/3
+Full documentation here:
+    https://github.com/tjards/Quadcopter_multi
 
 
-    
 editing author: P. Travis Jardine, PhD
 email: travis.jardine@gmail.com 
 
@@ -22,9 +22,10 @@ email: john.bobzwik@gmail.com
 license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
 
- 
-
 """
+
+# Import stuff
+# ------------
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -48,8 +49,8 @@ from utils.animation import sameAxisAnimation as sameAxisAnimation
 from utils.animation2 import sameAxisAnimation2 as sameAxisAnimation2
 
 
-
-# this is called by each vehicle, so no need to send in  two vehicle data
+# This function integrates the control inputs through the dynamics
+# ----------------------------------------------------------------
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     
     # Dynamics (using last timestep's commands)
@@ -57,8 +58,8 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     quad.update(t, Ts, ctrl.w_cmd, wind, config)
     t += Ts
 
-    # Learn from the trial 
-    # ---------------------
+    # Learn from the trial (if selected) 
+    # ---------------------------------
     if fala != 0:
         fala.learn(quad,traj,ctrl,Ts,t)
     
@@ -66,35 +67,37 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     # -------------------------------------------------
     sDes = traj.desiredState(t, Ts, quad)
 
-    # Use PIC shifting to move target
-    # -------------------------------
+    # Use PIC shifting to move target (if enabled)
+    # ---------------------------------------------
     if config.PIC:
         xv = np.reshape(quad.state[0:3], (1,3))
         xt = np.reshape(traj.sDes[0:3], (1,3))
         cx = QP.moveTarget(quad.state, obsPF.Po, xv, xt, 0.1, 0.1, 0.5)
         traj.sDes[0:3] = np.array(cx['x'][:]) 
 
-    # Avoid obstacles using potential fields 
-    # --------------------------------------       
+    # Avoid obstacles using potential fields (if enabled)
+    # ---------------------------------------------------       
     if config.PF:
         obsPF.updateTraj(quad.state[0:3],traj.sDes[0:3],traj)
 
     # Generate Commands (for next iteration)
-    # ---------------------------
+    # --------------------------------------
     ctrl.controller(traj, quad, sDes, config)
 
     return t
     
-
+# This is the main function
+# --------------------------
 def main():
+    
     start_time = time.time()
 
-    # Simulation Setup
+    # Import the simulation setup
     # --------------------------- 
     config=simConfig.config()
 
-    # Initialize Quadcopter, Controller, Wind, Result Matrixes
-    # ---------------------------
+    # Initialize wind (untested) 
+    # --------------------------
     wind = Wind('None', 2.0, 90, -15)
     
     # Initialize list for objects
@@ -107,6 +110,8 @@ def main():
     obsPFList = []
     myDataList = []   
     
+    # For the number of vehicles
+    # --------------------------
     for objectIndex in range(0,config.nVeh):
         
         quadList.append(Quadcopter(config))
@@ -137,11 +142,20 @@ def main():
         # Update the obstacle positions
         # -----------------------------
         if t[0] > 0.1:
+            
+            # recall these, as they could move with time
             o1 = config.o1  # np.array([-2.1, 0, -3],)           # obstacle 1 (x,y,z)
             o2 = config.o2  # np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
             o3 = config.o3  # np.array([0, 2.5, -2.5])           # obstacle 2 (x,y,z)
-            obsPFList[0].Po = np.vstack((o1,o2,o3,quadList[1].state[0:3])).transpose() 
-            obsPFList[1].Po = np.vstack((o1,o2,o3,quadList[0].state[0:3])).transpose()
+            
+            # if just one vehicle
+            if config.nVeh == 1:
+                obsPFList[0].Po = np.vstack((o1,o2,o3)).transpose() 
+             
+            # if two vehicles, make sure to avoid other dudeBot   
+            if config.nVeh == 2:
+                obsPFList[0].Po = np.vstack((o1,o2,o3,quadList[1].state[0:3])).transpose() 
+                obsPFList[1].Po = np.vstack((o1,o2,o3,quadList[0].state[0:3])).transpose()
  
         # Integrate through the dynamics
         # ------------------------------

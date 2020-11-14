@@ -108,11 +108,11 @@ def runOpt(x, xt, xp, A, b):
     #if len(x) == 2:
     if x.shape[1] == 2:
         #cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1]])
-        cx = opt.minimize(f, x, constraints=cons, args = [xt[0,0], xt[0,1]])
+        cx = opt.minimize(f, xp, constraints=cons, args = [xt[0,0], xt[0,1]])
     #elif len(x) == 3:
     elif x.shape[1] == 3:
         #cx = opt.minimize(f, x, constraints=cons, args = [xt[0], xt[1], xt[2]])
-        cx = opt.minimize(f, x, constraints=cons, args = [xt[0,0], xt[0,1], xt[0,2]])
+        cx = opt.minimize(f, xp, constraints=cons, args = [xt[0,0], xt[0,1], xt[0,2]])
 
     #cx = opt.minimize(f, x0, bounds=bnds, constraints=cons)
 
