@@ -38,6 +38,8 @@ Quaternions are kind of an abstract concept, but they're awesome. By replacing t
 
 ## Results
 
+In Figure 1, we see shifting planar inequalities reduce oscillations when flying near obstacles. In Figure 2, we see this reduces error and energy consumption. 
+
 <p float="left">
   <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pf_animation_multi_blue_and_green.gif" width="45%" />
   <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/pic_animation_multi_blue_and_green.gif" width="45%" />
@@ -142,7 +144,7 @@ We implemented Reinforcement Learning  - specifically, Finite Action-set Learnin
 
 ## Results
 
-In Figure 1, we provide an animated GIF showing the performance of the vehicle at the early phases of learning (i.e. with randomly selected gains). In Figure 2, we see that the vehicle performs much better when using gains learned with FALA. 
+In Figure 3, we provide an animated GIF showing the performance of the vehicle at the early phases of learning (i.e. with randomly selected gains). In Figure 4, we see that the vehicle performs much better when using gains learned with FALA. 
 
 <p align="center">
   <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/animation_1_4_duringLearning.gif" width="65%" />
