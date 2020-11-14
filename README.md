@@ -6,7 +6,7 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 - Improve on standard potential fields using shifting planar inequality constraints
 - Tune the proportional-integral-derivative (PID) gains in real-time using Reinforcement Learning 
 
-**Status**: The code is working; just cleaning things up. Track the project progress [here](https://github.com/users/tjards/projects/3)
+**Note**: If you think this is cool and would like to build on to this architecture, feel free to contact me at travis.jardine@gmail.com
 
 ## Motivation
 
