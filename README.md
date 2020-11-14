@@ -8,7 +8,7 @@ We modified the original [Quadcopter Simulation and Control (Quad_SimCon)](https
 
 You can configure most of the simulation parameters in the *config.py* file.
 
-**Note**: If you think this is cool and would like to build on to this architecture, feel free to contact me at travis.jardine@gmail.com
+**Note**: If you think this is cool and would like to build on this architecture, feel free to contact me at travis.jardine@gmail.com
 
 ## Motivation
 
