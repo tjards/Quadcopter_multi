@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-author: John Bass
+updated by: P. Travis Jardine, PhD
+email: travis.jardine@gmail.com 
+
+original author: John Bass
 email: john.bobzwik@gmail.com
 license: MIT
 Please feel free to use and modify this, but keep the above information. Thanks!
 """
 
-
 import numpy as np
-
-
 
 class config():
 

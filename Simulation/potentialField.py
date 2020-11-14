@@ -13,8 +13,6 @@ based on the technique @ ref: https://arxiv.org/pdf/1704.04672.pdf
 
 import numpy as np
 
-
-
 class potentialField:
 
     def __init__(self, traj, Po, gamma=1, eta=1 ,obsRad=1):

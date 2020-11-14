@@ -1,9 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+
+This program implements shifting planar inequality constraints
+for application with 3D obstacle avoidance as defined here:
+    
+    P. T. Jardine, S. Givigi, and S. Yousefi, 
+    Planar Inequality Constraints for Stable, Collision-free Model Predictive Control of a Quadcopter ,
+    IFAC-PapersOnLine, Volume 50, Issue 1, July 2017, Pages 9095-9100
+
+author: P. Travis Jardine, PhD
+email: travis.jardine@gmail.com 
+
 Created on Wed Oct 21 20:19:56 2020
 
 @author: tjards
+
 """
 import numpy as np
 from scipy import optimize as opt
@@ -14,12 +26,10 @@ from scipy import optimize as opt
 #plt.rcParams['animation.ffmpeg_path'] = '/usr/local/bin/ffmpeg' #my add - this path needs to be added
 from matplotlib import animation
 
-
-# my add - Set up formatting for the movie files
+# Set up formatting for the movie files
+# ------------------------------------
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=1800)
-
-
 
 # move target
 # -----------
@@ -46,8 +56,6 @@ def moveTarget(state, Po, xv, xt, r, ro, rb):
     
     return cx
 
-
-
 # compute constraints 
 # -------------------
 def computeCons(xv, xo, r, ro, rb):
@@ -73,8 +81,7 @@ def computeCons(xv, xo, r, ro, rb):
 # computes the centerpoint of the constraint
 # ------------------------------------------
 def computeXp(x,xo,r,ro,rb):
-        
-        
+               
         diff = x-xo
         d = np.linalg.norm(diff)                            # distance between obs and veh    
         #xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))  # compute centerpoint
@@ -84,9 +91,6 @@ def computeXp(x,xo,r,ro,rb):
             xp = xo + np.multiply(np.divide(ro+r+rb,d),(x-xo))  # compute centerpoint
 
         return xp, d
-
-
-
 
 # find an optimal point around obstacle 
 # -------------------------------------    
