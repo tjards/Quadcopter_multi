@@ -53,6 +53,18 @@ from utils.animation2 import sameAxisAnimation2 as sameAxisAnimation2
 # ----------------------------------------------------------------
 def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     
+    
+    # Hard code the learned params
+    # ----------------------------
+    # these are bad ones:
+    # #selPars = np.array([1,6,3,6,0,6,0,2,0,1,5,4,0,2])
+    # selPars = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+
+    # for i in range(0,config.nParams):
+    #     fala.selectedVals[0,i] = fala.optionsTable[selPars[i],i] 
+    # ctrl.tune(fala.selectedVals.transpose().ravel(), [1, 1, 1, 1])
+    
+    
     # Dynamics (using last timestep's commands)
     # ---------------------------
     quad.update(t, Ts, ctrl.w_cmd, wind, config)
@@ -60,7 +72,7 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
 
     # Learn from the trial (if selected) 
     # ---------------------------------
-    if fala != 0:
+    if fala.doLearn != 0:
         fala.learn(quad,traj,ctrl,Ts,t)
     
     # Trajectory for Desired States (for next iteration)
@@ -72,7 +84,7 @@ def quad_sim(t, Ts, quad, ctrl, wind, traj, fala, obsPF, config):
     if config.PIC:
         xv = np.reshape(quad.state[0:3], (1,3))
         xt = np.reshape(traj.sDes[0:3], (1,3))
-        cx = QP.moveTarget(quad.state, obsPF.Po, xv, xt, 0.1, 0.1, 0.5)
+        cx = QP.moveTarget(quad.state, obsPF.Po, xv, xt, 0.1, 0.1, config.obsRad)
         traj.sDes[0:3] = np.array(cx['x'][:]) 
 
     # Avoid obstacles using potential fields (if enabled)
@@ -118,7 +130,7 @@ def main():
         trajList.append(Trajectory(quadList[objectIndex], config.ctrlType, config.trajSelect, config))
         ctrlList.append(Control(quadList[objectIndex], trajList[objectIndex].yawType))
         sDesList.append(trajList[objectIndex].desiredState(0, config.Ts, quadList[objectIndex]) )
-        obsPFList.append(pf(trajList[objectIndex], np.vstack((config.o1,config.o2,config.o3,quadList[objectIndex-1].state[0:3])).transpose() , gamma=1, eta=0.2, obsRad=0.5))
+        obsPFList.append(pf(trajList[objectIndex], np.vstack((config.o1,config.o2,config.o3,quadList[objectIndex-1].state[0:3])).transpose() , gamma=config.gamma, eta=config.eta, obsRad=config.obsRad, obsRange = config.obsRange))
         # generate first command
         ctrlList[objectIndex].controller(trajList[objectIndex], quadList[objectIndex], sDesList[objectIndex], config)
 
@@ -178,11 +190,12 @@ def main():
         utils.makeFigures(quadList[0].params, myDataList[0])
         
         # make animation (this should be generalized later)
-        if config.nVeh == 1:
-            ani = sameAxisAnimation(config, myDataList[0], trajList[0], quadList[0].params, obsPFList[0], myColour = 'blue')      
-        if config.nVeh == 2:
-            ani = sameAxisAnimation2(config, myDataList[0], trajList[0], quadList[0].params, myDataList[1], trajList[1], quadList[1].params, obsPFList[0], 'blue', 'green')
-        
+        if config.ifsaveplots:
+            if config.nVeh == 1:
+                ani = sameAxisAnimation(config, myDataList[0], trajList[0], quadList[0].params, obsPFList[0], myColour = 'blue')      
+            if config.nVeh == 2:
+                ani = sameAxisAnimation2(config, myDataList[0], trajList[0], quadList[0].params, myDataList[1], trajList[1], quadList[1].params, obsPFList[0], 'blue', 'green')
+            
         plt.show()
         
         # dump the learned parameters 
@@ -194,9 +207,10 @@ def main():
         torque0 = myDataList[0].tor_all 
         eDraw0 = np.cumsum(np.cumsum(torque0, axis=0), axis = 1)[:,3]
         np.save('Data/energyDepletion_veh0',eDraw0)
-        torque1 = myDataList[1].tor_all 
-        eDraw1 = np.cumsum(np.cumsum(torque1, axis=0), axis = 1)[:,3]
-        np.save('Data/energyDepletion_veh1',eDraw1)
+        if config.nVeh == 2:
+            torque1 = myDataList[1].tor_all 
+            eDraw1 = np.cumsum(np.cumsum(torque1, axis=0), axis = 1)[:,3]
+            np.save('Data/energyDepletion_veh1',eDraw1)
         
         # save the data       
         if config.ifsavedata:
@@ -209,14 +223,15 @@ def main():
             z_sp  = myDataList[0].sDes_calc_all[:,2]
             states0 = np.vstack([x,y,z,x_sp,y_sp,z_sp]).transpose()
             np.save('Data/states0',states0)
-            x    = myDataList[1].pos_all[:,0]
-            y    = myDataList[1].pos_all[:,1]
-            z    = myDataList[1].pos_all[:,2]
-            x_sp  = myDataList[1].sDes_calc_all[:,0]
-            y_sp  = myDataList[1].sDes_calc_all[:,1]
-            z_sp  = myDataList[1].sDes_calc_all[:,2]
-            states1 = np.vstack([x,y,z,x_sp,y_sp,z_sp]).transpose()
-            np.save('Data/states1',states1)
+            if config.nVeh == 2:
+                x    = myDataList[1].pos_all[:,0]
+                y    = myDataList[1].pos_all[:,1]
+                z    = myDataList[1].pos_all[:,2]
+                x_sp  = myDataList[1].sDes_calc_all[:,0]
+                y_sp  = myDataList[1].sDes_calc_all[:,1]
+                z_sp  = myDataList[1].sDes_calc_all[:,2]
+                states1 = np.vstack([x,y,z,x_sp,y_sp,z_sp]).transpose()
+                np.save('Data/states1',states1)
                 
     #return ani
 

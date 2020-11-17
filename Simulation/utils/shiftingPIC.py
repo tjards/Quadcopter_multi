@@ -37,7 +37,7 @@ def moveTarget(state, Po, xv, xt, r, ro, rb):
     
     # search for closest obstacle
     # --------------------------
-    distance = 10    # max range of sensor
+    distance = 10    # max range of sensor (should import this)
     dindex = 0      # default
     for k in range(0,len(Po[0,:])):
         distance_new = np.linalg.norm(state[0:3]-Po[:,k])

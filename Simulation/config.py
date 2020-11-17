@@ -31,9 +31,10 @@ class config():
         # --------------------------- 
         self.Ti = 0
         self.Ts = 0.005 #default 0.005 (larger numbers could result in instability)
-        self.Tf = 26 #1500 # 26
+        self.Tf = 26#1500 # 26
         self.ifsave = 1
-        self.ifsavedata = 0     # subset of ifsave
+        self.ifsavedata = 1     # do we want to save data? subset of ifsave
+        self.ifsaveplots = 1    # do we want to plot? subset of ifsave
         self.trialLen = 3
         self.wpType = 0   # [0 = fixed, 1 = random, 2 = TBD , 3 = learning (linked to doLearn below)] 
         self.nVeh = 2     # only tested for 1 or 2 right now
@@ -66,18 +67,22 @@ class config():
         self.o1 = np.array([-2.1, 0, -3.5],)           # obstacle 1 (x,y,z)
         self.o2 = np.array([2, -1.2, 0.9])           # obstacle 2 (x,y,z)
         self.o3 = np.array([0, 2.5, -2.5])           # obstacle 3 (x,y,z)
+        self.obsRad = 0.5   # radius of obstacles 
+        self.obsRange = 0.5  # range at which PF operates
+        self.gamma = 1  # PF attractive force
+        self.eta = 0.2  # PF repulsive force
         
         # Learning stuff
         # ---------------
         self.doLearn = 0
         #self.nParams = 14       # moved lower based on the control architecture 
         self.nOptions = 7
-        self.optionsInterval = [0.1,5] 
-        self.wpRange = 1
+        self.optionsInterval = [0.2,2] 
+        self.wpRange = 3
         self.learnRate = 0.1
         self.a = 1               # weight of positive reinforcement (default one)
-        self.b = 0               # weight of negative reinforcement (default zero)
-        self.learnWhat = [0, 0, 0, 1]
+        self.b = 0.2               # weight of negative reinforcement (default zero)
+        self.learnWhat = [1, 1, 1, 1]
         #                [1 = pos (2), 1 = vel (6), 1 = att (2), 1 = rate (4)]   
         self.nParams = 2*self.learnWhat[0] + 6*self.learnWhat[1] + 2*self.learnWhat[2] + 4*self.learnWhat[3] 
         if self.doLearn == 1:

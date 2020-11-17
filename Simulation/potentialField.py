@@ -15,13 +15,14 @@ import numpy as np
 
 class potentialField:
 
-    def __init__(self, traj, Po, gamma=1, eta=1 ,obsRad=1):
+    def __init__(self, traj, Po, gamma=1, eta=1 ,obsRad=1, obsRange = 10):
     
         self.Po = Po
         self.gamma = gamma
         self.eta = eta
         self.obsRad = obsRad
         self.default_ctrlType = traj.ctrlType
+        self.obsRange = obsRange
 
 
     # def overlap(self, type, flag):
@@ -65,7 +66,8 @@ class potentialField:
            self.Pdo_mags[0,i] = np.linalg.norm(self.Pdo[:,i])
            
            # only count the obstacle if inside the radius
-           if 0 < self.Pdo_mags[0,i] < self.obsRad:            
+           #if 0 < self.Pdo_mags[0,i] < self.obsRad:            
+           if 0 < self.Pdo_mags[0,i] < self.obsRange:            
                self.vr += self.eta*np.multiply(self.Pdo[:,[i]],np.divide(1,np.power(self.Pdo_mags[0,i],4)))
                self.flag += 1
     
