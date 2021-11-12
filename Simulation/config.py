@@ -37,7 +37,7 @@ class config():
         self.ifsaveplots = 1    # do we want to plot? subset of ifsave
         self.trialLen = 3
         self.wpType = 0   # [0 = fixed, 1 = random, 2 = TBD , 3 = learning (linked to doLearn below)] 
-        self.nVeh = 2     # only tested for 1 or 2 right now
+        self.nVeh = 5     # only tested for 1 or 2 right now
         
         # Choose trajectory settings
         # --------------------------- 

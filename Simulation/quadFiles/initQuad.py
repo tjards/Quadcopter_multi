@@ -11,6 +11,7 @@ from numpy import pi
 from numpy.linalg import inv
 import utils
 #import config
+import random
 
 
 def sys_params(config):
@@ -111,6 +112,13 @@ def init_state(params,config):
     phi0   = 0.  # rad
     theta0 = 0.  # rad
     psi0   = 0.  # rad
+    
+    x0 = random.randint(-5,5)
+    y0 = random.randint(-5,5)
+    z0 = random.randint(-5,5)
+    
+    
+    
 
     quat = utils.YPRToQuat(psi0, theta0, phi0)
     

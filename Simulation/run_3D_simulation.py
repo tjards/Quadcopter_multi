@@ -46,7 +46,8 @@ import utils.collectData as collect
 import config as simConfig
 import utils.shiftingPIC as QP
 from utils.animation import sameAxisAnimation as sameAxisAnimation
-from utils.animation2 import sameAxisAnimation2 as sameAxisAnimation2
+#from utils.animation2 import sameAxisAnimation2 as sameAxisAnimation2
+from utils.animation_n import sameAxisAnimationN as sameAxisAnimationN
 
 
 # This function integrates the control inputs through the dynamics
@@ -165,9 +166,16 @@ def main():
                 obsPFList[0].Po = np.vstack((o1,o2,o3)).transpose() 
              
             # if two vehicles, make sure to avoid other dudeBot   
-            if config.nVeh == 2:
-                obsPFList[0].Po = np.vstack((o1,o2,o3,quadList[1].state[0:3])).transpose() 
-                obsPFList[1].Po = np.vstack((o1,o2,o3,quadList[0].state[0:3])).transpose()
+            #if config.nVeh == 2:
+            #    obsPFList[0].Po = np.vstack((o1,o2,o3,quadList[1].state[0:3])).transpose() 
+            #    obsPFList[1].Po = np.vstack((o1,o2,o3,quadList[0].state[0:3])).transpose()
+            
+            # if more than one vehicle, make sure to avoid other dudeBot   
+            for io in range(0,config.nVeh):
+                for jo in range(0,config.nVeh-1):
+                    obsPFList[io].Po = np.vstack((o1,o2,o3,quadList[io-jo].state[0:3])).transpose() 
+  
+                
  
         # Integrate through the dynamics
         # ------------------------------
@@ -193,9 +201,12 @@ def main():
         if config.ifsaveplots:
             if config.nVeh == 1:
                 ani = sameAxisAnimation(config, myDataList[0], trajList[0], quadList[0].params, obsPFList[0], myColour = 'blue')      
-            if config.nVeh == 2:
-                ani = sameAxisAnimation2(config, myDataList[0], trajList[0], quadList[0].params, myDataList[1], trajList[1], quadList[1].params, obsPFList[0], 'blue', 'green')
+            #if config.nVeh == 2:
+            #    ani = sameAxisAnimation2(config, myDataList[0], trajList[0], quadList[0].params, myDataList[1], trajList[1], quadList[1].params, obsPFList[0], 'blue', 'green')
+            if config.nVeh > 1:
+                ani = sameAxisAnimationN(config, myDataList, trajList, quadList, obsPFList[0], 'blue')
             
+           
         plt.show()
         
         # dump the learned parameters 
