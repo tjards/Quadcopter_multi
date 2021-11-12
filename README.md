@@ -169,6 +169,19 @@ In Figure 3, we provide an animated GIF showing the performance of the vehicle a
 
 <div align="left"> 
 
+# Animating n vehicles
+
+We also provided an animation function that supports an arbitrary number of vehicles.
+
+<p align="center">
+  <img src="https://github.com/tjards/Quadcopter_multi/blob/master/Simulation/Gifs/Raw/animation_multi_blue_and_blue_3.gif" width="65%" />
+</p>
+
+<div align="center"> 
+
+**Figure 5** - Animation with 5 vehicles
+
+
 ## key files
 
 * *run_3D_simulation.py* - this is the main script and was substantially modified to integrate new components of the learning architecture.
