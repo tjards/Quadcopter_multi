@@ -181,6 +181,7 @@ We also provided an animation function that supports an arbitrary number of vehi
 
 **Figure 5** - Animation with 5 vehicles
 
+<div align="left"> 
 
 ## key files
 
